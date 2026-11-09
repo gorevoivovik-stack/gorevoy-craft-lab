@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gorevoy-craft-lab-v2';
+const CACHE_NAME = 'gorevoy-craft-lab-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -23,10 +23,35 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
+// Network-first for HTML navigation, fallback to cache; Cache-first for icons/assets
 self.addEventListener('fetch', event => {
+  const isHtml = event.request.mode === 'navigate' ||
+    (event.request.method === 'GET' && event.request.headers.get('accept')?.includes('text/html'));
+
+  if (isHtml) {
+    event.respondWith(
+      fetch(event.request)
+        .then(response => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request);
+      return response || fetch(event.request).then(netRes => {
+        if (netRes && netRes.status === 200) {
+          const clone = netRes.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+        }
+        return netRes;
+      });
     })
   );
 });
