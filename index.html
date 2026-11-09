@@ -14,8 +14,9 @@
   <meta name="application-name" content="Gorevoy Craft Lab">
 
   <!-- Фирменная иконка приложения (аламбик/дистиллятор) -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23191614' stroke='%23d97736' stroke-width='4'/%3E%3Cpath d='M50 20 L50 32 M35 48 C35 34 65 34 65 48 C65 58 75 66 75 76 C75 82 70 85 50 85 C30 85 25 82 25 76 C25 66 35 58 35 48 Z' fill='%23d97736' stroke='%23fca868' stroke-width='2'/%3E%3Ccircle cx='50' cy='22' r='4' fill='%23fca868'/%3E%3Cpath d='M42 62 C42 56 58 56 58 62 C58 66 54 68 50 72 C46 68 42 66 42 62 Z' fill='%23191614'/%3E%3C/svg%3E">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23191614' stroke='%23d97736' stroke-width='4'/%3E%3Cpath d='M50 20 L50 32 M35 48 C35 34 65 34 65 48 C65 58 75 66 75 76 C75 82 70 85 50 85 C30 85 25 82 25 76 C25 66 35 58 35 48 Z' fill='%23d97736' stroke='%23fca868' stroke-width='2'/%3E%3Ccircle cx='50' cy='22' r='4' fill='%23fca868'/%3E%3Cpath d='M42 62 C42 56 58 56 58 62 C58 66 54 68 50 72 C46 68 42 66 42 62 Z' fill='%23191614'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
   <link rel="manifest" href="manifest.json">
   <style>
     :root {
@@ -523,6 +524,7 @@
     <h1>🥃 Gorevoy Craft Lab</h1>
     <p class="subtitle">Технологические карты, калькуляторы и термоэтикетки • Владимир Горевой</p>
     <div class="top-actions">
+      <button class="btn btn-sm" id="btn-install-app" onclick="triggerInstallApp()" style="background:#2a231d; color:#fca868; border:1px solid #d97736; font-weight:600;">📲 Установить на телефон</button>
       <button class="btn btn-secondary btn-sm" onclick="exportDataHtml()" title="Скачать готовый HTML файл со всеми вашими изменениями">📥 Скачать обновленный HTML</button>
       <button class="btn btn-secondary btn-sm" onclick="exportDataJson()" title="Сохранить резервную копию рецептов в JSON">💾 Экспорт JSON</button>
       <button class="btn btn-secondary btn-sm" onclick="triggerJsonImport()" title="Загрузить рецепты из JSON">📂 Импорт JSON</button>
@@ -929,6 +931,22 @@
       <div id="tech-container"></div>
     </div>
   </section>
+
+  <!-- МОДАЛЬНОЕ ОКНО ИНСТРУКЦИИ ПО УСТАНОВКЕ -->
+  <div class="modal-overlay" id="install-help-modal">
+    <div class="modal-content" style="max-width:520px;">
+      <div class="modal-header">
+        <h3 id="install-modal-title" style="margin: 0; color:#fca868;">📲 Как установить на телефон</h3>
+        <button class="close-btn" onclick="closeInstallModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="install-modal-body" style="font-size:14px; line-height:1.6;">
+        <!-- Динамическое содержание -->
+      </div>
+      <div class="modal-footer">
+        <button class="btn" onclick="closeInstallModal()">Понятно</button>
+      </div>
+    </div>
+  </div>
 
   <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ РЕЦЕПТА / СТАТЬИ -->
   <div class="modal-overlay" id="edit-modal">
@@ -2709,6 +2727,79 @@
 
     // Инициализация при открытии страницы
     renderAll();
+
+    /* =====================================================================
+       PWA INSTALLATION HANDLERS
+       ===================================================================== */
+    let deferredPrompt = null;
+
+    window.addEventListener('beforeinstallprompt', function(e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      const btn = document.getElementById('btn-install-app');
+      if (btn) {
+        btn.style.background = '#d97736';
+        btn.style.color = '#fff';
+        btn.innerHTML = '✨ Установить приложение';
+      }
+    });
+
+    function triggerInstallApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function(choiceResult) {
+          if (choiceResult.outcome === 'accepted') {
+            const btn = document.getElementById('btn-install-app');
+            if (btn) btn.style.display = 'none';
+          }
+          deferredPrompt = null;
+        });
+      } else {
+        showInstallHelpModal();
+      }
+    }
+
+    function showInstallHelpModal() {
+      const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const bodyEl = document.getElementById('install-modal-body');
+      if (!bodyEl) return;
+
+      if (isIos) {
+        bodyEl.innerHTML = `
+          <div style="background:#221d19; padding:12px; border-radius:6px; margin-bottom:12px; border-left:3px solid #fca868;">
+            <b>🍎 Инструкция для iPhone (Apple Safari):</b>
+          </div>
+          <ol style="padding-left:20px; line-height:1.8;">
+            <li>В браузере <b>Safari</b> нажмите кнопку <b>«Поделиться»</b> (квадратик со стрелкой вверх внизу экрана).</li>
+            <li>В меню прокрутите вниз и выберите <b>«На экран «Домой»»</b>.</li>
+            <li>Нажмите <b>«Добавить»</b> в правом верхнем углу.</li>
+          </ol>
+          <p style="margin-top:12px; color:var(--text-muted); font-size:13px;">
+            Иконка «Craft Lab» появится на рабочем столе вашего iPhone и будет открываться как настоящее приложение!
+          </p>
+        `;
+      } else {
+        bodyEl.innerHTML = `
+          <div style="background:#221d19; padding:12px; border-radius:6px; margin-bottom:12px; border-left:3px solid #72d192;">
+            <b>🤖 Инструкция для Android (Chrome / Яндекс / Samsung):</b>
+          </div>
+          <ol style="padding-left:20px; line-height:1.8;">
+            <li>Нажмите на <b>три точки (⋮)</b> в правом верхнем (или нижнем) углу браузера.</li>
+            <li>Выберите пункт <b>«Установить приложение»</b> (или <b>«Добавить на главный экран»</b>).</li>
+            <li>Подтвердите нажатием <b>«Установить»</b>.</li>
+          </ol>
+          <p style="margin-top:12px; color:var(--text-muted); font-size:13px;">
+            Фирменная иконка «Craft Lab» появится на рабочем столе телефона и будет открываться на весь экран без интернета!
+          </p>
+        `;
+      }
+
+      document.getElementById('install-help-modal')?.classList.add('active');
+    }
+
+    function closeInstallModal() {
+      document.getElementById('install-help-modal')?.classList.remove('active');
+    }
 
     // Регистрация PWA Service Worker (для работы офлайн и установки на телефон)
     if ('serviceWorker' in navigator) {
