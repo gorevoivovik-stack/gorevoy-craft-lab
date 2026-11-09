@@ -1,0 +1,2721 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gorevoy Craft Lab</title>
+
+  <!-- PWA & Мобильные метатеги (запуск на телефоне как отдельное приложение) -->
+  <meta name="theme-color" content="#141312">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Craft Lab">
+  <meta name="application-name" content="Gorevoy Craft Lab">
+
+  <!-- Фирменная иконка приложения (аламбик/дистиллятор) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23191614' stroke='%23d97736' stroke-width='4'/%3E%3Cpath d='M50 20 L50 32 M35 48 C35 34 65 34 65 48 C65 58 75 66 75 76 C75 82 70 85 50 85 C30 85 25 82 25 76 C25 66 35 58 35 48 Z' fill='%23d97736' stroke='%23fca868' stroke-width='2'/%3E%3Ccircle cx='50' cy='22' r='4' fill='%23fca868'/%3E%3Cpath d='M42 62 C42 56 58 56 58 62 C58 66 54 68 50 72 C46 68 42 66 42 62 Z' fill='%23191614'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23191614' stroke='%23d97736' stroke-width='4'/%3E%3Cpath d='M50 20 L50 32 M35 48 C35 34 65 34 65 48 C65 58 75 66 75 76 C75 82 70 85 50 85 C30 85 25 82 25 76 C25 66 35 58 35 48 Z' fill='%23d97736' stroke='%23fca868' stroke-width='2'/%3E%3Ccircle cx='50' cy='22' r='4' fill='%23fca868'/%3E%3Cpath d='M42 62 C42 56 58 56 58 62 C58 66 54 68 50 72 C46 68 42 66 42 62 Z' fill='%23191614'/%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root {
+      --bg: #141312;
+      --card-bg: #1e1b18;
+      --accent: #d97736;
+      --accent-hover: #b85d24;
+      --border: #362e28;
+      --text: #ede5dd;
+      --text-muted: #a89c91;
+      --danger: #e05252;
+      --danger-hover: #c43c3c;
+      --success: #3ea364;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 16px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      padding: 20px 0 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    h1 { color: var(--accent); font-size: 26px; }
+    p.subtitle { color: var(--text-muted); font-size: 14px; margin-top: 4px; }
+    
+    .top-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    h2, h3 { color: var(--accent); margin-bottom: 12px; }
+    h4 { color: #f0a36b; margin-top: 18px; margin-bottom: 8px; font-size: 16px; }
+    ul, ol { padding-left: 20px; margin-bottom: 12px; }
+    li { margin-bottom: 6px; }
+
+    .tag {
+      display: inline-block;
+      background: #2b231d;
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-right: 6px;
+      font-weight: 600;
+    }
+
+    .search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .search-bar input {
+      flex: 1;
+    }
+
+    .calc-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 600px) { .calc-row { grid-template-columns: 1fr; } }
+    label { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 4px; }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      background: #141312;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 15px;
+      font-family: inherit;
+    }
+    input:focus, textarea:focus, select:focus { border-color: var(--accent); outline: none; }
+    
+    .btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn-secondary {
+      background: #2b2520;
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: #38302a; border-color: var(--accent); }
+    .btn-danger { background: var(--danger); }
+    .btn-danger:hover { background: var(--danger-hover); }
+    .btn-sm {
+      padding: 4px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+    }
+
+    .calc-result {
+      background: #26211c;
+      padding: 14px;
+      border-radius: 6px;
+      margin-top: 12px;
+      border-left: 4px solid var(--accent);
+    }
+    .calc-chips {
+      display: flex;
+      gap: 6px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .calc-chip {
+      background: #231e1a;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 3px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .calc-chip:hover, .calc-chip.active {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .heads-highlight {
+      background: rgba(217, 119, 54, 0.12);
+      border: 1px solid var(--accent);
+      padding: 12px;
+      border-radius: 6px;
+      margin: 12px 0;
+    }
+    .heads-big {
+      font-size: 26px;
+      font-weight: 700;
+      color: #fca868;
+    }
+
+    .recipe-item {
+      border: 1px solid var(--border);
+      background: #191715;
+      padding: 16px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+    .recipe-item:hover {
+      border-color: #52443a;
+    }
+    .recipe-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      gap: 12px;
+    }
+    .recipe-title-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      flex: 1;
+    }
+    .recipe-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .recipe-body { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
+    .recipe-body.open { display: block; }
+    
+    .note-box {
+      background: #24201c;
+      border-left: 3px solid var(--accent);
+      padding: 10px 14px;
+      margin: 10px 0 14px;
+      font-size: 14px;
+      border-radius: 0 4px 4px 0;
+    }
+    .note-box b { color: #f0a36b; }
+
+    /* Модальное окно */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+      backdrop-filter: blur(2px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--card-bg);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 820px;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--border);
+      background: #191614;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .close-btn:hover { color: #fff; }
+
+    .editor-toolbar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      background: #141312;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .editor-toolbar button {
+      background: #26211c;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .editor-toolbar button:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .badge-user {
+      background: #392b47;
+      color: #c99ff5;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    /* Стили для термоэтикеток 60х40 */
+    .label-preview-wrapper {
+      background: #0d0c0b;
+      padding: 24px;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px dashed var(--border);
+      margin: 16px 0;
+    }
+    .label-sticker {
+      width: 60mm;
+      min-width: 60mm;
+      max-width: 60mm;
+      height: 40mm;
+      min-height: 40mm;
+      max-height: 40mm;
+      background: #ffffff;
+      color: #000000;
+      box-sizing: border-box;
+      padding: 1.2mm 1.5mm;
+      border-radius: 2mm;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      user-select: none;
+    }
+    .label-border {
+      border: 1.2px solid #000;
+      border-radius: 1.5mm;
+      padding: 1mm 1.5mm;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-sizing: border-box;
+    }
+    .lbl-head-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 0.8px solid #000;
+      padding-bottom: 0.6mm;
+      line-height: 1;
+    }
+    .lbl-brand {
+      font-size: 6.8pt;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .lbl-abv-vol {
+      font-size: 7.2pt;
+      font-weight: 800;
+    }
+    .lbl-title {
+      font-size: 10.5pt;
+      font-weight: 900;
+      line-height: 1.1;
+      text-align: center;
+      margin: 0.6mm 0;
+      text-transform: uppercase;
+      word-break: break-word;
+    }
+    .lbl-wood-row {
+      font-size: 6.8pt;
+      background: #000;
+      color: #fff;
+      padding: 0.4mm 1mm;
+      border-radius: 0.6mm;
+      text-align: center;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
+    }
+    .lbl-dates-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1mm;
+      font-size: 6.8pt;
+      line-height: 1.2;
+      margin: 0.6mm 0;
+      background: #f4f4f4;
+      padding: 0.8mm 1mm;
+      border-radius: 0.8mm;
+      border: 0.5px solid #ccc;
+    }
+    .lbl-dates-grid strong {
+      font-size: 7.2pt;
+      color: #000;
+    }
+    .lbl-aeration-row {
+      border-top: 0.8px dashed #000;
+      padding-top: 0.5mm;
+      font-size: 6.2pt;
+      line-height: 1.1;
+    }
+    .lbl-aeration-boxes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 0.6mm 2mm;
+      margin-top: 0.5mm;
+      font-size: 6.2pt;
+      font-weight: 700;
+    }
+    .lbl-box-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6mm;
+      white-space: nowrap;
+    }
+    .lbl-sq {
+      display: inline-block;
+      width: 2.2mm;
+      height: 2.2mm;
+      border: 0.8px solid #000;
+      border-radius: 0.3mm;
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+    .lbl-note-foot {
+      font-size: 5.6pt;
+      text-align: center;
+      color: #333;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 0.3mm;
+    }
+
+    /* Стили для печати на термопринтере 60х40 */
+    @media print {
+      @page {
+        size: 60mm 40mm !important;
+        margin: 0 !important;
+      }
+      html, body {
+        width: 60mm !important;
+        height: 40mm !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      body * {
+        visibility: hidden !important;
+      }
+      #print-thermal-sticker, #print-thermal-sticker * {
+        visibility: visible !important;
+      }
+      #print-thermal-sticker {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 60mm !important;
+        height: 40mm !important;
+        margin: 0 !important;
+        padding: 1.2mm 1.5mm !important;
+        box-sizing: border-box !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        display: flex !important;
+        page-break-after: avoid !important;
+        page-break-inside: avoid !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🥃 Gorevoy Craft Lab</h1>
+    <p class="subtitle">Технологические карты, калькуляторы и термоэтикетки • Владимир Горевой</p>
+    <div class="top-actions">
+      <button class="btn btn-secondary btn-sm" onclick="exportDataHtml()" title="Скачать готовый HTML файл со всеми вашими изменениями">📥 Скачать обновленный HTML</button>
+      <button class="btn btn-secondary btn-sm" onclick="exportDataJson()" title="Сохранить резервную копию рецептов в JSON">💾 Экспорт JSON</button>
+      <button class="btn btn-secondary btn-sm" onclick="triggerJsonImport()" title="Загрузить рецепты из JSON">📂 Импорт JSON</button>
+      <button class="btn btn-secondary btn-sm" onclick="resetToDefaults()" title="Восстановить заводские рецепты">🔄 Сброс</button>
+      <input type="file" id="json-file-input" accept=".json" style="display:none;" onchange="importDataJson(event)">
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" onclick="switchTab('recipes', this)">📖 Рецепты (<span id="count-recipes">0</span>)</button>
+    <button class="tab-btn" onclick="switchTab('calcs', this)">🧮 Калькуляторы</button>
+    <button class="tab-btn" onclick="switchTab('labels', this)">🏷️ Этикетки 60×40</button>
+    <button class="tab-btn" onclick="switchTab('tech', this)">⚙️ Технические моменты (<span id="count-tech">0</span>)</button>
+    <button class="tab-btn" onclick="openNewRecipeModal()">➕ Добавить свой</button>
+  </nav>
+
+  <!-- ВКЛАДКА 1: РЕЦЕПТЫ -->
+  <section id="tab-recipes">
+    <div class="search-bar">
+      <input type="text" id="recipe-search" placeholder="🔍 Быстрый поиск по рецептам, сырью или ингредиентам..." oninput="filterRecipes()">
+      <button class="btn btn-secondary" onclick="expandAll(true)">Развернуть всё</button>
+      <button class="btn btn-secondary" onclick="expandAll(false)">Свернуть всё</button>
+    </div>
+
+    <!-- Контейнер всех рецептов (встроенных и созданных) -->
+    <div id="recipes-container"></div>
+  </section>
+
+  <!-- ВКЛАДКА 2: КАЛЬКУЛЯТОРЫ -->
+  <section id="tab-calcs" style="display: none;">
+    
+    <!-- Главный калькулятор 2-й перегонки -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+        <h3 style="margin:0;">🔥 Калькулятор 2-й перегонки: разбавление сырца (до 25–28°) и расчет голов</h3>
+        <span class="tag" style="background:#38271e; color:#f0a36b;">Главный расчет</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">
+        Рассчитывает объем воды для разбавления спирта-сырца перед заливкой в куб, точный объем голов для покапельного отбора и прогноз питьевого тела.
+      </p>
+
+      <!-- Переключатель режима -->
+      <div style="display:flex; gap:16px; margin-bottom:16px; background:#161412; padding:10px 14px; border-radius:6px; border:1px solid var(--border); flex-wrap:wrap;">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
+          <input type="radio" name="calc-mode" value="dilute" checked onchange="toggleCalcMode('dilute')" style="width:auto; cursor:pointer;">
+          <span>💧 Разбавляю сырец водой перед перегонкой (расчет воды + голов)</span>
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
+          <input type="radio" name="calc-mode" value="ready" onchange="toggleCalcMode('ready')" style="width:auto; cursor:pointer;">
+          <span>✅ Сырец уже разбавлен в кубе до 25–28° (только расчет голов)</span>
+        </label>
+      </div>
+
+      <!-- Режим 1: Неразбавленный сырец -->
+      <div id="row-undiluted">
+        <div class="calc-row">
+          <div>
+            <label>Объем полученного сырца (л):</label>
+            <input type="number" id="calc-v1" value="6" step="0.1" oninput="runSecondDistillCalc()">
+          </div>
+          <div>
+            <label>Крепость сырца (%):</label>
+            <input type="number" id="calc-s1" value="35" step="0.5" oninput="runSecondDistillCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setRawStr(28)">28%</span>
+              <span class="calc-chip" onclick="setRawStr(30)">30%</span>
+              <span class="calc-chip active" id="chip-raw-35" onclick="setRawStr(35)">35%</span>
+              <span class="calc-chip" onclick="setRawStr(40)">40%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="calc-row" style="margin-top:8px;">
+          <div>
+            <label>Желаемая крепость в кубе (%):</label>
+            <input type="number" id="calc-target-pot" value="25" step="0.5" oninput="runSecondDistillCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip active" id="chip-pot-25" onclick="setPotTarget(25)">25% (рекомендуется)</span>
+              <span class="calc-chip" id="chip-pot-28" onclick="setPotTarget(28)">28%</span>
+              <span class="calc-chip" id="chip-pot-20" onclick="setPotTarget(20)">20%</span>
+            </div>
+          </div>
+          <div>
+            <label>Тип напитка (быстрый выбор % голов):</label>
+            <div class="calc-chips" style="margin-top:4px;">
+              <span class="calc-chip active" id="chip-grain" onclick="setHeadsPct(6, 'grain')">🌾 Зерно / Виски (6%)</span>
+              <span class="calc-chip" id="chip-fruit" onclick="setHeadsPct(6, 'fruit')">🍇 Фрукты (6%)</span>
+              <span class="calc-chip" id="chip-sugar" onclick="setHeadsPct(9, 'sugar')">🍬 Сахар (9%)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Режим 2: Уже разбавленный сырец -->
+      <div id="row-ready" style="display:none;">
+        <div class="calc-row">
+          <div>
+            <label>Общий объем залитого в куб (л):</label>
+            <input type="number" id="calc-v-ready" value="8.4" step="0.1" oninput="runSecondDistillCalc()">
+          </div>
+          <div>
+            <label>Крепость залитого сырца в кубе (%):</label>
+            <input type="number" id="calc-s-ready" value="25" step="0.5" oninput="runSecondDistillCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setReadyStr(25)">25%</span>
+              <span class="calc-chip" onclick="setReadyStr(28)">28%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Настройки отбора -->
+      <div class="calc-row" style="margin-top:10px;">
+        <div>
+          <label>Процент голов (% от абсолютного спирта):</label>
+          <input type="number" id="calc-heads-val" value="6" step="0.5" oninput="runSecondDistillCalc()">
+        </div>
+        <div>
+          <label>Ожидаемая крепость тела в струе (%):</label>
+          <input type="number" id="calc-body-str" value="82" step="1" oninput="runSecondDistillCalc()">
+        </div>
+      </div>
+
+      <button class="btn" style="margin-top:10px;" onclick="runSecondDistillCalc()">Рассчитать вторую перегонку</button>
+
+      <!-- Блок результатов -->
+      <div id="res-second-distill" class="calc-result" style="display: block; margin-top:14px;"></div>
+    </div>
+
+    <!-- Калькулятор 2: Финальное разведение дистиллята водой -->
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <h3 style="margin:0;">💧 2. Разбавление готового дистиллята водой (до 40–45%)</h3>
+        <span class="tag" style="background:#1f3323; color:#72d192;">Учет плотности и сжатия смеси</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
+        Используется после дробной перегонки для доведения «тела» до питьевой крепости. Разведение по весу на кухонных весах — самый точный способ: не требует мерной мензурки и автоматически учитывает плотность спирта и физическую контракцию (сжатие объемов).
+      </p>
+
+      <!-- Переключатель режима: по весу или по объему -->
+      <div style="display:flex; gap:16px; margin-bottom:16px; background:#161412; padding:10px 14px; border-radius:6px; border:1px solid var(--border); flex-wrap:wrap;">
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
+          <input type="radio" name="dil-mode" value="weight" checked onchange="toggleDilutionMode('weight')" style="width:auto; cursor:pointer;">
+          <span>⚖️ <b>По весу на весах (в граммах)</b> — без мерной посуды</span>
+        </label>
+        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
+          <input type="radio" name="dil-mode" value="volume" onchange="toggleDilutionMode('volume')" style="width:auto; cursor:pointer;">
+          <span>🧪 <b>По объему (в литрах)</b> — замер мерным цилиндром</span>
+        </label>
+      </div>
+
+      <!-- Режим ВЕСА (по умолчанию) -->
+      <div id="row-dil-weight">
+        <div class="calc-row">
+          <div>
+            <label>Чистый вес дистиллята на весах (г):</label>
+            <input type="number" id="calc-dil-w" value="1360" step="10" oninput="runDilutionCalc()">
+            <span style="font-size:11px; color:var(--text-muted);">Без учета веса банки (тара сброшена на 0)</span>
+          </div>
+          <div>
+            <label>Текущая крепость дистиллята (% об.):</label>
+            <input type="number" id="calc-dil-s1" value="82" step="0.5" oninput="onDilS1Input()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setDilStr1(70)">70%</span>
+              <span class="calc-chip active" id="chip-dil-s1-82" onclick="setDilStr1(82)">82%</span>
+              <span class="calc-chip" onclick="setDilStr1(85)">85%</span>
+              <span class="calc-chip" onclick="setDilStr1(92)">92%</span>
+              <span class="calc-chip" onclick="setDilStr1(96)">96%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Режим ОБЪЕМА -->
+      <div id="row-dil-volume" style="display:none;">
+        <div class="calc-row">
+          <div>
+            <label>Объем дистиллята (л):</label>
+            <input type="number" id="calc-dil-v" value="1.6" step="0.1" oninput="runDilutionCalc()">
+            <span style="font-size:11px; color:var(--text-muted);">По шкале на мерной посуде или банке</span>
+          </div>
+          <div>
+            <label>Текущая крепость дистиллята (% об.):</label>
+            <input type="number" id="calc-dil-s1-v" value="82" step="0.5" oninput="onDilS1VolInput()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setDilStr1(70)">70%</span>
+              <span class="calc-chip" onclick="setDilStr1(82)">82%</span>
+              <span class="calc-chip" onclick="setDilStr1(85)">85%</span>
+              <span class="calc-chip" onclick="setDilStr1(92)">92%</span>
+              <span class="calc-chip" onclick="setDilStr1(96)">96%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Желаемая питьевая крепость -->
+      <div class="calc-row" style="margin-top:10px;">
+        <div>
+          <label>Желаемая питьевая крепость (% об.):</label>
+          <input type="number" id="calc-dil-s2" value="43" step="0.5" oninput="runDilutionCalc()">
+          <div class="calc-chips">
+            <span class="calc-chip" id="chip-drink-40" onclick="setDrinkTarget(40)">40% (Водка / Настойка)</span>
+            <span class="calc-chip active" id="chip-drink-43" onclick="setDrinkTarget(43)">43% (Виски / Бренди / Ром)</span>
+            <span class="calc-chip" id="chip-drink-45" onclick="setDrinkTarget(45)">45% (Джин)</span>
+            <span class="calc-chip" id="chip-drink-47" onclick="setDrinkTarget(47)">47% (London Dry)</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn" style="margin-top:10px;" onclick="runDilutionCalc()">Рассчитать воду и веса</button>
+
+      <!-- Блок результатов разбавления -->
+      <div id="res-dilution" class="calc-result" style="display: block; margin-top:14px;"></div>
+    </div>
+
+    <!-- Калькулятор 3: Экспресс-конвертер Вес <-> Объем -->
+    <div class="card" style="margin-top:16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <h3 style="margin:0;">⚖️ 3. Экспресс-конвертер: перевод Веса в Объем (без мерной тары)</h3>
+        <span class="tag" style="background:#26231c; color:#f0a36b;">Таблица ГОСТ 3639-79</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">
+        Спирт заметно легче воды! 1 литр чистого спирта 96.6% весит всего <b>794 г</b>, а 1 литр дистиллята 82% — <b>851 г</b>. Если нет мерного цилиндра, просто взвесьте жидкость на кухонных весах и укажите крепость.
+      </p>
+
+      <div class="calc-row">
+        <div>
+          <label>Что переводим:</label>
+          <select id="conv-dir" onchange="runConverterCalc()" style="width:100%; padding:8px; background:#1b1917; border:1px solid var(--border); color:var(--text); border-radius:4px;">
+            <option value="w2v">⚖️ Из Веса на весах (г) → в Объем (л / мл)</option>
+            <option value="v2w">🧪 Из Объема (л) → в Вес на весах (г)</option>
+          </select>
+        </div>
+        <div>
+          <label id="lbl-conv-val">Вес жидкости на весах (г):</label>
+          <input type="number" id="conv-val" value="1000" step="50" oninput="runConverterCalc()">
+        </div>
+        <div>
+          <label>Крепость жидкости (% об.):</label>
+          <input type="number" id="conv-abv" value="82" step="0.5" oninput="runConverterCalc()">
+          <div class="calc-chips">
+            <span class="calc-chip" onclick="setConvAbv(25)">25% (сырец)</span>
+            <span class="calc-chip" onclick="setConvAbv(40)">40% (водка)</span>
+            <span class="calc-chip" onclick="setConvAbv(43)">43% (виски)</span>
+            <span class="calc-chip active" id="chip-conv-82" onclick="setConvAbv(82)">82% (тело)</span>
+            <span class="calc-chip" onclick="setConvAbv(90)">90% (головы)</span>
+            <span class="calc-chip" onclick="setConvAbv(96.6)">96.6% (спирт)</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="res-converter" class="calc-result" style="display: block; margin-top:12px;"></div>
+    </div>
+  </section>
+
+  <!-- ВКЛАДКА: ТЕРМОЭТИКЕТКИ 60х40 -->
+  <section id="tab-labels" style="display: none;">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+        <h3 style="margin:0;">🏷️ Генератор термоэтикеток на банку (формат 60×40 мм)</h3>
+        <span class="tag" style="background:#233827; color:#72d192;">Печать 60×40</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">
+        Специальный монохромный шаблон для термопринтеров (Xprinter, Niimbot, TSC, HPRT и др.) на наклейки <b>60×40 мм</b> (или 58×40 мм). Фиксирует дату заливки, дату готовности (снятия с дуба) и удобный чек-лист для отметок аэрации прямо на банке.
+      </p>
+
+      <!-- Быстрые шаблоны напитков -->
+      <div style="margin-bottom:14px;">
+        <label>Быстрый выбор напитка под выдержку:</label>
+        <div class="calc-chips">
+          <span class="calc-chip active" id="chip-lbl-whisky" onclick="loadLabelPreset('whisky')">🌾 Виски (2 мес)</span>
+          <span class="calc-chip" id="chip-lbl-bourbon" onclick="loadLabelPreset('bourbon')">🌽 Бурбон (1.5 мес)</span>
+          <span class="calc-chip" id="chip-lbl-grape" onclick="loadLabelPreset('grape')">🍇 Коньяк (1.5 мес)</span>
+          <span class="calc-chip" id="chip-lbl-rum" onclick="loadLabelPreset('rum')">🏴‍☠️ Ром (2 мес)</span>
+          <span class="calc-chip" id="chip-lbl-gin" onclick="loadLabelPreset('gin')">🍸 Джин сухой (2 нед)</span>
+          <span class="calc-chip" id="chip-lbl-gin_aged" onclick="loadLabelPreset('gin_aged')">🍸 Бочковой джин (21 дн)</span>
+          <span class="calc-chip" id="chip-lbl-becher" onclick="loadLabelPreset('becher')">🌿 Бехеровка (10 дн)</span>
+        </div>
+      </div>
+
+      <div class="calc-row">
+        <div>
+          <label>Название напитка:</label>
+          <input type="text" id="lbl-title-in" value="Односолодовый виски" oninput="updateLabelSticker()">
+        </div>
+        <div>
+          <label>Крепость и тара:</label>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
+            <input type="number" id="lbl-str-in" value="43" step="0.5" placeholder="Крепость %" oninput="updateLabelSticker()">
+            <input type="text" id="lbl-vol-in" value="3.0 л" placeholder="Объем тары" oninput="updateLabelSticker()">
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-row" style="margin-top:8px;">
+        <div>
+          <label>Древесина / дуб / добавка:</label>
+          <input type="text" id="lbl-wood-in" value="Кавказский дуб, ср. обжиг (15 г)" oninput="updateLabelSticker()">
+          <div class="calc-chips">
+            <span class="calc-chip" onclick="setLabelWood('Кавказский дуб, ср. обжиг (15 г)')">Ср. обжиг 15г</span>
+            <span class="calc-chip" onclick="setLabelWood('Хересные кубики дуба (15 г)')">Хересные кубики</span>
+            <span class="calc-chip" onclick="setLabelWood('Сильный обжиг (15 г) + колер')">Сильный обжиг</span>
+            <span class="calc-chip" onclick="setLabelWood('Мелкая щепа (8 г)')">Щепа 8г</span>
+          </div>
+        </div>
+        <div>
+          <label>Дата заливки (поставил на дуб):</label>
+          <input type="date" id="lbl-start-in" onchange="onStartDateChange()">
+        </div>
+      </div>
+
+      <div class="calc-row" style="margin-top:8px;">
+        <div>
+          <label>Срок выдержки на дубе:</label>
+          <select id="lbl-duration-sel" onchange="onDurationChange()">
+            <option value="21">3 недели (для мелкой щепы)</option>
+            <option value="30">1 месяц</option>
+            <option value="45">1.5 месяца</option>
+            <option value="60" selected>2 месяца (золотой стандарт кубиков)</option>
+            <option value="90">3 месяца (глубокая выдержка)</option>
+            <option value="custom">Указать дату вручную</option>
+          </select>
+        </div>
+        <div>
+          <label>Дата снятия с дуба (расчетная):</label>
+          <input type="date" id="lbl-end-in" onchange="updateLabelSticker()">
+        </div>
+      </div>
+
+      <div class="calc-row" style="margin-top:8px; margin-bottom:12px;">
+        <div>
+          <label>Интервал аэрации (перелива):</label>
+          <select id="lbl-interval-sel" onchange="updateLabelSticker()">
+            <option value="7" selected>Каждые 7 дней (раз в неделю)</option>
+            <option value="10">Каждые 10 дней</option>
+            <option value="14">Каждые 14 дней (раз в 2 недели)</option>
+          </select>
+        </div>
+        <div>
+          <label>Дополнительная заметка винокура:</label>
+          <input type="text" id="lbl-note-in" value="Перелив струей 1 мин • После: колер + отдых" oninput="updateLabelSticker()">
+        </div>
+      </div>
+
+      <!-- Живой предпросмотр этикетки (Точно 60x40 мм) -->
+      <label style="font-weight:600; color:#f0a36b; display:block; margin-top:14px;">Предпросмотр термоэтикетки (масштаб 1:1, размер 60 × 40 мм):</label>
+      <div class="label-preview-wrapper">
+        <div id="print-thermal-sticker" class="label-sticker">
+          <div class="label-border">
+            
+            <!-- Шапка: Бренд + Крепость / Тара -->
+            <div class="lbl-head-row">
+              <span class="lbl-brand">🥃 GOREVOY CRAFT LAB</span>
+              <span class="lbl-abv-vol" id="lbl-disp-abv-vol">43% об. • 3.0 л</span>
+            </div>
+
+            <!-- Название напитка -->
+            <div class="lbl-title" id="lbl-disp-title">ОДНОСОЛОДОВЫЙ ВИСКИ</div>
+
+            <!-- Древесина / Дуб -->
+            <div class="lbl-wood-row" id="lbl-disp-wood">Дуб: Кавказский, ср. обжиг (15 г)</div>
+
+            <!-- Даты: Заливка и Снятие -->
+            <div class="lbl-dates-grid">
+              <div>📅 Поставил: <strong id="lbl-disp-start">08.11.2026</strong></div>
+              <div>⏳ Снять: <strong id="lbl-disp-end">08.01.2027</strong></div>
+            </div>
+
+            <!-- Чек-лист аэрации с датами и галочками -->
+            <div class="lbl-aeration-row">
+              <div style="display:flex; justify-content:space-between; font-weight:700;">
+                <span>💨 Аэрация (перелив):</span>
+                <span id="lbl-disp-weeks-info">раз в неделю</span>
+              </div>
+              <div class="lbl-aeration-boxes" id="lbl-disp-aeration-boxes">
+                <!-- Даты и чекбоксы генерируются автоматически -->
+              </div>
+            </div>
+
+            <!-- Подвал / Заметка -->
+            <div class="lbl-note-foot" id="lbl-disp-note">Перелив струей 1 мин • После: колер + отдых</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Кнопка печати -->
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+        <button class="btn" onclick="printThermalLabel()" style="font-size:15px; padding:10px 20px;">🖨️ Печать этикетки (60×40 мм)</button>
+        <button class="btn btn-secondary" onclick="copyLabelText()">📋 Скопировать текст</button>
+      </div>
+      <p style="font-size:12px; color:var(--text-muted); margin-top:8px;">
+        💡 <b>Подсказка для печати:</b> в окне предварительного просмотра браузера выберите ваш термопринтер (или «Сохранить как PDF»), размер бумаги <b>60×40 мм</b> (или Custom 60x40) и поля <b>«Нет» (None)</b>.
+      </p>
+    </div>
+  </section>
+  <section id="tab-tech" style="display: none;">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+        <h2 style="margin:0;">⚙️ Справочник винокура: Технические регламенты</h2>
+        <button class="btn btn-sm" onclick="openNewTechModal()">➕ Добавить регламент</button>
+      </div>
+      <p style="color: var(--text-muted); margin-bottom: 16px;">Важные технологические процессы, влияющие на качество, чистоту и органолептику напитков. Каждый регламент можно отредактировать под свой аппарат.</p>
+
+      <div id="tech-container"></div>
+    </div>
+  </section>
+
+  <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ РЕЦЕПТА / СТАТЬИ -->
+  <div class="modal-overlay" id="edit-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-title" style="margin: 0;">Редактировать запись</h3>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="edit-item-id">
+        <input type="hidden" id="edit-item-type"> <!-- 'recipe' | 'tech' -->
+        
+        <div style="margin-bottom: 12px;">
+          <label>Название:</label>
+          <input type="text" id="edit-item-title" placeholder="Например: Яблочный кальвадос">
+        </div>
+        <div style="margin-bottom: 12px;">
+          <label>Категория / Сырье:</label>
+          <input type="text" id="edit-item-cat" placeholder="Например: Яблоки, Зерно, Дистилляция">
+        </div>
+
+        <div style="margin-bottom: 6px;">
+          <label>Содержимое и этапы (поддерживается HTML-разметка):</label>
+        </div>
+        
+        <!-- Панель быстрых тегов -->
+        <div class="editor-toolbar">
+          <button type="button" onclick="insertTag('<h4>', '</h4>')">Заголовок этапа</button>
+          <button type="button" onclick="insertTag('<b>', '</b>')">Жирный</button>
+          <button type="button" onclick="insertList()">Список пунктов</button>
+          <button type="button" onclick="insertNoteBox()">Блок-памятка 💡</button>
+          <button type="button" onclick="insertTag('<p>', '</p>')">Параграф</button>
+        </div>
+
+        <textarea id="edit-item-content" rows="14" placeholder="Опишите рецепт, пропорции, перегон и доводку..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+        <button class="btn" onclick="saveItemFromModal()">💾 Сохранить изменения</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* =====================================================================
+       1. БАЗОВЫЕ ДАННЫЕ (По умолчанию)
+       ===================================================================== */
+    const DEFAULT_RECIPES = [
+      {
+        id: "sugar-core",
+        title: "Сахарная / Декстрозная брага (Тара 30 л, гидромодуль 1:4)",
+        category: "Базовая основа / Спирт",
+        content: `<h4>1. Сырье и пропорции (емкость 30 л, рабочий объем 24–25 л)</h4>
+<ul>
+  <li><b>Основа (на выбор):</b>
+    <ul>
+      <li><b>Сахар:</b> <b>6 кг</b> (классический доступный вариант).</li>
+      <li><b>Декстроза (глюкоза):</b> <b>6.5–7 кг</b> (дает более мягкий, чистый дистиллят без резкого дрожжевого и сивушного запаха — идеальная основа под джин).</li>
+    </ul>
+  </li>
+  <li><b>Вода:</b> <b>24 л</b> чистой питьевой или отстоянной воды (гидромодуль 1:4).</li>
+  <li><b>Дрожжи:</b> спиртовые турбо-дрожжи (1 пачка на 6 кг сахара) или дрожжи для чистых водок.</li>
+</ul>
+
+<h4>2. Замес и сбраживание</h4>
+<ul>
+  <li><b>Растворение:</b> растворите сахар или декстрозу в теплой воде (30–35 °C) до полного исчезновения кристаллов на дне. Доведите общий объем до 24–25 л (оставив 5 л запаса под пену).</li>
+  <li><b>Температура старта:</b> остудите сироп до <b>24–26 °C</b> перед внесением дрожжей (температура выше 32 °C погубит дрожжи).</li>
+  <li><b>Внесение дрожжей:</b> рассыпьте турбо-дрожжи по поверхности сусла.</li>
+  <li><b>Брожение:</b> емкость закрыть крышкой с гидрозатвором (или неплотно прикрыть). Оптимальная температура в комнате: <b>22–26 °C</b>. Срок брожения на турбо-дрожжах — <b>3–5 дней</b> (на декстрозе бродит быстрее и спокойнее).</li>
+  <li><b>Признаки готовности:</b> гидрозатвор замолчал, поверхность успокоилась, сладость полностью ушла (вкус сухой, горьковатый), ареометр сахаромер АС-3 показывает <b>0%</b>.</li>
+  <li><b>Осветление:</b> слейте брагу с дрожжевого осадка через сифон перед перегонкой.</li>
+</ul>
+
+<h4>3. Первая перегонка (получение спирта-сырца)</h4>
+<ul>
+  <li><b>Сборка:</b> прямой перегон (дефлегматор отключен, пар идет прямо в холодильник). Для сахарной браги можно использовать обычную пустую нержавеющую царгу (медь ставить необязательно, но допустимо).</li>
+  <li><b>Процесс:</b> перегоняйте на максимальной мощности без разделения на фракции.</li>
+  <li><b>Отбор:</b> отбирайте «досуха» до крепости в струе <b>3–5%</b> (98–99 °C в кубе).</li>
+  <li><b>Результат:</b> спирт-сырец крепостью ~35–40%.</li>
+</ul>
+
+<h4>4. Вторая (дробная) перегонка на нейтральный спирт</h4>
+<ul>
+  <li><b>Разбавление:</b> обязательно разбавьте сырец чистой водой до <b>20–25%</b> перед заливкой в куб.</li>
+  <li><b>Сборка:</b> царга с насадкой (РПН или СПН для максимальной очистки), дефлегматор с отдельной подачей воды через игольчатый кран, холодильник.</li>
+  <li><b>Работа на себя:</b> 15–20 минут после закипания при полностью открытом дефлегматоре.</li>
+  <li><b>Головы:</b> покапельно (1–2 капли в секунду) отобрать <b>8–10% от абсолютного спирта (АС)</b>. Ориентир — полное исчезновение технического ацетонового запаха.</li>
+  <li><b>Тело:</b> тонкой струйкой, удерживая спиртуозность <b>85–92%</b> до температуры в кубе 91–92 °C.</li>
+  <li><b>Итог:</b> чистая спиртовая основа высокой степени очистки — превосходно подходит как самостоятельная мягкая водка, основа под настойки или сырье для джина.</li>
+</ul>`
+      },
+      {
+        id: "grape-core",
+        title: "Виноградный дистиллят (Емкость 30 л, сусло 24 л)",
+        category: "Виноград / Коньяк",
+        content: `<h4>Этап 1. Подготовка и постановка браги</h4>
+<ul>
+  <li><b>Тара и рабочий объем:</b> бродильная емкость 30 л, рабочий объем сусла — <b>24 л</b> (20% свободного объема остается под пенную шапку).</li>
+  <li><b>Концентрат:</b> сок белого винограда Djemka — <b>7.0–7.2 кг</b> (около 5.0–5.2 л).</li>
+  <li><b>Вода:</b> 19 л водопроводной воды (отстоять 12–24 часа в открытой таре для выхода хлора). Природные кислоты сока сами выставят pH 3.5–3.8, закислять не нужно.</li>
+  <li><b>Замес:</b> растворить концентрат в 6–8 л теплой воды (40–50 °C), затем долить прохладной водой до 24 л. Проверить ареометром АС-3: целевая плотность — <b>18–20 °Brix</b> (при 20 °C). Декстрозу не добавлять.</li>
+  <li><b>Дрожжи:</b> остудить затор до 22–24 °C, рассыпать пачку турбо-дрожжей Leyka Fruit по поверхности.</li>
+  <li><b>Температура брожения:</b> 19–22 °C (для чистоты эфирного профиля).</li>
+  <li><b>Контроль пены:</b> держите наготове пеногаситель (софэксил). Если пеногасителя нет под рукой, раскрошите по поверхности половину обычного сухого печенья (например, «Юбилейного») — содержащиеся в нем жиры мгновенно гасят пену.</li>
+</ul>
+
+<h4>Этап 2. Первая перегонка (спирт-сырец)</h4>
+<ul>
+  <li><b>Сборка аппарата (простой прямой перегон):</b> дефлегматор отключен, пар напрямую идет в холодильник. Устанавливается короткая царга (30–50 см) с 1–2 медными пыжами РПН в самом верху (скручены свободно, легко продуваются ртом). Больше двух пыжей ставить нельзя, чтобы спирт не укреплялся и не терял аромат сырья.</li>
+  <li><b>Проведение:</b> брагу слить с осадка через сифон. Гнать на максимальной мощности без выброса пены.</li>
+  <li><b>Отбор:</b> головы не отбирать (или слить 30–50 мл). Гнать «досуха» до 0–3% в струе (98–99 °C в кубе).</li>
+  <li><b>Очистка меди:</b> после перегона прокипятить пыжи 10–15 минут в лимонной кислоте (1 ст. л. на 1 л воды).</li>
+</ul>
+
+<h4>Этап 3. Вторая перегонка (дробная с дефлегматором)</h4>
+<ul>
+  <li><b>Сырец:</b> разбавить водой до 20–25%. В царге остаются только 1–2 медных пыжа (насадку СПН не использовать, чтобы не ободрать вкус).</li>
+</ul>
+
+<div class="note-box">
+  <b>Зачем разбавлять сырец до 20–25%:</b>
+  <ul style="margin-top:6px; margin-bottom:0; padding-left:18px;">
+    <li><b>Четкое разделение фракций:</b> при спиртуозности 20–25% летучесть эфиров и альдегидов (голов) максимальна — они выходят концентрированно в начале погона без размазывания по телу, а тяжелые сивушные спирты (изоамилол) вода дольше удерживает в кубе.</li>
+    <li><b>Сохранение виноградной ароматики:</b> кипение при 88–90 °C в водно-спиртовой среде позволяет пару деликатно переносить тонкие фруктовые эфиры без риска их подгорания на горячем металле куба.</li>
+    <li><b>Пожарная безопасность:</b> раствор крепостью до 25% не воспламеняется от случайной искры или контакта с нагревателем, а его пары менее взрывоопасны при нештатной разгерметизации.</li>
+  </ul>
+</div>
+
+<div class="note-box">
+  <b>Подача воды и регулировка дефлегматора:</b>
+  <p style="margin-top:4px;"><b>Важно:</b> вода на холодильник и дефлегматор подается разными раздельными потоками через тройники. На холодильник идет постоянный стабильный поток, а на дефлегматор — через игольчатый кран тонкой настройки.</p>
+  <p style="margin-top:6px;"><b>Главный закон колонны — инерция:</b> после каждого минимального поворота крана ждите <b>45–60 секунд</b>, пока режим стабилизируется.</p>
+</div>
+
+<ul>
+  <li><b>1. Работа «на себя» (15–20 мин):</b> после закипания куба полностью откройте кран дефлегматора. Пар должен целиком возвращаться обратно флегмой. В трубку отбора не должно падать ни капли, ТСА сухая. За это время головы концентрируются вверху.</li>
+  <li><b>2. Отбор голов (покапельно):</b> аккуратно прикройте игольчатый кран дефлегматора (буквально на 1/8–1/4 оборота), выдерживая паузу на инерцию. Добейтесь скорости <b>1–2 капли в секунду</b>. Отобрать 5–8% от абсолютного спирта до полного исчезновения запаха ацетона с ладони.</li>
+  <li><b>3. Отбор тела (струйка):</b> смените емкость. Еще немного прикройте воду в дефлегматор, чтобы отбор пошел тонкой ровной струйкой.
+    <ul>
+      <li>Целевая спиртуозность в струе: строго <b>80–86%</b>.</li>
+      <li>Если крепость падает ниже 80% — чуть добавьте воду в дефлегматор. Если крепость выше 88–90% (спирт обдирается и теряет аромат) — чуть убавьте воду.</li>
+      <li>Забирайте тело до температуры в кубе 90–92 °C или пока спиртуозность в струе не опустится до 55–60%.</li>
+    </ul>
+  </li>
+  <li><b>4. Завершение:</b> при скачке температуры на верхнем термометре на +0.3...+0.5 °C закройте отбор тела. Откройте воду в дефлегматор на максимум (чтобы запереть тяжелые вонючие хвосты) и отключите нагрев.</li>
+</ul>
+
+<h4>Этап 4. Доводка, выдержка в банках, коррекция цвета и вкуса</h4>
+<ul>
+  <li><b>Разбавление мягкой водой:</b> разбавьте дистиллят мягкой водой (бутилированная детская с минерализацией до 100–150 мг/л или после обратного осмоса). Обычная водопроводная или родниковая вода вызовет муть из-за солей жесткости. Для настаивания на щепе разбавляйте до <b>43–45%</b>. <i>Всегда вливайте спирт в воду тонкой струйкой!</i></li>
+  <li><b>Выдержка в 3-литровых банках на дубовой щепе/кубиках:</b>
+    <ul>
+      <li><b>Дозировка на 3 л банку:</b> дубовые кубики/бруски среднего обжига — <b>12–15 г</b> (4–5 г на 1 л); если используется мелкая щепа — <b>6–9 г</b> (2–3 г на 1 л).</li>
+      <li><b>Подготовка дуба:</b> покупной дуб в спецмагазинах уже подготовлен (вымочен и обожжен) — закладывайте сразу. Если дуб свой или есть сомнения, ошпарьте кипятком на 10–15 минут.</li>
+      <li><b>Сроки выдержки:</b> на мелкой щепе — 3–4 недели; на кубиках/брусках — 1,5–2 месяца. Раз в 7–10 дней открывайте банку на 5–10 минут для доступа кислорода (аэрации).</li>
+    </ul>
+  </li>
+  <li><b>Коррекция цвета и смягчение вкуса (колер + декстроза):</b>
+    <ul>
+      <li><b>Правило совмещения:</b> декстроза дает округлость и убирает спиртовое жжение, а сахарный колер дает глубокий янтарный цвет. Чтобы не пересластить напиток и не превратить благородный коньяк в ликер, <b>всегда сначала вносите колер</b>, а затем регулируйте сладость декстрозой.</li>
+      <li><b>1. Сахарный колер (для цвета):</b> 1 ст. л. сахара + пара капель лимонного сока прогреваются в ковшике/турке до глубокого янтарно-чайного цвета (не пережигать в черноту) и разводятся в 50 мл теплой воды. Дозировка: <b>0.5–1 ч. л. колера на 3 л банку</b>. Дает коньячный глянец без лишней сладости.</li>
+      <li><b>2. Декстроза (для мягкости):</b> после окрашивания попробуйте напиток. Если осталась спиртовая или дубильная резкость, добавьте <b>не более 0.5 ч. л. декстрозы на 3 л банку</b> (предварительно растворив в 50 мл дистиллята).</li>
+      <li><b>Другие способы цвета:</b> дуб сильного обжига (1–2 бруска на 2–3 недели); перегородки грецкого ореха (ошпарить кипятком, 0.5–1 ст. л. строго на 3–5 дней); чернослив (1 шт. ошпарить, на 4–7 дней).</li>
+    </ul>
+  </li>
+  <li><b>Финальный отдых:</b> перед дегустацией дайте напитку постоять в стекле под крышкой еще <b>2–3 недели</b> для окончательной стабилизации букета.</li>
+</ul>`
+      },
+      {
+        id: "gin-core",
+        title: "Домашний джин: от браги до готового напитка",
+        category: "Джин / Полный цикл",
+        content: `<div class="note-box">
+  <b>Влияет ли брага на вкус джина?</b>
+  <p style="margin-top:4px;"><b>Напрямую да.</b> Для джина требуется максимально нейтральная, мягкая основа без хлебных, дрожжевых и сивушных тонов. Если в браге останется вонь сивухи, она при перегонке перемешается с эфирными маслами можжевельника и цедры, дав тяжелый, «грязный» самогонный привкус. Поэтому идеальный выбор под джин — <b>чистая декстроза</b> или инвертный сахар на турбо-дрожжах.</p>
+</div>
+
+<h4>Этап 1. Постановка декстрозной/сахарной браги (емкость 30 л)</h4>
+<ul>
+  <li><b>Сырье:</b> <b>6.5–7 кг декстрозы</b> (или 6 кг сахара) на <b>24 л</b> чистой отстоянной воды (гидромодуль 1:4). Декстроза дает самую нейтральную органолептику.</li>
+  <li><b>Замес:</b> растворить в воде 30–35 °C, остудить до 24–25 °C, внести 1 пачку спиртовых турбо-дрожжей.</li>
+  <li><b>Сбраживание:</b> при 22–25 °C до полного сбраживания (3–5 дней, 0% по АС-3, сухость и легкая горчинка).</li>
+  <li><b>Осветление:</b> обязательно аккуратно снять с осадка через сифон (не варить мертвые дрожжи в кубе).</li>
+</ul>
+
+<h4>Этап 2. Первая перегонка (спирт-сырец)</h4>
+<ul>
+  <li><b>Сборка:</b> прямой перегон (дефлегматор отключен). Царга пустая из нержавейки (медь не нужна).</li>
+  <li><b>Процесс:</b> перегонять на максимальной мощности без разделения, «досуха» — до 3–5% в струе.</li>
+  <li><b>Результат:</b> спирт-сырец 35–40%.</li>
+</ul>
+
+<h4>Этап 3. Вторая (дробная) перегонка — получение спиртовой основы</h4>
+<ul>
+  <li><b>Подготовка:</b> разбавить сырец до 20–25% водой.</li>
+  <li><b>Сборка:</b> царга с насадкой (РПН/СПН из нержавейки), дефлегматор с отдельной подачей воды через игольчатый кран, холодильник.</li>
+  <li><b>Отбор голов:</b> покапельно отобрать <b>8–10% от АС</b> до полного ухода запаха ацетона.</li>
+  <li><b>Отбор тела:</b> тонкой струйкой при стабильной температуре вверху колонны, крепость <b>88–92%</b>. Это чистейшая основа («чистый лист»).</li>
+  <li><b>Разбавление основы:</b> развести полученный чистый спирт мягкой водой примерно до <b>50%</b>.</li>
+</ul>
+
+<h4>Этап 4. Мацерация (настаивание ягод можжевельника)</h4>
+<ul>
+  <li><b>Пропорции:</b> на <b>3 л готовой сортировки (уже разведенного до 50% спирта)</b> взять <b>45–50 г ягод можжевельника</b> (15–18 г на 1 л раствора).</li>
+  <li><b>Подготовка:</b> ягоды слегка размять тыльной стороной ножа или скалкой (не дробить семена в пыль).</li>
+  <li><b>Настаивание:</b> залить мятые ягоды спиртом 50% в банке и оставить в темноте на <b>1 неделю</b>. За 7 дней спирт полностью заберет тяжелые хвойно-смолистые эфиры.</li>
+</ul>
+
+<h4>Этап 5. Ароматная перегонка с ботаникой (Стиллмен Х)</h4>
+<div class="note-box" style="margin-bottom:12px;">
+  <b>Точная раскладка ботаники на кухонных весах (на 10.5 л 25% в кубе / 2.625 л АС / ~5 л готового джина 45%):</b>
+  <ul style="margin-top:6px; margin-bottom:0; padding-left:18px;">
+    <li><b>Ягоды можжевельника (синие):</b> <b>70–75 г</b> — слегка помять скалкой/ножом (не дробить косточки в муку, чтобы не было горечи).</li>
+    <li><b>Семена кориандра:</b> <b>22–25 г</b> — примять в ступке (дает связующий цитрусово-древесный тон линалоола).</li>
+    <li><b>Свежая цедра апельсина:</b> <b>15–18 г</b> (цедра с 1 крупного) — срезать овощечисткой строго оранжевый слой без белого альбедо.</li>
+    <li><b>Свежая цедра лимона или лайма:</b> <b>8–10 г</b> (цедра с 1 лимона) — только желтый/зеленый слой для свежести лимонена.</li>
+    <li><b>Кардамон зеленый:</b> <b>2.0–2.5 г</b> (5–6 коробочек) — надавить пальцами до раскрытия створок.</li>
+    <li><b>Корица в палочках:</b> <b>1.5–2.0 г</b> (половинка палочки) — надломить на 2–3 кусочка (порошок не использовать!).</li>
+    <li><b>Бадьян (звездчатый анис):</b> <b>0.5–1 г</b> (1–2 лучика от звездочки, по желанию) — легкий восточный оттенок.</li>
+  </ul>
+</div>
+
+<ul>
+  <li><b>Грамотная комбинированная загрузка в аппарат «Стиллмен Х» (защита от захлеба):</b>
+    <ul>
+      <li><b>В куб (в фильтр-мешочке для хмеля):</b> закладывается весь можжевельник (70–75 г). Можжевельнику полезно провариться при кипении для вытяжки глубоких смол, а мешочек защитит дно/ТЭН от пригорания.</li>
+      <li><b>В паровую зону (в царгу на пыж РПН):</b> в верхнюю треть царги под поворот устанавливается 1 свободный пыж из нержавейки, на него насыпаются кориандр, свежая цедра, кардамон и корица. Горячий спиртовой пар мягко выбивает легкие цитрусовые эфиры прямо в отбор без вареного компотного привкуса.</li>
+    </ul>
+  </li>
+  <li><b>Режимы мощности плиты (стеклокерамика / индукция 3.5 кВт):</b>
+    <ul>
+      <li><b>3500 Вт (Разгон куба):</b> греем на полной мощности до температуры <b>75–78 °C</b> в кубе. Как только царга начинает прогреваться — <b>немедленно сбавляйте нагрев на 1700 Вт</b>!</li>
+      <li><b>1700 Вт (Отбор голов):</b> покапельный отбор со скоростью <b>1–2 капли в секунду</b>. Отобрать первые <b>50–70 мл</b> (около 50 г на весах) — это снимет самые едкие терпеновые масла.</li>
+      <li><b>⭐ 2000 Вт (Отбор питьевого тела, максимум 2300 Вт):</b> золотая середина! Струйка толщиной со спичку, скорость отбора 2–2.5 л/час. <i>Не включайте 2800–3500 Вт, чтобы не сварить травы и не вызвать захлеб царги!</i></li>
+      <li><b>Температура дистиллята:</b> на выходе холодильника струйка должна быть <b>прохладной (18–20 °C)</b>. Если дистиллят пойдет теплым (30 °C+), ценнейший цитрусовый аромат (лимонен) улетучится в воздух кухни.</li>
+      <li><b>СТОП отбора тела:</b> строго при падении спиртуозности в струе до <b>48–50%</b> (ниже пойдут тяжелые хвостовые масла, от которых напиток мгновенно мутнеет).</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>Этап 6. Финальное разведение, смягчение декстрозой и стабилизация</h4>
+<div class="note-box">
+  <b>Что такое мягкая вода и почему для джина она критична:</b>
+  <p style="margin-top:4px;">Мягкая вода — это вода с минимальным содержанием солей кальция и магния (жесткость до 1.5–2 °Ж, общая минерализация не более 50–100 мг/л). В джине содержится огромная концентрация эфирных масел. Если залить обычную водопроводную воду или воду из родника/скважины, соли жесткости мгновенно вступят в реакцию со спиртом и вызовут несмываемую белесую опалесценцию (молочную муть).</p>
+  <b style="display:block; margin-top:6px; color:#f0a36b;">Как получить или где взять мягкую воду:</b>
+  <ul style="margin-top:4px; margin-bottom:0; padding-left:18px;">
+    <li><b>1. Бытовой обратный осмос (идеальный вариант):</b> домашний фильтр с осмотической мембраной дает деминерализованную воду с солесодержанием 10–20 мг/л. <i>Брать воду нужно строго до минерализатора (напрямую из накопительного бака)!</i></li>
+    <li><b>2. Бутилированная детская вода (доступно в любом магазине):</b> марки вроде «ФрутоНяня», «Агуша». На этикетке обязательно смотрите строку «Общая минерализация» — она должна быть в диапазоне <b>50–150 мг/л</b>.</li>
+    <li><b>3. Аптечная вода для инъекций / дистиллированная вода:</b> фармацевтическая чистая вода без солей и запаха.</li>
+    <li><b>4. Домашнее умягчение городской воды (если нет осмоса):</b> отфильтровать городскую воду через фильтр-кувшин со свежим картриджем «для жесткой воды», затем прокипятить 15–20 минут в открытой кастрюле, остудить и аккуратно слить с осадка солей через плотный слой ваты.</li>
+  </ul>
+</div>
+<ul>
+  <li><b>Правило смешивания:</b> вливайте спирт в отмеренную холодную воду тонкой струйкой (не наоборот), непрерывно помешивая (воспользуйтесь режимом «⚖️ По весу на весах» в нашем калькуляторе).</li>
+  <li><b>Крепость готового джина:</b> разбавляйте строго до <b>45–47%</b> (золотой стандарт London Dry). При падении крепости ниже 43% эфирные масла блокируются, испарение легкого цитруса запирается, и на первом плане остается лишь резковатая хвоя с горьким послевкусием. Крепость 45–47% держит все масла в идеальном растворе.</li>
+</ul>
+
+<div class="note-box" style="margin-top:12px; border-left:3px solid #f0a36b;">
+  <b>Смягчение джина: Декстроза vs Фруктоза — что и как добавлять:</b>
+  <ul style="margin-top:6px; margin-bottom:0; padding-left:18px;">
+    <li><b>Канон London Dry:</b> 0% сахара (классический сухой строгий джин под тоник).</li>
+    <li><b>Стиль Old Tom / мягкий крафтовый джин:</b> для питья чистым со льдом напиток смягчают, чтобы убрать спиртовое жжение.</li>
+    <li><b>Почему ДЕКСТРОЗА (глюкоза), а не фруктоза:</b> фруктоза в 2.5 раза слаще декстрозы и легко превращает джин в приторный компотный ликер, глуша цитрус. Декстроза дает бархатистость и мягкость, не добавляя приторности.</li>
+    <li><b>Дозировка декстрозы:</b> всего <b>1.5–2 г на 1 л джина</b> (или <b>1 неполная ч. л. ~4–5 г на 3-литровую банку</b>).</li>
+    <li><b>Секрет внесения без помутнения:</b> никогда не сыпьте сухой порошок в общую банку! Отлейте <b>50 мл джина</b> в рюмку, полностью растворите там отмеренную декстрозу до зеркальной прозрачности, затем тонкой струйкой влейте обратно в банку и перемешайте.</li>
+    <li><b>Сроки внесения:</b> сначала дайте джину постоять в стекле 5–7 дней после разведения. Если вкус гармоничен — оставьте как есть! Если хочется большей мягкости — внесите декстрозу и дайте отдохнуть еще 2–3 дня.</li>
+  </ul>
+</div>
+
+<ul>
+  <li><b>Стабилизация:</b> разлейте по бутылкам под самое горлышко и дайте отдохнуть <b>10–14 дней</b> в темном прохладном месте для завершения гидратации.</li>
+</ul>
+
+<h4>Этап 7. Премиальный эксперимент: Barrel-Aged Gin (Выдержка джина на дубе / Yellow Gin)</h4>
+<div class="note-box">
+  <b>Что такое бочковой (жёлтый) джин:</b>
+  <p style="margin-top:4px;">В XVIII–XIX веках джин перевозили в дубовых бочках, из-за чего он приобретал золотистый оттенок и мягкие древесно-ванильные тона. В современном крафтовом мире <b>Barrel-Aged Gin</b> — это элитная категория напитков, стоящая на стыке классического джина и выдержанного солодового виски. Его пьют чистым со льдом или используют в культовом коктейле <b>Barrel-Aged Negroni</b>.</p>
+</div>
+
+<ul>
+  <li><b>Главное правило — деликатность:</b> эфирные масла можжевельника и цедры цитрусовых очень легко заглушить тяжелым дубом. Поэтому дозировка и сроки здесь кардинально отличаются от виски!</li>
+  <li><b>Сырье и дозировка:</b>
+    <ul>
+      <li>Отлейте часть готового джина крепостью 45–47% (например, 1 литр в отдельную банку).</li>
+      <li>Используйте <b>дубовые кубики строго слабого или среднего обжига</b> (сильный обжиг и обугленность запрещены — они перебьют хвою!).</li>
+      <li><b>Дозировка:</b> всего <b>2–3 г на 1 л</b> (или 6–8 г на 3-литровую банку) — это ровно в 2 раза меньше, чем для виски или коньяка.</li>
+    </ul>
+  </li>
+  <li><b>Секретный прием крафтовых винокурен:</b>
+    <ul>
+      <li>Замочите дубовые кубики на 7–10 дней в <b>сухом белом вермуте (Martini Extra Dry)</b>, белом сухом вине или хересе (Sherry Fino).</li>
+      <li>Пропитанные вермутом кубики заложите в джин. Травянисто-винные ноты вермута идеально гармонируют с можжевельником и цитрусом.</li>
+    </ul>
+  </li>
+  <li><b>Сроки выдержки и контроль:</b>
+    <ul>
+      <li>Срок выдержки: строго <b>от 14 до 25 дней</b> (максимум 1 месяц).</li>
+      <li><b>Обязательный контроль:</b> начиная с 10-го дня, пробуйте напиток каждые 3–4 дня! Как только джин приобрел благородный соломенно-золотой цвет, а во вкусе появились нотки ванили, меда и теплого поджаренного тоста — <b>немедленно профильтруйте и извлеките дуб</b>, чтобы не получить терпкую «плинтусовку».</li>
+    </ul>
+  </li>
+  <li><b>Как подавать:</b> дайте отдохнуть 1–2 недели в стекле после снятия с дуба. Пейте чистым охлажденным, со льдом и кружочком апельсина, либо смешайте элитный <b>Negroni</b> (1 часть бочкового джина + 1 часть красного вермута Rosso + 1 часть Campari).</li>
+</ul>`
+      },
+      {
+        id: "rum-core",
+        title: "Домашний карибский ром (Бак 30 л, меласса + декстроза)",
+        category: "Ром / Тростниковая меласса",
+        content: `<div class="note-box">
+  <b>Главные особенности рома:</b>
+  <p style="margin-top:4px;">Настоящий ром делается на <b>тростниковой мелассе (черной патоке)</b>. Тростниковый сахар в магазинах часто оказывается крашеным свекловичным сахаром. Меласса — это натуральный побочный продукт переработки сахарного тростника. В ней содержится около 45–50% сбраживаемых сахаров, а остальные 50% — несбраживаемые карамели, зола и минералы, которые и формируют ромовый букет (чернослив, табак, патока, кофе), но не дают спирта. Поэтому чистая меласса дает скромный выход спирта, а добавление декстрозы выравнивает баланс без ухудшения органолептики.</p>
+</div>
+
+<h4>Этап 1. Сырье и постановка браги (бак 30 л, рабочий объем 24 л)</h4>
+<ul>
+  <li><b>Тростниковая меласса (патока):</b> <b>5–6 кг</b> (около 3.5–4 л). Использовать строго тростниковую (свекловичная кормовая патока не подходит — дает неустранимый запах навоза).</li>
+  <li><b>Декстроза:</b> <b>2.5–3 кг</b> (для поддержания рабочей спиртуозности сусла на уровне 10–11%).</li>
+  <li><b>Вода:</b> <b>18–19 л</b> отстоянной чистой воды. Общий рабочий объем сусла — <b>24 л</b> (6 литров резерва оставляем под пену).</li>
+  <li><b>Дрожжи:</b> специализированные <b>ромовые турбо-дрожжи с ферментом глюкоамилазой</b> (пачка «Rum Turbo Yeast»). Фермент расщепляет сложные декстрины патоки на простые сахара.</li>
+  <li><b>Контроль пены:</b> меласса пенится чрезвычайно агрессивно! Обязательно держать под рукой пеногаситель (софэксил) или раскрошенное сухое печенье.</li>
+</ul>
+
+<h4>Этап 2. Замес и брожение</h4>
+<ul>
+  <li><b>Растворение мелассы:</b> патока очень густая и липкая. Нагрейте 7–8 л воды до 50–60 °C, вылейте туда мелассу и тщательно размешайте веслом или венчиком до полного растворения осадка. Туда же всыпьте декстрозу.</li>
+  <li><b>Доведение объема:</b> долейте прохладной воды до метки 24 л. Проверьте температуру — она должна быть <b>26–28 °C</b>.</li>
+  <li><b>Плотность (АС-3):</b> начальная плотность покажет <b>20–22 °Brix</b> (учитывайте, что около половины этой плотности — несбраживаемый сухой остаток).</li>
+  <li><b>Внесение дрожжей:</b> рассыпьте ромовые турбо-дрожжи по поверхности. Ромовые дрожжи любят тепло — оптимальная температура брожения <b>26–30 °C</b> (в тепле они синтезируют больше фруктово-ромовых эфиров).</li>
+  <li><b>Сроки брожения:</b> 5–8 дней. Готовая брага перестает булькать, на вкус кисло-горькая, с легким кофейно-шоколадным привкусом.</li>
+  <li><b>Важная особенность окончания:</b> ареометр АС-3 в конце <b>никогда не покажет 0%</b>! Плотность остановится на отметке <b>5–7 °Brix</b> из-за несбраживаемой золы и карамелей — это норма для мелассы.</li>
+  <li><b>Снятие с осадка:</b> аккуратно слейте через сифон (не кипятите мертвый дрожжевой ил в кубе).</li>
+</ul>
+
+<h4>Этап 3. Первая перегонка (спирт-сырец)</h4>
+<ul>
+  <li><b>Сборка аппарата:</b> прямой перегон (дефлегматор отключен). Короткая царга с <b>1–2 медными пыжами РПН</b> в самом верху (медь обязательна — меласса насыщена соединениями серы, медь их связывает и убирает тухлый запах).</li>
+  <li><b>Заливка куба:</b> заливайте куб не более чем на <b>65–70% объема</b>! Мелассная брага при кипении может давать бурное вспенивание. Добавьте пару капель софэксила в куб перед нагревом.</li>
+  <li><b>Процесс:</b> перегоняйте на рабочей мощности. Первые 30–50 мл можно слить.</li>
+  <li><b>Отбор «досуха»:</b> гоните до <b>0–2% в струе</b> (98–99 °C в кубе). В глубоких хвостах первой перегонки идут тяжелые энантовые эфиры и масляные кислоты, создающие плотный ромовый профиль.</li>
+</ul>
+
+<h4>Этап 4. Вторая перегонка (дробная с дефлегматором на «Стиллмен Х»)</h4>
+<ul>
+  <li><b>Подготовка:</b> разбавить сырец чистой водой до <b>20–25%</b>. В царге остаются 1–2 медных пыжа, насадки СПН убираем, чтобы не ободрать тростниковый дух.</li>
+  <li><b>Подача воды:</b> раздельные потоки на холодильник и дефлегматор (с игольчатым краном). Помним про паузу 45–60 секунд на инерцию.</li>
+  <li><b>Работа «на себя»:</b> 15–20 минут после закипания при полностью открытом дефлегматоре.</li>
+  <li><b>Отбор голов:</b> покапельно (1–2 капли в сек), отобрать <b>6–8% от АС</b>. Отбирайте до исчезновения резкого ацетона. Легкие фруктово-карамельные эфиры присущи рому, но откровенную химию надо отсечь.</li>
+  <li><b>Отбор тела (питьевая фракция):</b>
+    <ul>
+      <li>Настройте тонкую струйку. Целевая спиртуозность в струе: <b>78–84%</b>.</li>
+      <li>Если гнать выше 88% — ром превратится в нейтральную водку. Если опуститься ниже 75% — в напиток прорвутся тяжелые сивушные масла.</li>
+      <li>Завершайте отбор тела при температуре 90–92 °C в кубе или при скачке верхнего термометра на +0.3...+0.5 °C.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>Этап 5. Превращение в Белый, Золотой или Темный ром</h4>
+<ul>
+  <li><b>Разбавление:</b> разбавить мягкой водой (бутилированная детская до 100 мг/л минерализации или осмос) до крепости <b>40–42%</b> (или 43–45% под дуб). Вливать спирт в воду!</li>
+  <li><b>Вариант 1: Белый ром (White / Silver Rum):</b>
+    <ul>
+      <li>Разбавить до 40%, добавить 0.5 ч. л. декстрозы на 3-литровую банку для округлости, дать отдохнуть в чистом стекле <b>3–4 недели</b>. Получается прозрачный, мягкий ром с нотами патоки и тростника.</li>
+    </ul>
+  </li>
+  <li><b>Вариант 2: Золотой / Темный ром (Gold / Dark Rum в банке 3 л):</b>
+    <ul>
+      <li><b>Выдержка на дубе:</b> 12–15 г дубовых кубиков среднего или сильного обжига на 3-литровую банку на срок <b>1.5–2 месяца</b> с аэрацией раз в неделю. Дуб дает ваниль, шоколад и пряность.</li>
+      <li><b>Цвет и ромовый глянец:</b> после снятия с дуба добавьте <b>1–1.5 ч. л. сахарного колера</b> на 3 л банку. Для рома карамель — это классический карибский стандарт, дающий цвет от янтаря до темного каштана.</li>
+      <li><b>Смягчение:</b> 0.5 ч. л. декстрозы на 3 л банку для бархатистости.</li>
+      <li><b>Отдых:</b> минимум <b>2–3 недели</b> в стекле перед дегустацией.</li>
+    </ul>
+  </li>
+</ul>`
+      },
+      {
+        id: "becher-core",
+        title: "Домашняя Бехеровка (Чешский травяной ликер на 3 л)",
+        category: "Настойка / Травы",
+        content: `<div class="note-box">
+  <b>Особенности напитка:</b>
+  <p style="margin-top:4px;">Бехеровка — это классический травяной мацерат (настойка) крепостью 35–38%. В отличие от дистиллятов, она не требует перегонки после настаивания. Вся магия вкуса достигается за счет точного баланса специй, правильного карамельного сиропа и отдыха в стекле.</p>
+</div>
+
+<h4>1. Ингредиенты и пряности (на 3 литра основы)</h4>
+<ul>
+  <li><b>Спиртовая основа:</b> 3 л качественной сортировки (разбавленного до 40–45% нейтрального спирта или двойного дистиллята).</li>
+  <li><b>Специи и травы:</b>
+    <ul>
+      <li>Анис семена: 3–4 г</li>
+      <li>Бадьян: 1 звездочка</li>
+      <li>Кардамон зеленый: 5–6 коробочек (слегка размять)</li>
+      <li>Гвоздика: 15–20 бутонов</li>
+      <li>Корица: 1 пачка/палочка (порубить)</li>
+      <li>Перец черный горошком: 10–12 шт.</li>
+      <li>Перец душистый горошком: 4–5 шт.</li>
+      <li>Цедра апельсина: 4–5 г (только оранжевый слой без белой горечи)</li>
+      <li>Цедра лимона: 2–3 г</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>2. Настаивание в фильтр-мешке</h4>
+<ul>
+  <li>Поместите весь травяной и пряный сбор внутрь <b>специального фильтр-мешка из нейлона или лавсана</b> и затяните шнурок.</li>
+  <li>Опустите мешок в 3-литровую банку и залейте 3 литрами спиртовой основы (40–45%).</li>
+  <li>Закройте крышкой и настаивайте в темном теплом месте (18–22 °C) в течение <b>7–10 дней</b>. Первые 4–5 дней ежедневно взбалтывайте банку.</li>
+  <li>По окончании настаивания просто достаньте фильтр-мешок со специями из банки — настой останется абсолютно чистым, без мелкой растительной взвеси и осадка на дне.</li>
+</ul>
+
+<h4>3. Подготовка идеальной карамели (детальный регламент)</h4>
+<div class="note-box">
+  <b>Как правильно приготовить карамель и что делать при ошибках:</b>
+  <ul style="margin-top:6px; margin-bottom:0; padding-left:18px;">
+    <li><b>Базовый процесс:</b> в ковшик насыпьте 2 ст. ложки сахара и добавьте 3–4 капли лимонного сока. Грейте на среднем огне до плавления и перехода в глубокий янтарно-чайный цвет.</li>
+    <li><b>Что если сахар не темнеет / засахарился в сухую крошку?</b> Добавьте 1 чайную ложку воды прямо в ковшик, убавьте огонь и продолжайте прогревать — вода растворит кристаллы, и процесс карамелизации возобновится.</li>
+    <li><b>Финальный сироп:</b> к готовой жидкой карамели прямо в ковшике добавьте еще <b>100–120 г сахара</b> и влейте <b>150–200 мл мягкой воды</b>. Прогревайте, помешивая, до полного растворения в единый темный сироп. Дайте остыть до комнатной температуры.</li>
+  </ul>
+</div>
+
+<h4>4. Смешивание (купажирование) и отдых</h4>
+<ul>
+  <li>Влейте остывший карамельный сироп в профильтрованный травяной настой. Тщательно перемешайте (крепость составит 35–38%).</li>
+  <li>Разлейте по стеклянным бутылкам.</li>
+  <li><b>Финальный отдых:</b> дайте напитку постоять в темном прохладном месте минимум <b>2–3 недели</b> (лучше 1 месяц) для окончательной стабилизации вкуса и гармонизации специй.</li>
+</ul>`
+      },
+      {
+        id: "bourbon-core",
+        title: "Теннесси виски / Бурбон (Кукуруза + солод, угольная фильтрация)",
+        category: "Виски / Бурбон / Jack Daniel's",
+        content: `<div class="note-box">
+  <b>Особенности стиля Jack Daniel’s и бурбонов:</b>
+  <p style="margin-top:4px;">В основе такого виски лежит кукуруза (от 70%), которая дает мощную маслянистость и сладость. Фирменная фишка теннессийского виски — <b>угольная фильтрация (Lincoln County Process)</b> через колонну с древесным углем перед выдержкой на дубе, которая полностью сглаживает резкость сырца.</p>
+</div>
+
+<h4>1. Сырье и пропорции (на 24 л сусла / бак 30 л)</h4>
+<ul>
+  <li><b>Кукурузная крупа или мука:</b> <b>4.5–5 кг</b> (около 75–80% засыпи). Дает карамельную сладость и текстуру.</li>
+  <li><b>Ячменный солод (светлый Pale Ale):</b> <b>1.0–1.2 кг</b> (около 15–20% засыпи). Содержит ферменты для осахаривания кукурузного крахмала.</li>
+  <li><b>Вода:</b> <b>20–22 л</b>.</li>
+  <li><b>Ферменты (рекомендуется для кукурузы):</b> фермент Амилосубтилин (для разжижения густой кукурузной каши при варке).</li>
+  <li><b>Дрожжи:</b> спиртовые виски-дрожжи (Whiskey Turbo).</li>
+</ul>
+
+<h4>2. Варка и осахаривание кукурузного затора</h4>
+<ul>
+  <li><b>Разваривание кукурузы:</b> кукурузный крахмал клейстеризуется только при высоких температурах. Залейте 20 л воды в куб, нагрейте до 75 °C, добавьте 1 ч. л. фермента Амилосубтилин и медленно засыпьте кукурузную крупу/муку, постоянно помешивая.</li>
+  <li><b>Варка каши:</b> доведите до кипения и варите на медленном огне 30–40 минут, активно мешая, чтобы каша не пригорела ко дну. Кукуруза должна превратиться в густой кисель.</li>
+  <li><b>Охлаждение и осахаривание:</b> выключите нагрев и остудите кашу до <b>63–65 °C</b>. Всыпьте измельченный ячменный солод, тщательно перемешайте.</li>
+  <li><b>Мальтозная пауза:</b> укутайте куб на <b>60–90 минут</b>, поддерживая температуру 62–65 °C. Активные ферменты солода полностью расщепят кукурузный крахмал в сахар (проверьте йодной пробой).</li>
+  <li><b>Охлаждение:</b> быстро остудите сусло до <b>24–26 °C</b>.</li>
+</ul>
+
+<h4>3. Сбраживание и перегонка</h4>
+<ul>
+  <li>Перелейте сусло в бродильную емкость (из-за густой дробины лучше использовать фильтр-мешок или сбродить аккуратно с декантацией). Внесите виски-дрожжи. Сбраживание занимает <b>4–7 дней</b>.</li>
+  <li><b>Первая перегонка:</b> прямой перегон на максимальной мощности с 1–2 медными пыжами РПН в царге (гоните до 3% в струе).</li>
+  <li><b>Вторая перегонка (дробная):</b> разбавьте сырец до 20–25%. В царге остаются медные пыжи. Отобрать <b>8–10% голов</b> покапельно. Тело отбирать струйкой, удерживая крепость <b>80–85%</b>, до 90–92 °C в кубе.</li>
+</ul>
+
+<h4>4. Фирменный этап: Угольная фильтрация (Lincoln County Process)</h4>
+<ul>
+  <li>Разбавьте полученный зерновой дистиллят чистой водой до <b>45–50%</b>.</li>
+  <li>Пропустите напиток через <b>угольную колонну или фильтр-кувшин со свежим активированным углем</b> (БАУ-А или КАУ) 2–3 раза.</li>
+  <li>Уголь адсорбирует грубые сивушные ноты, делая вкус невероятно гладким и мягким в стиле Jack Daniel’s.</li>
+</ul>
+
+<h4>5. Финальная выдержка и доводка</h4>
+<ul>
+  <li><b>Дубовые кубики:</b> заложите <b>12–15 г дубовых кубиков среднего обжига на 3 л банку</b>.</li>
+  <li><b>Сроки:</b> выдерживайте <b>1,5–2 месяца</b> с еженедельной аэрацией.</li>
+  <li><b>Смягчение и цвет:</b> добавьте <b>0.5 ч. л. декстрозы</b> для округлости и немного сахарного колера для глубокого янтарного цвета. Дайте отдохнуть в стекле 2–3 недели.</li>
+</ul>`
+      },
+      {
+        id: "whisky-malt-core",
+        title: "Односолодовый виски из покупного солода (Single Malt Whisky)",
+        category: "Солод / Виски / Односолодовый",
+        content: `<div class="note-box">
+  <b>Суть односолодового виски:</b>
+  <p style="margin-top:4px;">Односолодовый виски (Single Malt) производится на 100% из ячменного (или комбинации зерновых) солода на одной винокурне без добавления сахара и несоложенки. Сбраживание ведется строго по <b>«белой схеме»</b> (чистое сусло сливается с осадка дробины), чтобы при перегонке в кубе не варить шелуху и белки, которые дают грубую сивушную горечь.</p>
+</div>
+
+<h4>1. Гид по покупным солодам: сорта, вкусовые профили и подбор засыпи</h4>
+<p style="margin-bottom:8px;">Покупной солод из солодовен (Курский солод, Castle Malting, Viking Malt, Weyermann, Simpsons) уже профессионально пророщен, высушен и готов к осахариванию.</p>
+
+<ul>
+  <li><b>А. Базовые солода (80–100% засыпи) — создают тело и дают сбраживаемые сахара:</b>
+    <ul>
+      <li><b>Pale Ale (Пэйл Эль):</b> лучший и самый популярный выбор для классического виски (стиль Speyside и Highland). Дает теплый солодовый, глубокий зерновой вкус, ноты сдобного печенья, свежего хлеба и луговых трав. Намного ароматнее, чем обычный пилснер.</li>
+      <li><b>Pilsner (Пилснер):</b> дает более сухой, легкий, нейтрально-зерновой профиль. Подходит для легких, воздушных сортов виски (стиль Lowland или японские купажи).</li>
+      <li><b>Пшеничный солод (Wheat Malt):</b> можно заменять до 20–40% засыпи. Дает напитку шелковистую мягкость, кремовую текстуру, убирает спиртовую резкость и дарит ноты свежей белой булки.</li>
+      <li><b>Ржаной солод неферментированный (Rye Malt):</b> до 20–30% засыпи. Создает дерзкий американский ржаной профиль (Rye Whiskey) — пряный, слегка перечный, с тонами мускатного ореха, тмина и бородинского хлеба.</li>
+    </ul>
+  </li>
+
+  <li><b>Б. Торфяной (окуренный) солод (Peated Malt) — островной шотландский характер (Islay):</b>
+    <ul>
+      <li>При сушке зеленый солод окуривают дымом шотландского торфа. Степень копчености измеряется фенольностью (ppm).</li>
+      <li><b>Легкоторфяной (5–15 ppm):</b> дает едва уловимый деликатный дымок на заднем плане (стиль Highland Park).</li>
+      <li><b>Средне- и сильноторфяной (30–50 ppm, например Castle Malting Chateau Whisky):</b> легендарный взрывной профиль (в духе Laphroaig, Ardbeg, Bowmore) — костер на морском берегу, деготь, креозот, копченое мясо, йод и морская соль.</li>
+      <li><b>Как использовать:</b> новичкам рекомендуется засыпь <b>20–30% торфяного + 70–80% базового Pale Ale</b> (дым будет мягким и гармоничным). Любителям бескомпромиссного «островного креозота» — брать <b>до 100% торфяного солода</b>.</li>
+    </ul>
+  </li>
+
+  <li><b>В. Специальные карамельные и жареные солода (добавка 5–15% для изысканных нюансов):</b>
+    <ul>
+      <li><b>Карамельные (Carahell, Caramunich, Caraaroma, 5–12%):</b> обогащают дистиллят нотами карамели, ириски toffee, изюма, кураги и чернослива, придавая виски приятную округлость.</li>
+      <li><b>Меланоидиновый солод (Melanoidin, 5–10%):</b> усиливает ощущение плотности напитка, добавляет вкус медовой корочки деревенского хлеба.</li>
+      <li><b>Шоколадный солод (Chocolate Malt, 2–4% строго!):</b> привносит акценты темного шоколада, обжаренных кофейных зерен и какао. <i>Внимание: не превышайте 4–5%, иначе появится неприятная зольная горечь!</i></li>
+    </ul>
+  </li>
+</ul>
+
+<div class="note-box">
+  <b>Золотые проверенные рецепты засыпи на бак 30 л (общий вес 6 кг):</b>
+  <ul style="margin-top:6px; margin-bottom:0; padding-left:18px;">
+    <li><b>Классический шотландский Single Malt:</b> 6 кг Pale Ale (или 5.4 кг Pale Ale + 0.6 кг Carahell). Вкус: яблоко, груша, мед, свежая выпечка.</li>
+    <li><b>Дымный островной виски (Islay Style):</b> 2 кг торфяного солода Chateau Whisky (50 ppm) + 4 кг Pale Ale. Вкус: благородный костровой дым, специи, сухофрукты.</li>
+    <li><b>Мягкий бархатный виски:</b> 4.5 кг Pale Ale + 1.5 кг пшеничного солода. Вкус: нежнейший сливочный, без жжения.</li>
+  </ul>
+</div>
+
+<h4>2. Пропорции и гидромодуль (емкость 30 л, рабочий объем сусла ~24 л)</h4>
+<ul>
+  <li><b>Солод дробленый:</b> <b>6 кг</b>. <i>Важно: помол должен быть специальным солодовым (зерно расколото на 4–6 частей, шелуха целая). Ни в коем случае не молоть в муку, иначе фильтрация намертво встанет!</i></li>
+  <li><b>Заторная вода:</b> <b>19–20 л</b> (гидромодуль ~1:3.3).</li>
+  <li><b>Промывная вода:</b> <b>7–8 л</b> чистой воды, заранее нагретой до <b>75–78 °C</b> (нужна для вымывания сахаров из дробины).</li>
+  <li><b>Дрожжи:</b> специализированные спиртовые вискарные турбо-дрожжи (Whiskey Turbo с ферментом глюкоамилазой) или сухие элевые пивные дрожжи (SafAle S-04, US-05, Danstar Nottingham).</li>
+</ul>
+
+<h4>3. Затирание солода (температурные паузы)</h4>
+<ul>
+  <li><b>Нагрев воды:</b> налейте в куб 19 л воды и прогрейте ее до <b>68–69 °C</b>.</li>
+  <li><b>Внесение солода (засыпь):</b> если затираете в фильтр-мешке, опустите мешок в куб. Медленно всыпайте солод, тщательно разбивая комки лопаткой или веслом. После засыпки холодного солода температура затора установится точно на <b>64–65 °C</b>.</li>
+  <li><b>Мальтозная пауза (осахаривание):</b> закройте крышку, хорошо укутайте куб одеялом или термочехлом и выдержите <b>63–65 °C в течение 60–90 минут</b>. Каждые 20 минут желательно перемешивать. В этом узком диапазоне работает фермент бета-амилаза, производящий сбраживаемые сахара для максимального выхода спирта.</li>
+  <li><b>Йодная проба:</b> через 60 минут капните каплю прозрачного сусла на белое блюдце и добавьте каплю обычного аптечного йода. Если цвет йода не изменился (остался коричневым) — крахмал полностью расщеплен в сахар! Если йод посинел — продолжайте паузу еще 20–30 минут.</li>
+  <li><b>Мэш-аут (по желанию):</b> подогрейте затор до 75–78 °C на 5 минут для фиксации сахаров и снижения вязкости.</li>
+</ul>
+
+<h4>4. Фильтрация и промывка сусла («Белая схема»)</h4>
+<ul>
+  <li><b>Слив основного сусла:</b> аккуратно слейте сладкое сусло в чистую бродильную емкость через кран куба (при использовании фальшдна) или просто поднимите и подвесьте над кубом фильтр-мешок с солодом, дав суслу стечь.</li>
+  <li><b>Промывка дробины:</b> полейте оставшуюся горячую дробину заранее подготовленной водой 75–78 °C (7–8 л). Промойте солод, как через сито, вымывая оставшиеся сахара. Отожмите мешок без фанатизма (не выдавливая мутную жижу).</li>
+  <li><b>Итог:</b> в бродильном баке получится ~23–24 л кристально чистого, сладкого янтарного сусла плотностью <b>14–16 °Brix (по сахаромеру АС-3)</b>. Дробина выбрасывается (или идет на корм птице/выпечку хлеба).</li>
+</ul>
+
+<h4>5. Охлаждение и сбраживание</h4>
+<ul>
+  <li><b>Быстрое охлаждение:</b> солодовое сусло не содержит бактерицидного хмеля, поэтому его нужно максимально быстро охладить чиллером или в холодной ванне до <b>20–24 °C</b> (чтобы сусло не захватили молочнокислые бактерии).</li>
+  <li><b>Внесение дрожжей:</b> рассыпьте пачку вискарных дрожжей по поверхности остывшего сусла, насытьте его кислородом (активно перемешайте чистой лопаткой).</li>
+  <li><b>Брожение:</b> установите гидрозатвор. Оптимальная температура в помещении — <b>20–24 °C</b>. Срок брожения: <b>3–5 дней</b>.</li>
+  <li><b>Признаки готовности:</b> пена спала, брага осветлилась, вкус сухой, горьковато-зерновой без намека на сладость, ареометр АС-3 показывает <b>0–1%</b>.</li>
+</ul>
+
+<h4>6. Первая перегонка (спирт-сырец)</h4>
+<ul>
+  <li><b>Сборка:</b> режим прямотока (дефлегматор отключен). Установите в царгу <b>1–2 пыжа медной РПН</b> (медь для зерновых дистиллятов жизненно необходима — она улавливает соединения серы и меркаптаны, избавляя виски от тухлого запаха вареного зерна).</li>
+  <li><b>Перегон:</b> слейте брагу с дрожжевого осадка в куб. Гоните на максимальной мощности. Первые 30–50 мл можно отобрать в утиль.</li>
+  <li><b>Отбор «досуха»:</b> собирайте спирт-сырец до <b>0–3% в струе</b> (98–99 °C в кубе). Солодовый сырец будет иметь крепость около 28–32% и яркий запах свежего хлеба.</li>
+</ul>
+
+<h4>7. Вторая (дробная) перегонка на «Стиллмен Х»</h4>
+<ul>
+  <li><b>Подготовка:</b> разбавьте сырец чистой водой до <b>20–25%</b>. В царге остаются только медные пыжи (насадку СПН не использовать, чтобы не ободрать богатый солодовый букет).</li>
+  <li><b>Работа на себя:</b> 15–20 минут после закипания при полностью открытом дефлегматоре.</li>
+  <li><b>Отбор голов:</b> покапельно (1–2 капли в сек) отберите <b>5–7% от абсолютного спирта (АС)</b>. Ориентируйтесь по запаху с ладоней — как только едкий ацетон сменится приятным ячменно-эфирным тоном, переходите к телу.</li>
+  <li><b>Отбор тела (сердце виски):</b>
+    <ul>
+      <li>Прикройте воду в дефлегматоре, перейдя на ровную тонкую струйку.</li>
+      <li>Держите крепость в струе строго в диапазоне <b>78–84%</b>! <i>Если гнать выше 88% — зерновой аромат исчезнет, а напиток превратится в обычную водку.</i></li>
+      <li>Завершайте отбор тела при температуре в кубе 90–92 °C или при скачке верхнего термометра на +0.3 °C.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4>8. Выдержка, доводка и благородное созревание</h4>
+<ul>
+  <li><b>Разведение:</b> разбавьте солодовый дистиллят мягкой водой (бутилированная детская вода 50–100 мг/л или после осмоса) до <b>43–45%</b>. Помните: спирт льем в воду!</li>
+  <li><b>Выдержка в стеклянных банках 3 л на дубе:</b>
+    <ul>
+      <li><b>Кубики / бруски кавказского или французского дуба:</b> 12–15 г на 3-литровую банку (средний обжиг дает ваниль, кокос и миндаль; сильный обжиг — шоколад, дым и кофе).</li>
+      <li><b>Сроки:</b> 2–3 месяца в темноте при комнатной температуре. Раз в неделю открывайте банку на 5–10 минут для «дыхания» (кислород ускоряет превращение дубильных веществ в благородные эфиры).</li>
+    </ul>
+  </li>
+  <li><b>Секрет шотландских винокурен (финиш в хересных бочках / Sherry Cask):</b>
+    <div class="note-box" style="margin-top:8px; margin-bottom:8px;">
+      <b>Как повторить финиш легендарных Macallan и Glenfiddich дома:</b>
+      <p style="margin-top:4px;">Перед закладкой в банку с виски поместите подготовленные дубовые кубики в небольшую баночку с испанским сладким хересом (Sherry Pedro Ximenez или Oloroso), портвейном или крымской мадерой на 2–3 недели. Древесина пропитается винными сахарами и танинами. Затем эти пропитанные вином кубики заложите в свой солодовый виски. Напиток приобретет роскошный рубиновый цвет, плотный бархатный вкус, нотки инжира, фиников, вишни и темного шоколада!</p>
+    </div>
+  </li>
+  <li><b>Смягчение:</b> после снятия с дуба можно добавить 0.5 ч. л. декстрозы и 0.5 ч. л. сахарного колера на 3 л банку для идеального шотландского цвета и баланса.</li>
+  <li><b>Отдых:</b> дайте готовому виски постоять в бутылках еще <b>3–4 недели</b> перед первой дегустацией. Со временем вкус зернового виски становится только глубже и благороднее!</li>
+</ul>`
+      }
+    ];
+
+    const DEFAULT_TECH = [
+      {
+        id: "tech-invert",
+        title: "Инвертирование сахара: что это и зачем нужно",
+        category: "Химия процесса",
+        content: `<p><b>Что такое инверсия:</b> Обычный свекловичный или тростничный сахар (сахароза) состоит из двух связанных молекул — глюкозы и фруктозы. Под воздействием органической кислоты (например, лимонной) и нагрева эта химическая связь разрушается (сахароза расщепляется на моносахариды).</p>
+<h4 style="margin-top: 10px;">Зачем это нужно:</h4>
+<ul>
+  <li><b>Облегчение работы дрожжей:</b> Дрожжам не нужно тратить собственные ферменты (инвертазу) на расщепление сахара, брожение начинается быстрее и протекает чище.</li>
+  <li><b>Улучшение органолептики:</b> Снижается количество побочных сивушных примесей и альдегидов, брага набраживает меньше тяжелых спиртов.</li>
+  <li><b>Обязательно для карамели:</b> Добавление капли лимонного сока при варке сахарного колера предотвращает кристаллизацию и засыпание сахара в сухую крошку.</li>
+</ul>`
+      },
+      {
+        id: "tech-caramel",
+        title: "Как правильно приготовить сахарный колер",
+        category: "Колорирование",
+        content: `<p>Карамельный колер — классический метод окрашивания коньяка, рома и настоек в благородный янтарный цвет без ущерба для вкуса.</p>
+<h4 style="margin-top: 10px;">Пошаговый регламент:</h4>
+<ul>
+  <li><b>1. Инверсия:</b> В небольшой металлический ковшик или турку насыпьте 1–2 ст. ложки сахара и добавьте 3–4 капли лимонного сока.</li>
+  <li><b>2. Нагрев:</b> Прогревайте на среднем огне. Сахар расплавится, начнет пениться и менять цвет от золотистого до глубокого янтарно-чайного. <i>Не пережгите до черноты, иначе появится резкая жженая горечь!</i></li>
+  <li><b>3. Если сахар засахарился в крошку:</b> Если тепла не хватило или масса высохла, добавьте 1 чайную ложку воды прямо в ковшик и возобните нагрев — кристаллы мгновенно разойдутся.</li>
+  <li><b>4. Разведение:</b> Аккуратно влейте в горячую карамель 50 мл теплой воды или дистиллята (смесь зашипит), размешайте до однородного сиропа.</li>
+  <li><b>Дозировка:</b> Вносите в напиток порциями (0.5–1 ч. л. на 3-литровую банку) до получения нужного оттенка.</li>
+</ul>`
+      },
+      {
+        id: "tech-defleg",
+        title: "Работа дефлегматора и настройка охлаждения",
+        category: "Дистилляция",
+        content: `<p>Дефлегматор на колонне («Стиллмен Х») используется для организации возврата флегмы и точного разделения фракций при второй (дробной) перегонке.</p>
+<h4 style="margin-top: 10px;">Главные правила и шаги:</h4>
+<ul>
+  <li><b>Раздельный контур:</b> Вода на основной холодильник подается постоянным мощным потоком, а на дефлегматор — через отдельный игольчатый кран тонкой настройки.</li>
+  <li><b>Правило инертности:</b> Колонна реагирует на поворот крана с задержкой. После каждого микроповорота крана <b>всегда выжидайте 45–60 секунд</b>.</li>
+  <li><b>Работа «на себя»:</b> После закипания полностью откройте дефлегматор на 15–20 минут. Пар полностью конденсируется, головы концентрируются вверху.</li>
+  <li><b>Отбор голов:</b> Прикройте кран до покапельной скорости (1–2 капли в секунду). Отбирайте 5–8% от АС по запаху с ладони.</li>
+  <li><b>Отбор тела:</b> Уменьшите подачу воды в дефлегматор, переведя отбор в тонкую ровную струйку. Удерживайте спиртуозность в целевом коридоре (для фруктов/зерна: 80–86% в струе).</li>
+</ul>`
+      },
+      {
+        id: "tech-charcoal",
+        title: "Углевание дистиллята (Lincoln County Process)",
+        category: "Фильтрация",
+        content: `<p>Применяется для нейтральных спиртов (водка) и жестких зерновых дистиллятов (бурбон, теннесси виски в стиле Jack Daniel’s). <i>Для выдержанных фруктовых дистиллятов (коньяк, кальвадос) углевание категорически запрещено, так как оно уничтожает ароматику!</i></p>
+<h4 style="margin-top: 10px;">Как правильно делать:</h4>
+<ul>
+  <li><b>Крепость:</b> Перед фильтрацией разведите зерновой дистиллят до <b>45–50%</b>.</li>
+  <li><b>Подготовка угля (БАУ-А или КАУ):</b> Промойте уголь от угольной пыли чистой водой. <b>Главный секрет против потерь:</b> засыпайте уголь во влажном состоянии. Поры угля уже будут наполнены водой, поэтому спирт пройдет транзитом, а уголь не впитает в себя ценный напиток (потери объема упадут до минимума).</li>
+  <li><b>Смена угля:</b> При многократной фильтрации (2–3 раза) уголь обязательно нужно менять на свежую порцию, так как его поры забиваются сивушными примесями.</li>
+</ul>`
+      },
+      {
+        id: "tech-gin-secrets",
+        title: "Секреты крафтового джина: ботаника, мощности плиты и смягчение декстрозой",
+        category: "Джин / Тонкости",
+        content: `<p>Практический регламент и золотые правила приготовления элитного крафтового джина на аппарате «Стиллмен Х» и мощной плите (стеклокерамика/индукция).</p>
+<h4 style="margin-top: 10px;">1. Точная раскладка ботаники (из расчета 10.5 л 25% в кубе / 2.625 л АС / ~5 л готового джина 45%):</h4>
+<ul>
+  <li><b>Можжевельник (ягоды синие):</b> <b>70–75 г</b> — слегка помять скалкой/ножом (не дробить косточки в муку, чтобы не было горечи).</li>
+  <li><b>Кориандр (семена):</b> <b>22–25 г</b> — примять в ступке (дает связующий цитрусово-древесный тон линалоола).</li>
+  <li><b>Свежая цедра апельсина:</b> <b>15–18 г</b> (цедра с 1 крупного) — срезать овощечисткой строго оранжевый слой без белого альбедо.</li>
+  <li><b>Свежая цедра лимона или лайма:</b> <b>8–10 г</b> (цедра с 1 лимона) — только желтый/зеленый слой для свежести лимонена.</li>
+  <li><b>Кардамон зеленый:</b> <b>2.0–2.5 г</b> (5–6 коробочек) — раскрыть створки пальцами.</li>
+  <li><b>Корица в палочках:</b> <b>1.5–2.0 г</b> (половинка палочки) — надломить на кусочки (порошок не использовать!).</li>
+  <li><b>Бадьян (звездчатый анис):</b> <b>0.5–1 г</b> (1–2 лучика от звездочки, по желанию) — легкий восточный оттенок.</li>
+</ul>
+
+<h4 style="margin-top: 10px;">2. Грамотная комбинированная загрузка в аппарат «Стиллмен Х»:</h4>
+<ul>
+  <li><b>В куб (в фильтр-мешочке для хмеля):</b> закладывается весь можжевельник (70–75 г). Можжевельнику полезно провариться при кипении для вытяжки глубоких смол, а мешочек защитит дно/ТЭН от пригорания.</li>
+  <li><b>В паровую зону (в царгу на пыж РПН):</b> в верхнюю треть царги под поворот устанавливается 1 свободный пыж из нержавейки, на него насыпаются кориандр, цедра, кардамон и корица. Горячий спиртовой пар мягко выбивает легкие цитрусовые эфиры прямо в отбор без вареного компотного привкуса.</li>
+</ul>
+
+<h4 style="margin-top: 10px;">3. Режимы мощности плиты (стеклокерамика / индукция 3.5 кВт):</h4>
+<ul>
+  <li><b>3500 Вт (Разгон куба):</b> греем на полной мощности до температуры <b>75–78 °C</b> в кубе. Как только царга начинает прогреваться — <b>немедленно сбавляйте нагрев на 1700 Вт</b>!</li>
+  <li><b>1700 Вт (Отбор голов):</b> покапельный отбор со скоростью <b>1–2 капли в секунду</b>. Отобрать первые <b>50–70 мл</b> (около 50 г на весах) — это снимет самые едкие терпеновые масла.</li>
+  <li><b>⭐ 2000 Вт (Отбор питьевого тела, максимум 2300 Вт):</b> золотая середина! Струйка толщиной со спичку, скорость отбора 2–2.5 л/час. <i>Не включайте 2800–3500 Вт, чтобы не сварить травы и не вызвать захлеб царги!</i></li>
+  <li><b>Температура дистиллята:</b> на выходе холодильника струйка должна быть <b>прохладной (18–20 °C)</b>. Если дистиллят пойдет теплым (30 °C+), ценнейший цитрусовый аромат (лимонен) улетучится в воздух кухни.</li>
+  <li><b>СТОП отбора тела:</b> строго при падении спиртуозности в струе до <b>48–50%</b> (ниже пойдут тяжелые хвостовые масла, от которых напиток мгновенно мутнеет).</li>
+</ul>
+
+<h4 style="margin-top: 10px;">4. Смягчение джина: Декстроза vs Фруктоза</h4>
+<ul>
+  <li><b>Канон London Dry:</b> 0% сахара (классический сухой строгий джин под тоник).</li>
+  <li><b>Стиль Old Tom / мягкий крафтовый джин:</b> для питья чистым со льдом напиток смягчают, чтобы убрать спиртовое жжение.</li>
+  <li><b>Почему ДЕКСТРОЗА (глюкоза), а не фруктоза:</b> фруктоза в 2.5 раза слаще декстрозы и легко превращает джин в приторный компотный ликер, глуша цитрус. Декстроза дает бархатистость и мягкость, не добавляя приторности.</li>
+  <li><b>Дозировка декстрозы:</b> всего <b>1.5–2 г на 1 л джина</b> (или <b>1 неполная ч. л. ~4–5 г на 3-литровую банку</b>).</li>
+  <li><b>Секрет внесения без помутнения:</b> никогда не сыпьте сухой порошок в общую банку! Отлейте <b>50 мл джина</b> в рюмку, полностью растворите там отмеренную декстрозу до зеркальной прозрачности, затем тонкой струйкой влейте обратно в банку и перемешайте.</li>
+  <li><b>Сроки внесения:</b> сначала дайте джину постоять в стекле 5–7 дней после разведения. Если вкус гармоничен — оставьте как есть! Если хочется большей мягкости — внесите декстрозу и дайте отдохнуть еще 2–3 дня.</li>
+</ul>`
+      }
+    ];
+
+    /* =====================================================================
+       2. УПРАВЛЕНИЕ ХРАНИЛИЩЕМ (LocalStorage)
+       ===================================================================== */
+    const STORAGE_KEY_RECIPES = 'mv_recipes_v2';
+    const STORAGE_KEY_TECH = 'mv_tech_v2';
+
+    function getRecipes() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_RECIPES);
+        if (!raw) {
+          saveRecipes(DEFAULT_RECIPES);
+          return DEFAULT_RECIPES;
+        }
+        let list = JSON.parse(raw);
+        let updated = false;
+        DEFAULT_RECIPES.forEach(defRec => {
+          const existing = list.find(r => r.id === defRec.id);
+          if (!existing) {
+            list.push(defRec);
+            updated = true;
+          } else if (defRec.id === 'gin-core' && (!existing.content.includes('2000 Вт') || !existing.content.includes('Декстроза vs Фруктоза'))) {
+            existing.content = defRec.content;
+            updated = true;
+          }
+        });
+        if (updated) saveRecipes(list);
+        return list;
+      } catch (e) {
+        return DEFAULT_RECIPES;
+      }
+    }
+
+    function saveRecipes(list) {
+      localStorage.setItem(STORAGE_KEY_RECIPES, JSON.stringify(list));
+    }
+
+    function getTech() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_TECH);
+        if (!raw) {
+          saveTech(DEFAULT_TECH);
+          return DEFAULT_TECH;
+        }
+        let list = JSON.parse(raw);
+        let updated = false;
+        DEFAULT_TECH.forEach(defTech => {
+          if (!list.some(t => t.id === defTech.id)) {
+            list.push(defTech);
+            updated = true;
+          }
+        });
+        if (updated) saveTech(list);
+        return list;
+      } catch (e) {
+        return DEFAULT_TECH;
+      }
+    }
+
+    function saveTech(list) {
+      localStorage.setItem(STORAGE_KEY_TECH, JSON.stringify(list));
+    }
+
+    /* =====================================================================
+       3. ОТРИСОВКА (RENDER)
+       ===================================================================== */
+    function renderAll() {
+      renderRecipes();
+      renderTech();
+      if (typeof runSecondDistillCalc === 'function') runSecondDistillCalc();
+      if (typeof runDilutionCalc === 'function') runDilutionCalc();
+      if (typeof runConverterCalc === 'function') runConverterCalc();
+      if (typeof initLabelDates === 'function') initLabelDates();
+    }
+
+    function renderRecipes(searchQuery = '') {
+      const container = document.getElementById('recipes-container');
+      const list = getRecipes();
+      document.getElementById('count-recipes').innerText = list.length;
+      container.innerHTML = '';
+
+      const query = searchQuery.toLowerCase().trim();
+      const filtered = list.filter(item => {
+        if (!query) return true;
+        return (item.title && item.title.toLowerCase().includes(query)) ||
+               (item.category && item.category.toLowerCase().includes(query)) ||
+               (item.content && item.content.toLowerCase().includes(query));
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--text-muted);">' +
+          (query ? 'Ничего не найдено по вашему запросу.' : 'Список рецептов пуст.') + '</div>';
+        return;
+      }
+
+      filtered.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'recipe-item';
+        card.id = 'recipe-card-' + item.id;
+
+        card.innerHTML = `
+          <div class="recipe-header" onclick="toggleDetails('body-${item.id}')">
+            <div class="recipe-title-group">
+              <span class="tag">${escapeHtml(item.category || 'Рецепт')}</span>
+              <strong>${escapeHtml(item.title)}</strong>
+            </div>
+            <div class="recipe-header-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-secondary btn-sm" onclick="openLabelForRecipe('${item.id}')" title="Создать термоэтикетку 60х40">🏷️ Этикетка</button>
+              <button class="btn btn-secondary btn-sm" onclick="openEditModal('recipe', '${item.id}')" title="Редактировать">✏️ Изменить</button>
+              <button class="btn btn-secondary btn-sm" onclick="duplicateRecipe('${item.id}')" title="Создать копию">📋 Копия</button>
+              <span style="margin-left:6px; cursor:pointer;" onclick="toggleDetails('body-${item.id}')">▼</span>
+            </div>
+          </div>
+          <div class="recipe-body" id="body-${item.id}">
+            ${item.content}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderTech() {
+      const container = document.getElementById('tech-container');
+      const list = getTech();
+      document.getElementById('count-tech').innerText = list.length;
+      container.innerHTML = '';
+
+      list.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'recipe-item';
+        card.style.marginBottom = '16px';
+
+        card.innerHTML = `
+          <div class="recipe-header" onclick="toggleDetails('body-${item.id}')">
+            <div class="recipe-title-group">
+              <span class="tag">${escapeHtml(item.category || 'Технология')}</span>
+              <strong>${escapeHtml(item.title)}</strong>
+            </div>
+            <div class="recipe-header-actions" onclick="event.stopPropagation()">
+              <button class="btn btn-secondary btn-sm" onclick="openEditModal('tech', '${item.id}')" title="Редактировать">✏️ Изменить</button>
+              <span style="margin-left:6px; cursor:pointer;" onclick="toggleDetails('body-${item.id}')">▼</span>
+            </div>
+          </div>
+          <div class="recipe-body" id="body-${item.id}">
+            ${item.content}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterRecipes() {
+      const q = document.getElementById('recipe-search').value;
+      renderRecipes(q);
+    }
+
+    function toggleDetails(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('open');
+    }
+
+    function expandAll(open) {
+      document.querySelectorAll('#recipes-container .recipe-body').forEach(el => {
+        if (open) el.classList.add('open');
+        else el.classList.remove('open');
+      });
+    }
+
+    /* =====================================================================
+       4. МОДАЛЬНОЕ ОКНО И РЕДАКТИРОВАНИЕ
+       ===================================================================== */
+    function openEditModal(type, id) {
+      const list = type === 'recipe' ? getRecipes() : getTech();
+      const item = list.find(x => x.id === id);
+      if (!item) return;
+
+      document.getElementById('modal-title').innerText = type === 'recipe' ? 'Редактировать рецепт' : 'Редактировать регламент';
+      document.getElementById('edit-item-type').value = type;
+      document.getElementById('edit-item-id').value = item.id;
+      document.getElementById('edit-item-title').value = item.title || '';
+      document.getElementById('edit-item-cat').value = item.category || '';
+      document.getElementById('edit-item-content').value = item.content || '';
+
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function openNewRecipeModal() {
+      document.getElementById('modal-title').innerText = 'Создать новый рецепт';
+      document.getElementById('edit-item-type').value = 'recipe';
+      document.getElementById('edit-item-id').value = 'rec_' + Date.now();
+      document.getElementById('edit-item-title').value = '';
+      document.getElementById('edit-item-cat').value = 'Свой рецепт';
+      document.getElementById('edit-item-content').value = `<h4>1. Сырье и пропорции</h4>
+<ul>
+  <li><b>Основа:</b> </li>
+  <li><b>Вода:</b> </li>
+  <li><b>Дрожжи:</b> </li>
+</ul>
+
+<h4>2. Брожение</h4>
+<ul>
+  <li>Температура: </li>
+  <li>Срок: </li>
+</ul>
+
+<h4>3. Перегонка</h4>
+<ul>
+  <li>Первый перегон: </li>
+  <li>Второй дробный перегон: </li>
+</ul>`;
+
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function openNewTechModal() {
+      document.getElementById('modal-title').innerText = 'Новый технический регламент';
+      document.getElementById('edit-item-type').value = 'tech';
+      document.getElementById('edit-item-id').value = 'tech_' + Date.now();
+      document.getElementById('edit-item-title').value = '';
+      document.getElementById('edit-item-cat').value = 'Регламент';
+      document.getElementById('edit-item-content').value = `<p><b>Суть процесса:</b> </p>
+<h4>Пошаговые правила:</h4>
+<ul>
+  <li><b>Шаг 1:</b> </li>
+  <li><b>Шаг 2:</b> </li>
+</ul>`;
+
+      document.getElementById('edit-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.remove('active');
+    }
+
+    function saveItemFromModal() {
+      const type = document.getElementById('edit-item-type').value;
+      const id = document.getElementById('edit-item-id').value;
+      const title = document.getElementById('edit-item-title').value.trim();
+      const cat = document.getElementById('edit-item-cat').value.trim() || 'Разное';
+      const content = document.getElementById('edit-item-content').value.trim();
+
+      if (!title) {
+        alert('Пожалуйста, укажите название!');
+        return;
+      }
+
+      if (type === 'recipe') {
+        let list = getRecipes();
+        const existingIdx = list.findIndex(x => x.id === id);
+        const obj = { id, title, category: cat, content };
+        if (existingIdx >= 0) {
+          list[existingIdx] = obj;
+        } else {
+          list.unshift(obj);
+          switchTab('recipes', document.querySelectorAll('.tab-btn')[0]);
+        }
+        saveRecipes(list);
+        renderRecipes(document.getElementById('recipe-search').value);
+      } else {
+        let list = getTech();
+        const existingIdx = list.findIndex(x => x.id === id);
+        const obj = { id, title, category: cat, content };
+        if (existingIdx >= 0) {
+          list[existingIdx] = obj;
+        } else {
+          list.unshift(obj);
+          switchTab('tech', document.querySelectorAll('.tab-btn')[3]);
+        }
+        saveTech(list);
+        renderTech();
+      }
+
+      closeModal();
+    }
+
+    function duplicateRecipe(id) {
+      let list = getRecipes();
+      const orig = list.find(x => x.id === id);
+      if (!orig) return;
+
+      const copy = {
+        id: 'rec_' + Date.now(),
+        title: orig.title + ' (Копия)',
+        category: orig.category,
+        content: orig.content
+      };
+      list.unshift(copy);
+      saveRecipes(list);
+      renderRecipes(document.getElementById('recipe-search').value);
+      toggleDetails('body-' + copy.id);
+    }
+
+    function deleteItem(type, id) {
+      if (!confirm('Вы уверены, что хотите удалить эту запись?')) return;
+      if (type === 'recipe') {
+        let list = getRecipes().filter(x => x.id !== id);
+        saveRecipes(list);
+        renderRecipes(document.getElementById('recipe-search').value);
+      } else {
+        let list = getTech().filter(x => x.id !== id);
+        saveTech(list);
+        renderTech();
+      }
+    }
+
+    /* Вспомогательные функции вставки в редакторе */
+    function insertTag(openTag, closeTag) {
+      const ta = document.getElementById('edit-item-content');
+      const start = ta.selectionStart;
+      const end = ta.selectionEnd;
+      const sel = ta.value.substring(start, end);
+      const rep = openTag + sel + closeTag;
+      ta.value = ta.value.substring(0, start) + rep + ta.value.substring(end);
+      ta.focus();
+      ta.setSelectionRange(start + openTag.length, start + openTag.length + sel.length);
+    }
+
+    function insertList() {
+      const ta = document.getElementById('edit-item-content');
+      const snippet = "<ul>\n  <li><b>Пункт 1:</b> Описание</li>\n  <li><b>Пункт 2:</b> Описание</li>\n</ul>\n";
+      insertAtCursor(ta, snippet);
+    }
+
+    function insertNoteBox() {
+      const ta = document.getElementById('edit-item-content');
+      const snippet = `<div class="note-box">\n  <b>Важное примечание:</b>\n  <p style="margin-top:4px;">Текст примечания...</p>\n</div>\n`;
+      insertAtCursor(ta, snippet);
+    }
+
+    function insertAtCursor(myField, myValue) {
+      if (myField.selectionStart || myField.selectionStart === 0) {
+        var startPos = myField.selectionStart;
+        var endPos = myField.selectionEnd;
+        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+        myField.focus();
+        myField.selectionStart = startPos + myValue.length;
+        myField.selectionEnd = startPos + myValue.length;
+      } else {
+        myField.value += myValue;
+      }
+    }
+
+    /* =====================================================================
+       5. ВКЛАДКИ
+       ===================================================================== */
+    function switchTab(name, btn) {
+      document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      document.getElementById('tab-recipes').style.display = 'none';
+      document.getElementById('tab-calcs').style.display = 'none';
+      document.getElementById('tab-labels').style.display = 'none';
+      document.getElementById('tab-tech').style.display = 'none';
+
+      document.getElementById('tab-' + name).style.display = 'block';
+      if (btn) btn.classList.add('active');
+    }
+
+    /* =====================================================================
+       6. КАЛЬКУЛЯТОРЫ
+       ===================================================================== */
+    function toggleCalcMode(mode) {
+      if (mode === 'dilute') {
+        document.getElementById('row-undiluted').style.display = 'block';
+        document.getElementById('row-ready').style.display = 'none';
+      } else {
+        document.getElementById('row-undiluted').style.display = 'none';
+        document.getElementById('row-ready').style.display = 'block';
+      }
+      runSecondDistillCalc();
+    }
+
+    function setRawStr(val) {
+      document.getElementById('calc-s1').value = val;
+      runSecondDistillCalc();
+    }
+
+    function setPotTarget(val) {
+      document.getElementById('calc-target-pot').value = val;
+      document.querySelectorAll('#chip-pot-25, #chip-pot-28, #chip-pot-20').forEach(c => c.classList.remove('active'));
+      const activeChip = document.getElementById('chip-pot-' + val);
+      if (activeChip) activeChip.classList.add('active');
+      runSecondDistillCalc();
+    }
+
+    function setReadyStr(val) {
+      document.getElementById('calc-s-ready').value = val;
+      runSecondDistillCalc();
+    }
+
+    function setHeadsPct(val, type) {
+      document.getElementById('calc-heads-val').value = val;
+      document.querySelectorAll('#chip-grain, #chip-fruit, #chip-sugar').forEach(c => c.classList.remove('active'));
+      const chip = document.getElementById('chip-' + type);
+      if (chip) chip.classList.add('active');
+      runSecondDistillCalc();
+    }
+
+    /* =====================================================================
+       ТАБЛИЦА ПЛОТНОСТИ ВОДНО-СПИРТОВЫХ РАСТВОРОВ (ГОСТ 3639-79, 20 °C)
+       ===================================================================== */
+    const ALCOHOL_DENSITY_20C = [
+      { abv: 0,   density: 0.9982 },
+      { abv: 5,   density: 0.9911 },
+      { abv: 10,  density: 0.9847 },
+      { abv: 15,  density: 0.9791 },
+      { abv: 20,  density: 0.9736 },
+      { abv: 25,  density: 0.9679 },
+      { abv: 30,  density: 0.9617 },
+      { abv: 35,  density: 0.9547 },
+      { abv: 40,  density: 0.9480 },
+      { abv: 43,  density: 0.9434 },
+      { abv: 45,  density: 0.9380 },
+      { abv: 50,  density: 0.9303 },
+      { abv: 55,  density: 0.9208 },
+      { abv: 60,  density: 0.9091 },
+      { abv: 65,  density: 0.8966 },
+      { abv: 70,  density: 0.8855 },
+      { abv: 75,  density: 0.8718 },
+      { abv: 80,  density: 0.8573 },
+      { abv: 82,  density: 0.8510 },
+      { abv: 85,  density: 0.8412 },
+      { abv: 90,  density: 0.8228 },
+      { abv: 92,  density: 0.8148 },
+      { abv: 95,  density: 0.8014 },
+      { abv: 96,  density: 0.7963 },
+      { abv: 96.6,density: 0.7935 },
+      { abv: 100, density: 0.7893 }
+    ];
+
+    function getAlcoholDensity(abv) {
+      if (abv <= 0) return 0.9982;
+      if (abv >= 100) return 0.7893;
+      for (let i = 0; i < ALCOHOL_DENSITY_20C.length - 1; i++) {
+        const p1 = ALCOHOL_DENSITY_20C[i];
+        const p2 = ALCOHOL_DENSITY_20C[i + 1];
+        if (abv >= p1.abv && abv <= p2.abv) {
+          const t = (abv - p1.abv) / (p2.abv - p1.abv);
+          return p1.density + t * (p2.density - p1.density);
+        }
+      }
+      return 0.9982;
+    }
+
+    function toggleDilutionMode(mode) {
+      const rowWeight = document.getElementById('row-dil-weight');
+      const rowVol = document.getElementById('row-dil-volume');
+      if (!rowWeight || !rowVol) return;
+
+      if (mode === 'weight') {
+        rowWeight.style.display = 'block';
+        rowVol.style.display = 'none';
+      } else {
+        rowWeight.style.display = 'none';
+        rowVol.style.display = 'block';
+      }
+      runDilutionCalc();
+    }
+
+    function setDilStr1(val) {
+      const inW = document.getElementById('calc-dil-s1');
+      const inV = document.getElementById('calc-dil-s1-v');
+      if (inW) inW.value = val;
+      if (inV) inV.value = val;
+
+      document.querySelectorAll('#row-dil-weight .calc-chip, #row-dil-volume .calc-chip').forEach(c => {
+        c.classList.remove('active');
+        if (c.innerText.trim() === val + '%') c.classList.add('active');
+      });
+      runDilutionCalc();
+    }
+
+    function onDilS1Input() {
+      const val = document.getElementById('calc-dil-s1')?.value;
+      const inV = document.getElementById('calc-dil-s1-v');
+      if (inV && val !== undefined) inV.value = val;
+      runDilutionCalc();
+    }
+
+    function onDilS1VolInput() {
+      const val = document.getElementById('calc-dil-s1-v')?.value;
+      const inW = document.getElementById('calc-dil-s1');
+      if (inW && val !== undefined) inW.value = val;
+      runDilutionCalc();
+    }
+
+    function setDrinkTarget(val) {
+      const el = document.getElementById('calc-dil-s2');
+      if (el) el.value = val;
+      ['chip-drink-40', 'chip-drink-43', 'chip-drink-45', 'chip-drink-47'].forEach(id => {
+        const c = document.getElementById(id);
+        if (c) c.classList.remove('active');
+      });
+      const activeChip = document.getElementById('chip-drink-' + val);
+      if (activeChip) activeChip.classList.add('active');
+      runDilutionCalc();
+    }
+
+    function runSecondDistillCalc() {
+      const mode = document.querySelector('input[name="calc-mode"]:checked')?.value || 'dilute';
+      let v = 0;
+      let s = 0;
+      let waterToAdd = 0;
+      let targetPotStr = 25;
+      let totalPotVol = 0;
+
+      if (mode === 'dilute') {
+        v = parseFloat(document.getElementById('calc-v1').value) || 0;
+        s = parseFloat(document.getElementById('calc-s1').value) || 0;
+        targetPotStr = parseFloat(document.getElementById('calc-target-pot').value) || 25;
+
+        if (targetPotStr >= s || targetPotStr <= 0 || v <= 0) {
+          waterToAdd = 0;
+          totalPotVol = v;
+        } else {
+          waterToAdd = ((s / targetPotStr) - 1) * v;
+          totalPotVol = v + waterToAdd;
+        }
+      } else {
+        totalPotVol = parseFloat(document.getElementById('calc-v-ready').value) || 0;
+        targetPotStr = parseFloat(document.getElementById('calc-s-ready').value) || 25;
+        v = totalPotVol;
+        s = targetPotStr;
+        waterToAdd = 0;
+      }
+
+      const ac = (v * s) / 100;
+      const headsPct = parseFloat(document.getElementById('calc-heads-val').value) || 6;
+      const bodyTargetStr = parseFloat(document.getElementById('calc-body-str').value) || 82;
+
+      // Головы по чистому спирту (АС)
+      const headsAcMl = Math.round(ac * (headsPct / 100) * 1000);
+      // Головы в мерную мензурку (при отборе струей ~90% спиртуозности)
+      const headsCylinderMl = Math.round(headsAcMl / 0.90);
+      const headsDensity = getAlcoholDensity(90);
+      const headsGrams = Math.round(headsCylinderMl * headsDensity);
+
+      // Прогноз выхода питьевого тела (~70% от АС)
+      const bodyAc = ac * 0.70;
+      const bodyL = (bodyAc / (bodyTargetStr / 100)).toFixed(2);
+      const bodyDensity = getAlcoholDensity(bodyTargetStr);
+      const bodyGrams = Math.round(parseFloat(bodyL) * 1000 * bodyDensity);
+      const finishedDrinkL = (bodyAc / 0.43).toFixed(2);
+
+      const box = document.getElementById('res-second-distill');
+      if (!box) return;
+      box.style.display = 'block';
+
+      let dilutionHtml = '';
+      if (mode === 'dilute') {
+        dilutionHtml = `
+          <div style="background:#221d19; padding:12px 14px; border-radius:6px; margin-bottom:12px; border-left:3px solid #72d192;">
+            <b style="color:#72d192;">💧 1. Подготовка куба (разведение сырца до ${targetPotStr}%):</b><br>
+            • Долить чистой воды в куб: <strong style="color:#72d192; font-size:17px;">${waterToAdd.toFixed(2)} л</strong> (${Math.round(waterToAdd * 1000)} мл)<br>
+            • Общий объем заправки куба: <b>~${totalPotVol.toFixed(2)} л</b> (крепостью <b>${targetPotStr}%</b>)
+          </div>
+        `;
+      } else {
+        dilutionHtml = `
+          <div style="background:#221d19; padding:12px 14px; border-radius:6px; margin-bottom:12px; border-left:3px solid #72d192;">
+            <b>Объем заправки куба:</b> ${totalPotVol.toFixed(2)} л (крепостью <b>${targetPotStr}%</b>)
+          </div>
+        `;
+      }
+
+      box.innerHTML = `
+        ${dilutionHtml}
+        <div style="margin-bottom:8px; font-size:14px;">
+          • Абсолютный спирт (АС) в кубе: <b>${ac.toFixed(2)} л</b>
+        </div>
+
+        <div class="heads-highlight">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <span style="color:#f0a36b; font-weight:700; font-size:15px;">🚨 2. СКОЛЬКО СНЯТЬ ГОЛОВ (${headsPct}% от АС):</span>
+              <div class="heads-big">${headsCylinderMl} мл <span style="font-size:16px; font-weight:400; color:var(--text);">(или <b>~${headsGrams} г</b> на весах)</span></div>
+            </div>
+            <div style="text-align:right; font-size:13px; color:var(--text-muted);">
+              по чистому АС: <b>${headsAcMl} мл</b><br>
+              в мензурку (~90%): <b>${headsCylinderMl} мл</b> (${headsGrams} г)
+            </div>
+          </div>
+          <div style="margin-top:10px; font-size:13px; color:var(--text); border-top:1px dashed var(--border); padding-top:8px; line-height:1.5;">
+            ⏱️ <b>Скорость отбора:</b> строго покапельно, <b>1–2 капли в секунду</b>.<br>
+            ⚖️ <b>Если нет мензурки:</b> поставьте баночку на кухонные весы, нажмите «Тара» (0 г) и отберите покапельно ровно <b>${headsGrams} г</b> голов!<br>
+            👃 <b>Ориентир окончания:</b> разотрите каплю на ладонях — как только исчезнет едкий запах ацетона/растворителя и пойдет приятный аромат сырья, переставляйте емкость под тело!
+          </div>
+        </div>
+
+        <div style="margin-top:12px; font-size:14px; background:#1b1816; padding:10px 14px; border-radius:6px; border:1px solid var(--border);">
+          <b style="color:#f0a36b;">🍶 3. Прогноз выхода питьевого «сердца»:</b><br>
+          • Выход дистиллята крепостью ${bodyTargetStr}%: <b>~${bodyL} л</b> (или <b>~${bodyGrams} г</b> на весах)<br>
+          • После разведения готового напитка водой до 43%: <b>~${finishedDrinkL} л</b> (или ~${Math.round(finishedDrinkL * 2)} бутылок по 0.5 л)
+        </div>
+      `;
+    }
+
+    function runDilutionCalc() {
+      const mode = document.querySelector('input[name="dil-mode"]:checked')?.value || 'weight';
+      const s2 = parseFloat(document.getElementById('calc-dil-s2')?.value) || 0;
+      const box = document.getElementById('res-dilution');
+      if (!box) return;
+
+      let s1 = 0;
+      let initWeightG = 0;
+      let initVolMl = 0;
+
+      if (mode === 'weight') {
+        initWeightG = parseFloat(document.getElementById('calc-dil-w')?.value) || 0;
+        s1 = parseFloat(document.getElementById('calc-dil-s1')?.value) || 0;
+        if (initWeightG <= 0 || s1 <= 0 || s2 <= 0 || s2 >= s1) {
+          box.style.display = 'block';
+          box.innerHTML = '<span style="color:var(--text-muted);">Введите корректные вес и крепость (желаемая крепость должна быть меньше исходной).</span>';
+          return;
+        }
+        const rho1 = getAlcoholDensity(s1);
+        initVolMl = initWeightG / rho1;
+      } else {
+        const initVolL = parseFloat(document.getElementById('calc-dil-v')?.value) || 0;
+        s1 = parseFloat(document.getElementById('calc-dil-s1-v')?.value) || 0;
+        if (initVolL <= 0 || s1 <= 0 || s2 <= 0 || s2 >= s1) {
+          box.style.display = 'block';
+          box.innerHTML = '<span style="color:var(--text-muted);">Введите корректные объем и крепость (желаемая крепость должна быть меньше исходной).</span>';
+          return;
+        }
+        initVolMl = initVolL * 1000;
+        const rho1 = getAlcoholDensity(s1);
+        initWeightG = initVolMl * rho1;
+      }
+
+      const rho1 = getAlcoholDensity(s1);
+      const rho2 = getAlcoholDensity(s2);
+
+      // Целевой объем напитка при крепости s2 (мл)
+      const targetVolMl = initVolMl * (s1 / s2);
+      // Итоговый вес напитка при крепости s2 (г)
+      const targetWeightG = targetVolMl * rho2;
+      // Вес воды, которую необходимо добавить (г)
+      const waterWeightG = targetWeightG - initWeightG;
+      // Объем воды (при плотности воды ~0.9982 г/мл)
+      const waterVolL = (waterWeightG / 1000).toFixed(2);
+      const waterVolMl = Math.round(waterWeightG);
+
+      const targetVolL = (targetVolMl / 1000).toFixed(2);
+      const initVolL = (initVolMl / 1000).toFixed(2);
+      const bottlesCount = (targetVolMl / 500).toFixed(1);
+
+      box.style.display = 'block';
+      box.innerHTML = `
+        <div style="background:#221d19; padding:12px 14px; border-radius:6px; margin-bottom:12px; border-left:3px solid #72d192;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <span style="font-size:13px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">💧 Сколько добавить чистой воды:</span>
+              <div style="font-size:26px; font-weight:700; color:#72d192; line-height:1.2; margin-top:2px;">
+                +${Math.round(waterWeightG)} г <span style="font-size:16px; font-weight:400; color:var(--text);">(или ${waterVolL} л / ${waterVolMl} мл)</span>
+              </div>
+            </div>
+            <div style="text-align:right; font-size:13px; color:var(--text-muted);">
+              Итоговый вес на весах:<br>
+              <b style="color:#fff; font-size:17px;">${Math.round(targetWeightG)} г</b>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#1b1816; padding:12px 14px; border-radius:6px; border:1px solid var(--border); margin-bottom:10px; font-size:13px; line-height:1.6;">
+          <b style="color:#f0a36b; font-size:14px;">⚖️ Пошаговая инструкция для разведения на кухонных весах (без мерной тары):</b><br>
+          <b>Способ 1 (через кнопку ТАРА — самый удобный):</b><br>
+          1. Поставьте банку с дистиллятом (${Math.round(initWeightG)} г) на кухонные весы.<br>
+          2. Нажмите кнопку <b>«Тара» / «Zero»</b> (на дисплее весов появится <b>0 г</b>).<br>
+          3. Доливайте тонкой струйкой холодную чистую воду, пока весы не покажут ровно <strong style="color:#72d192;">+${Math.round(waterWeightG)} г</strong>.<br>
+          <div style="margin-top:6px; padding-top:6px; border-top:1px dashed var(--border);">
+            <b>Способ 2 (по общему весу емкости):</b><br>
+            Если не сбрасывать тару, общий вес на табло весов должен составить: <b>Вес_пустой_банки + ${Math.round(targetWeightG)} г</b>.
+          </div>
+        </div>
+
+        <div style="font-size:13px; color:var(--text-muted); line-height:1.6;">
+          📊 <b>Физические параметры смеси (ГОСТ 3639-79):</b><br>
+          • Исходный дистиллят: чистый вес <b>${Math.round(initWeightG)} г</b>, объем <b>~${initVolL} л</b> (плотность ${rho1.toFixed(4)} г/мл при ${s1}%)<br>
+          • Готовый напиток: вес <b>${Math.round(targetWeightG)} г</b>, объем <b>~${targetVolL} л</b> (крепость <b>${s2}%</b>, ~${bottlesCount} бут. по 0.5 л, плотность ${rho2.toFixed(4)} г/мл)<br>
+          <span style="font-size:12px; color:#a89f91;"><i>* Расчет по массе 100% точен и полностью учитывает физическую контракцию (сжатие смеси при контакте спирта и воды).</i></span>
+        </div>
+
+        <div style="margin-top:10px; font-size:12px; color:var(--text); background:rgba(217,119,54,0.08); padding:8px 10px; border-radius:4px; border-left:3px solid var(--accent);">
+          🧊 <b>Совет винокура:</b> Вливайте спирт в воду (или воду тонкой струйкой в спирт при интенсивном перемешивании), используя охлажденную мягкую воду (бутилированную или после обратного осмоса). Дайте напитку отдохнуть в стекле 5–10 дней в прохладном темном месте для стабилизации вкуса!
+        </div>
+      `;
+    }
+
+    /* =====================================================================
+       ЭКСПРЕСС-КОНВЕРТЕР: ВЕС <-> ОБЪЕМ (ГОСТ 3639-79)
+       ===================================================================== */
+    function setConvAbv(val) {
+      const el = document.getElementById('conv-abv');
+      if (el) el.value = val;
+      document.querySelectorAll('#conv-abv ~ .calc-chips .calc-chip').forEach(c => {
+        c.classList.remove('active');
+        if (c.innerText.includes(val + '%')) c.classList.add('active');
+      });
+      runConverterCalc();
+    }
+
+    function runConverterCalc() {
+      const dir = document.getElementById('conv-dir')?.value || 'w2v';
+      const val = parseFloat(document.getElementById('conv-val')?.value) || 0;
+      const abv = parseFloat(document.getElementById('conv-abv')?.value) || 0;
+      const lbl = document.getElementById('lbl-conv-val');
+      const box = document.getElementById('res-converter');
+      if (!box) return;
+
+      if (lbl) {
+        lbl.innerText = dir === 'w2v' ? 'Вес жидкости на весах (г):' : 'Объем жидкости (л):';
+      }
+
+      if (val <= 0 || abv < 0 || abv > 100) {
+        box.innerHTML = '<span style="color:var(--text-muted);">Введите значение и крепость (от 0 до 100%).</span>';
+        return;
+      }
+
+      const rho = getAlcoholDensity(abv);
+
+      if (dir === 'w2v') {
+        // Из граммов в литры
+        const volMl = val / rho;
+        const volL = (volMl / 1000).toFixed(3);
+        box.innerHTML = `
+          <div style="font-size:14px; line-height:1.6; background:#1b1816; padding:12px 14px; border-radius:6px; border:1px solid var(--border);">
+            ⚖️ <b>Результат перевода из веса в объем:</b><br>
+            <b>${val} г</b> жидкости крепостью <b>${abv}% об.</b> = <strong style="color:#72d192; font-size:18px;">${volL} л</strong> (${Math.round(volMl)} мл)<br>
+            <span style="font-size:12px; color:var(--text-muted);">Плотность при 20 °C: <b>${rho.toFixed(4)} г/мл</b> (1 литр весит ровно ${Math.round(rho * 1000)} г)</span>
+          </div>
+        `;
+      } else {
+        // Из литров в граммы
+        const weightG = Math.round(val * 1000 * rho);
+        box.innerHTML = `
+          <div style="font-size:14px; line-height:1.6; background:#1b1816; padding:12px 14px; border-radius:6px; border:1px solid var(--border);">
+            🧪 <b>Результат перевода из объема в вес:</b><br>
+            <b>${val} л</b> жидкости крепостью <b>${abv}% об.</b> = <strong style="color:#72d192; font-size:18px;">${weightG} г</strong> на кухонных весах<br>
+            <span style="font-size:12px; color:var(--text-muted);">Плотность при 20 °C: <b>${rho.toFixed(4)} г/мл</b> (1 литр весит ровно ${Math.round(rho * 1000)} г)</span>
+          </div>
+        `;
+      }
+    }
+
+    /* =====================================================================
+       6.1. ТЕРМОЭТИКЕТКИ 60х40
+       ===================================================================== */
+    function initLabelDates() {
+      const today = new Date();
+      const yyyy = today.getFullYear();
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const dd = String(today.getDate()).padStart(2, '0');
+      const startStr = yyyy + '-' + mm + '-' + dd;
+      const startInput = document.getElementById('lbl-start-in');
+      if (startInput && !startInput.value) {
+        startInput.value = startStr;
+        calcEndDate(60);
+      }
+    }
+
+    function onStartDateChange() {
+      const dur = document.getElementById('lbl-duration-sel').value;
+      if (dur !== 'custom') {
+        calcEndDate(parseInt(dur, 10));
+      } else {
+        updateLabelSticker();
+      }
+    }
+
+    function onDurationChange() {
+      const dur = document.getElementById('lbl-duration-sel').value;
+      if (dur !== 'custom') {
+        calcEndDate(parseInt(dur, 10));
+      }
+    }
+
+    function calcEndDate(days) {
+      const startVal = document.getElementById('lbl-start-in').value;
+      if (!startVal) return;
+      const parts = startVal.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      d.setDate(d.getDate() + days);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      document.getElementById('lbl-end-in').value = yyyy + '-' + mm + '-' + dd;
+      updateLabelSticker();
+    }
+
+    function setLabelWood(val) {
+      document.getElementById('lbl-wood-in').value = val;
+      updateLabelSticker();
+    }
+
+    function updateLabelSticker() {
+      const title = document.getElementById('lbl-title-in').value.trim() || 'ДИСТИЛЛЯТ';
+      const str = document.getElementById('lbl-str-in').value.trim() || '43';
+      const vol = document.getElementById('lbl-vol-in').value.trim() || '3.0 л';
+      const wood = document.getElementById('lbl-wood-in').value.trim() || 'Без дуба';
+      const startVal = document.getElementById('lbl-start-in').value;
+      const endVal = document.getElementById('lbl-end-in').value;
+      const note = document.getElementById('lbl-note-in').value.trim();
+      const intervalDays = parseInt(document.getElementById('lbl-interval-sel')?.value, 10) || 7;
+
+      document.getElementById('lbl-disp-title').innerText = title.toUpperCase();
+      document.getElementById('lbl-disp-abv-vol').innerText = str + '% об. • ' + vol;
+      document.getElementById('lbl-disp-wood').innerText = 'Дуб: ' + wood;
+
+      if (startVal) {
+        const p1 = startVal.split('-');
+        document.getElementById('lbl-disp-start').innerText = p1[2] + '.' + p1[1] + '.' + p1[0];
+      }
+      if (endVal) {
+        const p2 = endVal.split('-');
+        document.getElementById('lbl-disp-end').innerText = p2[2] + '.' + p2[1] + '.' + p2[0];
+      }
+
+      document.getElementById('lbl-disp-note').innerText = note;
+
+      if (startVal && endVal) {
+        renderAerationCheckboxes(startVal, endVal, intervalDays);
+      }
+    }
+
+    function renderAerationCheckboxes(startVal, endVal, intervalDays) {
+      const container = document.getElementById('lbl-disp-aeration-boxes');
+      const infoSpan = document.getElementById('lbl-disp-weeks-info');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (infoSpan) {
+        infoSpan.innerText = intervalDays === 7 ? 'раз в неделю' : `каждые ${intervalDays} дн.`;
+      }
+
+      const p1 = startVal.split('-');
+      const p2 = endVal.split('-');
+      const start = new Date(p1[0], p1[1] - 1, p1[2]);
+      const end = new Date(p2[0], p2[1] - 1, p2[2]);
+
+      let cur = new Date(start);
+      cur.setDate(cur.getDate() + intervalDays);
+
+      let count = 0;
+      // Генерируем даты аэрации с чекбоксами (до 8 дат для идеальной посадки на наклейку 60х40)
+      while (cur < end && count < 8) {
+        const day = String(cur.getDate()).padStart(2, '0');
+        const month = String(cur.getMonth() + 1).padStart(2, '0');
+        const dateFormatted = `${day}.${month}`;
+
+        const span = document.createElement('span');
+        span.className = 'lbl-box-item';
+        span.innerHTML = `<span class="lbl-sq"></span> ${dateFormatted}`;
+        container.appendChild(span);
+
+        cur.setDate(cur.getDate() + intervalDays);
+        count++;
+      }
+    }
+
+    function loadLabelPreset(type) {
+      document.querySelectorAll('#chip-lbl-whisky, #chip-lbl-bourbon, #chip-lbl-grape, #chip-lbl-rum, #chip-lbl-gin, #chip-lbl-becher').forEach(c => c.classList.remove('active'));
+      const activeChip = document.getElementById('chip-lbl-' + type);
+      if (activeChip) activeChip.classList.add('active');
+
+      const presets = {
+        whisky: {
+          title: 'Односолодовый виски',
+          str: 43,
+          vol: '3.0 л',
+          wood: 'Кавказский дуб, ср. обжиг (15 г)',
+          days: 60,
+          interval: 7,
+          note: 'Перелив раз в 7 дней • Хересный финиш'
+        },
+        bourbon: {
+          title: 'Теннесси виски / Бурбон',
+          str: 43,
+          vol: '3.0 л',
+          wood: 'Дубовые кубики, сильный обжиг (15 г)',
+          days: 45,
+          interval: 7,
+          note: 'Углевание пройдено • Декстроза + колер'
+        },
+        grape: {
+          title: 'Виноградный дистиллят',
+          str: 43,
+          vol: '3.0 л',
+          wood: 'Кавказский дуб, ср. обжиг (12-15 г)',
+          days: 45,
+          interval: 7,
+          note: 'Перелив струей 1 мин • Сахарный колер'
+        },
+        rum: {
+          title: 'Карибский темный ром',
+          str: 42,
+          vol: '3.0 л',
+          wood: 'Дуб сильного обжига (15 г) + карамель',
+          days: 60,
+          interval: 7,
+          note: 'Тростниковая меласса • Отдых в стекле'
+        },
+        gin: {
+          title: 'Лондонский сухой джин',
+          str: 46,
+          vol: '1.0 л',
+          wood: 'Без дуба (чистое стекло)',
+          days: 14,
+          interval: 7,
+          note: 'Паровая инфузия • Отдых 2 недели'
+        },
+        gin_aged: {
+          title: 'Бочковой джин (Yellow Gin)',
+          str: 46,
+          vol: '1.0 л',
+          wood: 'Дуб ср. обжиг (2-3г) / Вермут',
+          days: 21,
+          interval: 7,
+          note: 'Проба каждые 4 дня • Не передержать!'
+        },
+        becher: {
+          title: 'Домашняя Бехеровка',
+          str: 38,
+          vol: '3.0 л',
+          wood: 'Специи в фильтр-мешке',
+          days: 10,
+          interval: 5,
+          note: 'Карамельный сироп • Отдых в стекле'
+        }
+      };
+
+      const p = presets[type];
+      if (!p) return;
+
+      document.getElementById('lbl-title-in').value = p.title;
+      document.getElementById('lbl-str-in').value = p.str;
+      document.getElementById('lbl-vol-in').value = p.vol;
+      document.getElementById('lbl-wood-in').value = p.wood;
+      document.getElementById('lbl-note-in').value = p.note;
+      document.getElementById('lbl-duration-sel').value = p.days;
+      if (document.getElementById('lbl-interval-sel')) {
+        document.getElementById('lbl-interval-sel').value = p.interval || 7;
+      }
+
+      calcEndDate(p.days);
+    }
+
+    function openLabelForRecipe(recipeId) {
+      switchTab('labels', document.querySelectorAll('.tab-btn')[2]);
+      if (recipeId.includes('whisky') || recipeId.includes('malt')) {
+        loadLabelPreset('whisky');
+      } else if (recipeId.includes('bourbon')) {
+        loadLabelPreset('bourbon');
+      } else if (recipeId.includes('grape')) {
+        loadLabelPreset('grape');
+      } else if (recipeId.includes('rum')) {
+        loadLabelPreset('rum');
+      } else if (recipeId.includes('gin')) {
+        loadLabelPreset('gin');
+      } else if (recipeId.includes('becher')) {
+        loadLabelPreset('becher');
+      } else {
+        const rec = getRecipes().find(r => r.id === recipeId);
+        if (rec) {
+          document.getElementById('lbl-title-in').value = rec.title;
+          document.getElementById('lbl-str-in').value = '43';
+          document.getElementById('lbl-vol-in').value = '3.0 л';
+          document.getElementById('lbl-wood-in').value = 'Дубовые кубики (15 г)';
+          document.getElementById('lbl-note-in').value = 'Выдержка в стекле';
+          calcEndDate(60);
+        }
+      }
+    }
+
+    function printThermalLabel() {
+      window.print();
+    }
+
+    function copyLabelText() {
+      const t = document.getElementById('lbl-disp-title').innerText;
+      const av = document.getElementById('lbl-disp-abv-vol').innerText;
+      const w = document.getElementById('lbl-disp-wood').innerText;
+      const s = document.getElementById('lbl-disp-start').innerText;
+      const e = document.getElementById('lbl-disp-end').innerText;
+      const n = document.getElementById('lbl-disp-note').innerText;
+
+      const dateItems = Array.from(document.querySelectorAll('#lbl-disp-aeration-boxes .lbl-box-item'))
+        .map(el => '[ ] ' + el.innerText.trim())
+        .join('  ');
+
+      const txt = `${t}\n${av}\n${w}\nПоставил: ${s} | Снять: ${e}\nАэрация (даты): ${dateItems}\n${n}`;
+      navigator.clipboard.writeText(txt).then(() => {
+        alert('Данные этикетки скопированы в буфер обмена!');
+      }).catch(() => {
+        alert(txt);
+      });
+    }
+
+    /* =====================================================================
+       7. ИМПОРТ / ЭКСПОРТ / СБРОС И СОХРАНЕНИЕ HTML
+       ===================================================================== */
+    function exportDataJson() {
+      const data = {
+        recipes: getRecipes(),
+        tech: getTech(),
+        exportDate: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      downloadBlob(blob, 'gorevoy_craft_lab_backup_' + formatDate() + '.json');
+    }
+
+    function triggerJsonImport() {
+      document.getElementById('json-file-input').click();
+    }
+
+    function importDataJson(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (parsed.recipes && Array.isArray(parsed.recipes)) {
+            saveRecipes(parsed.recipes);
+          }
+          if (parsed.tech && Array.isArray(parsed.tech)) {
+            saveTech(parsed.tech);
+          }
+          renderAll();
+          alert('Данные успешно импортированы!');
+        } catch (err) {
+          alert('Ошибка при чтении JSON файла: ' + err.message);
+        }
+        e.target.value = '';
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToDefaults() {
+      if (!confirm('Вы действительно хотите сбросить все рецепты и регламенты к начальным заводским? Все внесенные изменения будут заменены.')) return;
+      saveRecipes(DEFAULT_RECIPES);
+      saveTech(DEFAULT_TECH);
+      renderAll();
+      alert('База восстановлена к исходному состоянию!');
+    }
+
+    // Экспорт полного автономного HTML-файла с текущими изменениями
+    function exportDataHtml() {
+      const currentRecipes = getRecipes();
+      const currentTech = getTech();
+
+      let html = document.documentElement.outerHTML;
+
+      // Заменяем DEFAULT_RECIPES и DEFAULT_TECH в исходном коде скачиваемого файла на текущие
+      const recipesJson = JSON.stringify(currentRecipes, null, 2);
+      const techJson = JSON.stringify(currentTech, null, 2);
+
+      html = html.replace(/const DEFAULT_RECIPES = \[[\s\S]*?\];\n\n    const DEFAULT_TECH/m, 
+        'const DEFAULT_RECIPES = ' + recipesJson + ';\n\n    const DEFAULT_TECH');
+      html = html.replace(/const DEFAULT_TECH = \[[\s\S]*?\];\n\n    \/\* =/m, 
+        'const DEFAULT_TECH = ' + techJson + ';\n\n    /* =');
+
+      const fullHtml = '<!DOCTYPE html>\n' + html;
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      downloadBlob(blob, 'gorevoy-craft-lab.html');
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function formatDate() {
+      const d = new Date();
+      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    // Инициализация при открытии страницы
+    renderAll();
+
+    // Регистрация PWA Service Worker (для работы офлайн и установки на телефон)
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js').catch(function() {});
+      });
+    }
+  </script>
+</body>
+</html>
