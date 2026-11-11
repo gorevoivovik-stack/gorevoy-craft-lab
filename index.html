@@ -391,6 +391,47 @@
       border-radius: 3px;
     }
 
+    /* Стили для калькулятора ботаники джина */
+    .botanical-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #191614;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 8px;
+      transition: all 0.15s ease;
+      gap: 10px;
+    }
+    .botanical-item:hover {
+      border-color: #52443a;
+    }
+    .botanical-item.disabled {
+      opacity: 0.42;
+      background: #141210;
+    }
+    .botanical-zone-pot {
+      background: #3d2314;
+      color: #fca868;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      display: inline-block;
+      white-space: nowrap;
+    }
+    .botanical-zone-column {
+      background: #183320;
+      color: #72d192;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 700;
+      display: inline-block;
+      white-space: nowrap;
+    }
+
     /* Стили для термоэтикеток 60х40 */
     .label-preview-wrapper {
       background: #0d0c0b;
@@ -695,6 +736,15 @@
       }
       .heads-big {
         font-size: 21px;
+      }
+
+      .botanical-item {
+        padding: 9px 10px;
+        gap: 8px;
+      }
+      .botanical-zone-pot, .botanical-zone-column {
+        font-size: 10px;
+        padding: 2px 6px;
       }
 
       .label-preview-wrapper {
@@ -1046,6 +1096,64 @@
       </div>
 
       <div id="res-converter" class="calc-result" style="display: block; margin-top:12px;"></div>
+    </div>
+
+    <!-- Калькулятор 4: Ботаника для крафтового джина -->
+    <div class="card" id="card-gin-calc" style="margin-top:20px; border-color:#d97736;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <h3 style="margin:0;">🍸 4. Калькулятор крафтового джина: расчет ботаники под любой объем</h3>
+        <span class="tag" style="background:#38271e; color:#f0a36b;">Stillman X & Любой аппарат</span>
+      </div>
+      <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
+        Укажите любой объем и крепость спиртовой основы, заливаемой в куб. Калькулятор автоматически рассчитает точную навеску каждого ингредиента в граммах для ваших кухонных весов, распределит травы по зонам загрузки (куб / царга) и покажет отбор голов, выход готового джина и объем воды для разведения.
+      </p>
+
+      <!-- Ввод параметров основы -->
+      <div class="calc-row">
+        <div>
+          <label>Объем спиртовой основы в кубе (л):</label>
+          <input type="number" id="gin-calc-vol" value="10.5" step="0.5" min="1" max="100" oninput="runGinBotanicalsCalc()">
+          <div class="calc-chips">
+            <span class="calc-chip" onclick="setGinVol(5)">5 л</span>
+            <span class="calc-chip" onclick="setGinVol(8)">8 л</span>
+            <span class="calc-chip active" id="chip-gin-vol-105" onclick="setGinVol(10.5)">10.5 л (Стиллмен Х)</span>
+            <span class="calc-chip" onclick="setGinVol(15)">15 л</span>
+            <span class="calc-chip" onclick="setGinVol(20)">20 л</span>
+            <span class="calc-chip" onclick="setGinVol(25)">25 л</span>
+          </div>
+        </div>
+        <div>
+          <label>Крепость основы в кубе (% об.):</label>
+          <input type="number" id="gin-calc-abv" value="25" step="0.5" min="10" max="60" oninput="runGinBotanicalsCalc()">
+          <div class="calc-chips">
+            <span class="calc-chip" onclick="setGinAbv(20)">20%</span>
+            <span class="calc-chip active" id="chip-gin-abv-25" onclick="setGinAbv(25)">25% (рекомендуется)</span>
+            <span class="calc-chip" onclick="setGinAbv(28)">28%</span>
+            <span class="calc-chip" onclick="setGinAbv(30)">30%</span>
+            <span class="calc-chip" onclick="setGinAbv(35)">35%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Выбор стиля джина -->
+      <div style="margin-top:14px; margin-bottom:14px; background:#1b1714; padding:12px 14px; border-radius:6px; border:1px solid var(--border);">
+        <label style="font-weight:700; color:#f0a36b; margin-bottom:6px; display:block;">Стиль / вкусовой профиль джина:</label>
+        <div class="calc-chips">
+          <span class="calc-chip active" id="chip-style-london" onclick="setGinStyle('london')">🌲 Классический London Dry (хвоя + цитрус)</span>
+          <span class="calc-chip" id="chip-style-citrus" onclick="setGinStyle('citrus')">🍊 Цитрусовый Fresh (удвоенный апельсин/лайм)</span>
+          <span class="calc-chip" id="chip-style-spicy" onclick="setGinStyle('spicy')">🌶️ Пряный / Восточный (кардамон, корица, бадьян)</span>
+          <span class="calc-chip" id="chip-style-herbal" onclick="setGinStyle('herbal')">🌿 Мягкий травяной (розмарин, лаванда)</span>
+        </div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">
+          💡 <i>Каждый ингредиент ниже можно включить или выключить галочкой — рецепт мгновенно пересчитается под ваши предпочтения!</i>
+        </div>
+      </div>
+
+      <!-- Список ботаники с чекбоксами -->
+      <div id="gin-botanicals-list"></div>
+
+      <!-- Итоги и технологический регламент -->
+      <div id="res-gin-calc" class="calc-result" style="display:block; margin-top:16px;"></div>
     </div>
   </section>
 
@@ -1443,9 +1551,17 @@
   </p>
 </div>
 
+<div style="background:#261d16; border:1px solid #d97736; padding:12px 14px; border-radius:6px; margin:14px 0; text-align:center;">
+  <span style="font-weight:700; color:#fca868; font-size:15px; display:block; margin-bottom:4px;">🧮 Перегоняете другой объем куба или хотите свой букет трав?</span>
+  <p style="font-size:13px; color:var(--text-muted); margin-bottom:10px;">
+    Укажите любой объем и крепость основы — интерактивный калькулятор джина мгновенно рассчитает точную навеску каждой ягоды и травы на весах:
+  </p>
+  <button type="button" class="btn" onclick="openGinCalcFromRecipe()" style="padding:9px 18px; font-size:13.5px;">🧮 Открыть интерактивный калькулятор джина</button>
+</div>
+
 <h4>Этап 5. Ароматная перегонка с ботаникой (Стиллмен Х)</h4>
 <div class="note-box" style="margin-bottom:12px;">
-  <b>Точная раскладка ботаники на кухонных весах (на 10.5 л 25% в кубе / 2.625 л АС / ~5 л готового джина 45%):</b>
+  <b>Точная раскладка ботаники на кухонных весах (базовый пример на 10.5 л 25% в кубе / 2.625 л АС / ~5 л готового джина 45%):</b>
   <ul style="margin-top:6px; margin-bottom:0; padding-left:18px;">
     <li><b>Ягоды можжевельника (синие):</b> <b>70–75 г</b> — слегка помять скалкой/ножом (не дробить косточки в муку, чтобы не было горечи). Закладываются <b>в куб в мешочке</b> (после экспресс-выдержки или мацерации).</li>
     <li><b>Семена кориандра:</b> <b>22–25 г</b> — примять в ступке (дает связующий цитрусово-древесный тон линалоола). Закладывается <b>в царгу</b>.</li>
@@ -1947,7 +2063,7 @@
           if (!existing) {
             list.push(defRec);
             updated = true;
-          } else if (defRec.id === 'gin-core' && (!existing.content.includes('Экспресс-метод «London Dry»') || existing.content.includes('на 3 л готовой сортировки'))) {
+          } else if (defRec.id === 'gin-core' && (!existing.content.includes('openGinCalcFromRecipe') || !existing.content.includes('Экспресс-метод «London Dry»') || existing.content.includes('на 3 л готовой сортировки'))) {
             existing.content = defRec.content;
             updated = true;
           }
@@ -2002,6 +2118,7 @@
       if (typeof runSecondDistillCalc === 'function') runSecondDistillCalc();
       if (typeof runDilutionCalc === 'function') runDilutionCalc();
       if (typeof runConverterCalc === 'function') runConverterCalc();
+      if (typeof initGinCalculator === 'function') initGinCalculator();
       if (typeof initLabelDates === 'function') initLabelDates();
     }
 
@@ -2671,6 +2788,500 @@
           </div>
         `;
       }
+    }
+
+    /* =====================================================================
+       КАЛЬКУЛЯТОР БОТАНИКИ ДЛЯ ДЖИНА (GIN LAB)
+       ===================================================================== */
+    const GIN_BOTANICALS_MASTER = [
+      {
+        id: 'juniper',
+        name: '🌲 Можжевельник синий (ягоды)',
+        zone: 'pot',
+        zoneName: 'В КУБ (в мешочке)',
+        zoneClass: 'botanical-zone-pot',
+        hint: 'Слегка примять скалкой/ножом (не дробить косточки в муку!)',
+        rates: {
+          london: 28.0,
+          citrus: 24.0,
+          spicy: 28.0,
+          herbal: 22.0
+        },
+        defaultChecked: {
+          london: true,
+          citrus: true,
+          spicy: true,
+          herbal: true
+        }
+      },
+      {
+        id: 'coriander',
+        name: '🌿 Кориандр (семена)',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Примять в ступке (дает связующий цитрусово-древесный линалоол)',
+        rates: {
+          london: 9.0,
+          citrus: 10.5,
+          spicy: 9.0,
+          herbal: 8.5
+        },
+        defaultChecked: {
+          london: true,
+          citrus: true,
+          spicy: true,
+          herbal: true
+        }
+      },
+      {
+        id: 'orange',
+        name: '🍊 Свежая цедра апельсина',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Срезать овощечисткой строго оранжевый слой без белого альбедо',
+        rates: {
+          london: 6.5,
+          citrus: 13.0,
+          spicy: 6.0,
+          herbal: 4.0
+        },
+        defaultChecked: {
+          london: true,
+          citrus: true,
+          spicy: true,
+          herbal: false
+        }
+      },
+      {
+        id: 'lemon',
+        name: '🍋 Свежая цедра лимона или лайма',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Только желтый/зеленый слой для яркого цитрусового лимонена',
+        rates: {
+          london: 3.5,
+          citrus: 8.0,
+          spicy: 3.0,
+          herbal: 6.5
+        },
+        defaultChecked: {
+          london: true,
+          citrus: true,
+          spicy: false,
+          herbal: true
+        }
+      },
+      {
+        id: 'cardamom',
+        name: '🌱 Кардамон зеленый',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Раздавить створки коробочки пальцами для выхода зерен',
+        rates: {
+          london: 0.9,
+          citrus: 0.7,
+          spicy: 1.6,
+          herbal: 0.6
+        },
+        defaultChecked: {
+          london: true,
+          citrus: true,
+          spicy: true,
+          herbal: true
+        }
+      },
+      {
+        id: 'cinnamon',
+        name: '🪵 Корица (в палочках)',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Разломать на 2–3 кусочка (молотый порошок не использовать!)',
+        rates: {
+          london: 0.7,
+          citrus: 0.5,
+          spicy: 1.5,
+          herbal: 0.4
+        },
+        defaultChecked: {
+          london: true,
+          citrus: false,
+          spicy: true,
+          herbal: false
+        }
+      },
+      {
+        id: 'badian',
+        name: '⭐ Бадьян (звездчатый анис)',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Отломить 1–2 лучика от звездочки (тонкая анисовая свежесть)',
+        rates: {
+          london: 0.3,
+          citrus: 0.2,
+          spicy: 0.8,
+          herbal: 0.2
+        },
+        defaultChecked: {
+          london: true,
+          citrus: false,
+          spicy: true,
+          herbal: false
+        }
+      },
+      {
+        id: 'angelica',
+        name: '🌾 Корень дягиля (или ириса / аира)',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Природный фиксатор запаха: связывает цитрус и хвою воедино',
+        rates: {
+          london: 0.8,
+          citrus: 0.8,
+          spicy: 1.0,
+          herbal: 1.0
+        },
+        defaultChecked: {
+          london: false,
+          citrus: false,
+          spicy: false,
+          herbal: true
+        }
+      },
+      {
+        id: 'rosemary',
+        name: '🌿 Розмарин (свежий или сухой)',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Средиземноморский хвойно-камфорный акцент (дозировать строго)',
+        rates: {
+          london: 0.4,
+          citrus: 0.3,
+          spicy: 0.5,
+          herbal: 0.9
+        },
+        defaultChecked: {
+          london: false,
+          citrus: false,
+          spicy: false,
+          herbal: true
+        }
+      },
+      {
+        id: 'lavender',
+        name: '🌸 Лаванда (сухие цветки)',
+        zone: 'column',
+        zoneName: 'В ЦАРГУ (на пыж РПН)',
+        zoneClass: 'botanical-zone-column',
+        hint: 'Изысканный цветочный букет (дозировать строго)',
+        rates: {
+          london: 0.2,
+          citrus: 0.2,
+          spicy: 0.3,
+          herbal: 0.5
+        },
+        defaultChecked: {
+          london: false,
+          citrus: false,
+          spicy: false,
+          herbal: true
+        }
+      }
+    ];
+
+    let currentGinStyle = 'london';
+    let ginBotanicalsState = {};
+
+    function initGinCalculator() {
+      if (Object.keys(ginBotanicalsState).length === 0) {
+        GIN_BOTANICALS_MASTER.forEach(b => {
+          ginBotanicalsState[b.id] = b.defaultChecked[currentGinStyle] ?? false;
+        });
+      }
+      renderGinBotanicalsList();
+      runGinBotanicalsCalc();
+    }
+
+    function setGinVol(val) {
+      const el = document.getElementById('gin-calc-vol');
+      if (el) el.value = val;
+      document.querySelectorAll('#gin-calc-vol ~ .calc-chips .calc-chip').forEach(c => {
+        c.classList.remove('active');
+        const txt = c.innerText.trim();
+        if (txt.startsWith(val + ' л') || txt.startsWith(val + 'л')) c.classList.add('active');
+      });
+      runGinBotanicalsCalc();
+    }
+
+    function setGinAbv(val) {
+      const el = document.getElementById('gin-calc-abv');
+      if (el) el.value = val;
+      document.querySelectorAll('#gin-calc-abv ~ .calc-chips .calc-chip').forEach(c => {
+        c.classList.remove('active');
+        if (c.innerText.startsWith(val + '%')) c.classList.add('active');
+      });
+      runGinBotanicalsCalc();
+    }
+
+    function setGinStyle(style) {
+      currentGinStyle = style;
+      document.querySelectorAll('#card-gin-calc .calc-chips .calc-chip').forEach(c => {
+        if (c.id === 'chip-style-' + style) c.classList.add('active');
+        else if (c.id && c.id.startsWith('chip-style-')) c.classList.remove('active');
+      });
+      GIN_BOTANICALS_MASTER.forEach(b => {
+        ginBotanicalsState[b.id] = b.defaultChecked[style] ?? false;
+      });
+      renderGinBotanicalsList();
+      runGinBotanicalsCalc();
+    }
+
+    function toggleBotanical(id) {
+      const chk = document.getElementById('bot-chk-' + id);
+      if (chk) {
+        ginBotanicalsState[id] = chk.checked;
+        const row = document.getElementById('bot-row-' + id);
+        if (row) {
+          if (chk.checked) row.classList.remove('disabled');
+          else row.classList.add('disabled');
+        }
+      }
+      runGinBotanicalsCalc();
+    }
+
+    function renderGinBotanicalsList() {
+      const container = document.getElementById('gin-botanicals-list');
+      if (!container) return;
+
+      const vol = parseFloat(document.getElementById('gin-calc-vol')?.value) || 10.5;
+      const abv = parseFloat(document.getElementById('gin-calc-abv')?.value) || 25;
+      const ac = (vol * abv) / 100;
+
+      let html = '';
+      GIN_BOTANICALS_MASTER.forEach(b => {
+        const isChecked = ginBotanicalsState[b.id] ?? (b.defaultChecked[currentGinStyle] ?? false);
+        const rate = b.rates[currentGinStyle] || b.rates.london || 1;
+        const grams = isChecked ? (ac * rate).toFixed(1) : '0.0';
+
+        html += `
+          <div class="botanical-item ${isChecked ? '' : 'disabled'}" id="bot-row-${b.id}">
+            <div style="display:flex; align-items:flex-start; gap:10px; flex:1; min-width:0;">
+              <input type="checkbox" id="bot-chk-${b.id}" ${isChecked ? 'checked' : ''} onchange="toggleBotanical('${b.id}')" style="width:19px; height:19px; margin-top:2px; cursor:pointer; accent-color:var(--accent); flex-shrink:0;">
+              <div style="min-width:0;">
+                <label for="bot-chk-${b.id}" style="margin:0; font-weight:700; color:var(--text); cursor:pointer; font-size:14px; line-height:1.3; display:block;">
+                  ${b.name}
+                </label>
+                <div style="font-size:11.5px; color:var(--text-muted); margin-top:2px; line-height:1.35;">${b.hint}</div>
+              </div>
+            </div>
+            <div style="text-align:right; flex-shrink:0; padding-left:8px;">
+              <span class="${b.zoneClass}">${b.zoneName}</span>
+              <div style="font-size:17px; font-weight:800; color:${isChecked ? '#fca868' : 'var(--text-muted)'}; margin-top:3px; line-height:1;">
+                <span id="bot-val-${b.id}">${grams}</span> г
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function runGinBotanicalsCalc() {
+      const vol = parseFloat(document.getElementById('gin-calc-vol')?.value) || 0;
+      const abv = parseFloat(document.getElementById('gin-calc-abv')?.value) || 0;
+      const box = document.getElementById('res-gin-calc');
+      if (!box) return;
+
+      if (vol <= 0 || abv <= 0 || abv > 85) {
+        box.innerHTML = '<span style="color:var(--text-muted);">Введите корректные объем и крепость основы в кубе (крепость от 15 до 45%).</span>';
+        return;
+      }
+
+      const ac = (vol * abv) / 100;
+
+      let totalPotGrams = 0;
+      let totalColumnGrams = 0;
+
+      GIN_BOTANICALS_MASTER.forEach(b => {
+        const isChecked = ginBotanicalsState[b.id] ?? false;
+        const rate = b.rates[currentGinStyle] || b.rates.london || 1;
+        const gramsNum = ac * rate;
+        const gramsStr = gramsNum.toFixed(1);
+
+        const valSpan = document.getElementById('bot-val-' + b.id);
+        if (valSpan) valSpan.innerText = isChecked ? gramsStr : '0.0';
+
+        if (isChecked) {
+          if (b.zone === 'pot') totalPotGrams += gramsNum;
+          else totalColumnGrams += gramsNum;
+        }
+      });
+
+      const headsMl = Math.round(ac * 24);
+      const headsGrams = Math.round(headsMl * 0.82);
+      const bodyAc = ac * 0.82;
+      const finishedGinL = (bodyAc / 0.45).toFixed(2);
+      const finishedGinBottles = (parseFloat(finishedGinL) / 0.5).toFixed(1);
+      const dextroseGrams = Math.round(parseFloat(finishedGinL) * 1.8);
+
+      const baseAlcoholL = (ac / 0.92).toFixed(2);
+      const baseWaterL = (vol - parseFloat(baseAlcoholL)).toFixed(2);
+
+      let styleTitle = 'Классический London Dry';
+      if (currentGinStyle === 'citrus') styleTitle = 'Цитрусовый Fresh';
+      if (currentGinStyle === 'spicy') styleTitle = 'Пряный / Восточный';
+      if (currentGinStyle === 'herbal') styleTitle = 'Мягкий травяной';
+
+      box.innerHTML = `
+        <div style="background:#221d19; padding:12px 14px; border-radius:6px; margin-bottom:12px; border-left:3px solid #72d192;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Прогноз готового крафтового джина (45% об.):</span>
+              <div style="font-size:26px; font-weight:800; color:#72d192; line-height:1.2; margin-top:2px;">
+                ~${finishedGinL} л <span style="font-size:15px; font-weight:400; color:var(--text);">(~${finishedGinBottles} бутылок по 0.5 л)</span>
+              </div>
+            </div>
+            <div style="text-align:right; font-size:12.5px; color:var(--text-muted);">
+              Абсолютный спирт (АС): <b style="color:#fff;">${ac.toFixed(2)} л</b><br>
+              Стиль: <b style="color:#f0a36b;">${styleTitle}</b>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#1b1816; padding:12px 14px; border-radius:6px; border:1px solid var(--border); margin-bottom:12px; font-size:13.5px; line-height:1.6;">
+          <b style="color:#f0a36b; font-size:14.5px;">💧 1. Рецепт подготовки кубовой основы (${vol} л крепостью ${abv}%):</b><br>
+          • <b>Если берете чистый спирт 92%:</b> налейте в куб <b>${baseAlcoholL} л</b> спирта и долейте <b>${baseWaterL} л</b> чистой мягкой воды.<br>
+          • <i>Общий объем заправки куба:</i> <b>${vol} л</b> (крепостью <b>${abv}%</b>).
+        </div>
+
+        <div class="heads-highlight" style="margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <div>
+              <span style="color:#f0a36b; font-weight:700; font-size:14.5px;">🚨 2. ОТБОР ГОЛОВ ПРИ ПЕРЕГОНКЕ ДЖИНА:</span>
+              <div class="heads-big">${headsMl} мл <span style="font-size:15px; font-weight:400; color:var(--text);">(или <b>~${headsGrams} г</b> на кухонных весах)</span></div>
+            </div>
+            <div style="text-align:right; font-size:12.5px; color:var(--text-muted);">
+              Скорость: строго <b>1–2 капли в сек</b><br>
+              Мощность: <b>1700 Вт</b>
+            </div>
+          </div>
+          <div style="margin-top:8px; font-size:12.5px; color:var(--text); border-top:1px dashed var(--border); padding-top:6px; line-height:1.4;">
+            💡 Первые <b>${headsMl} мл</b> снимают самые тяжелые, едкие терпеновые масла. Как только пойдет чистый можжевелово-цитрусовый дух — сразу переставляйте приемную емкость под тело!
+          </div>
+        </div>
+
+        <div style="background:#1b1816; padding:12px 14px; border-radius:6px; border:1px solid var(--border); margin-bottom:12px; font-size:13px; line-height:1.6;">
+          <b style="color:#f0a36b; font-size:14px;">📦 3. Зонирование загрузки в аппарат «Стиллмен Х»:</b><br>
+          • 🟠 <b>В КУБ (в фильтр-мешочке для хмеля):</b> навеска <b>${totalPotGrams.toFixed(1)} г</b> (можжевельник). Проваривается в кубе для вытяжки глубоких смол, мешочек исключает пригорание ко дну.<br>
+          • 🟢 <b>В ПАРОВУЮ ЗОНУ (в царгу на пыж РПН):</b> навеска <b>${totalColumnGrams.toFixed(1)} г</b> (кориандр, свежая цедра, кардамон, пряности). Горячий спиртовой пар мягко выбивает легкие эфиры без компотного привкуса.<br>
+          • 🔥 <b>Мощность плиты при отборе тела:</b> <b>2000 Вт</b> (максимум 2300 Вт), струйка со спичку (2–2.5 л/ч).<br>
+          • 🛑 <b>СТОП отбора тела:</b> строго при падении спиртуозности в струе до <b>48–50%</b> (ниже пойдут хвостовые мутные масла!).
+        </div>
+
+        <div style="background:#1b1816; padding:12px 14px; border-radius:6px; border:1px solid var(--border); font-size:13px; line-height:1.6;">
+          <b style="color:#f0a36b; font-size:14px;">🍬 4. Разведение и смягчение декстрозой:</b><br>
+          • Развести отобранное тело мягкой водой (после осмоса или детской) до <b>45–47%</b> (воспользуйтесь калькулятором разведения по весу).<br>
+          • <b>Смягчение:</b> растворите <b>~${dextroseGrams} г декстрозы</b> (по 1.5–2 г/л) в 50 мл джина в рюмке до прозрачности и влейте в общую банку. Дайте отдохнуть 10–14 дней в стекле!
+        </div>
+
+        <!-- Кнопки действий -->
+        <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;">
+          <button class="btn" onclick="copyGinShoppingList()" style="font-size:13px; padding:9px 14px;">📋 Скопировать список навесок для кухни</button>
+          <button class="btn btn-secondary" onclick="openLabelForGinCalc('${styleTitle}', ${finishedGinL})" style="font-size:13px; padding:9px 14px;">🏷️ Создать этикетку 60×40</button>
+        </div>
+      `;
+    }
+
+    function copyGinShoppingList() {
+      const vol = document.getElementById('gin-calc-vol')?.value || 10.5;
+      const abv = document.getElementById('gin-calc-abv')?.value || 25;
+      const ac = ((parseFloat(vol) * parseFloat(abv)) / 100).toFixed(2);
+      
+      let lines = [];
+      lines.push(`🍸 НАВЕСКА БОТАНИКИ ДЛЯ ДЖИНА (Gorevoy Craft Lab)`);
+      lines.push(`Кубовая основа: ${vol} л при ${abv}% (АС: ${ac} л)`);
+      lines.push(`Стиль: ${currentGinStyle.toUpperCase()}`);
+      lines.push(``);
+      lines.push(`🟠 В КУБ (в фильтр-мешочке для хмеля):`);
+      
+      let hasPot = false;
+      let hasCol = false;
+      
+      GIN_BOTANICALS_MASTER.forEach(b => {
+        if (ginBotanicalsState[b.id] && b.zone === 'pot') {
+          const rate = b.rates[currentGinStyle] || b.rates.london || 1;
+          const g = (parseFloat(ac) * rate).toFixed(1);
+          lines.push(`• ${b.name}: ${g} г (${b.hint})`);
+          hasPot = true;
+        }
+      });
+      if (!hasPot) lines.push(`(нет ингредиентов)`);
+
+      lines.push(``);
+      lines.push(`🟢 В ПАРОВУЮ ЗОНУ (в царгу на пыж РПН):`);
+      GIN_BOTANICALS_MASTER.forEach(b => {
+        if (ginBotanicalsState[b.id] && b.zone === 'column') {
+          const rate = b.rates[currentGinStyle] || b.rates.london || 1;
+          const g = (parseFloat(ac) * rate).toFixed(1);
+          lines.push(`• ${b.name}: ${g} г (${b.hint})`);
+          hasCol = true;
+        }
+      });
+      if (!hasCol) lines.push(`(нет ингредиентов)`);
+
+      const headsMl = Math.round(parseFloat(ac) * 24);
+      lines.push(``);
+      lines.push(`🚨 Отбор голов: ${headsMl} мл покапельно (1700 Вт)`);
+      lines.push(`🔥 Отбор тела: 2000 Вт, СТОП на 48-50% в струе`);
+
+      const text = lines.join('\n');
+      navigator.clipboard.writeText(text).then(() => {
+        alert('✅ Список навесок скопирован в буфер обмена!\nМожете вставить его в заметки или отправить на телефон.');
+      }).catch(() => {
+        prompt('Скопируйте список:', text);
+      });
+    }
+
+    function openLabelForGinCalc(styleTitle, volL) {
+      const tabLabelsBtn = document.querySelectorAll('.tab-btn')[2];
+      if (tabLabelsBtn) switchTab('labels', tabLabelsBtn);
+
+      const titleIn = document.getElementById('lbl-title-in');
+      const strIn = document.getElementById('lbl-str-in');
+      const volIn = document.getElementById('lbl-vol-in');
+      const noteIn = document.getElementById('lbl-note-in');
+
+      if (titleIn) titleIn.value = 'Джин «' + styleTitle + '»';
+      if (strIn) strIn.value = '45';
+      if (volIn) volIn.value = (volL || 5.0) + ' л';
+      if (noteIn) noteIn.value = 'Ботаника Stillman X • Отдых 14 дн • Декстроза 1.8г/л';
+
+      if (typeof updateLabelSticker === 'function') updateLabelSticker();
+    }
+
+    function openGinCalcFromRecipe() {
+      const tabCalcsBtn = document.querySelectorAll('.tab-btn')[1];
+      if (tabCalcsBtn) switchTab('calcs', tabCalcsBtn);
+      setTimeout(() => {
+        const card = document.getElementById('card-gin-calc');
+        if (card) {
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          card.style.borderColor = '#fca868';
+          card.style.boxShadow = '0 0 15px rgba(217, 119, 54, 0.4)';
+          setTimeout(() => {
+            card.style.borderColor = '#d97736';
+            card.style.boxShadow = 'none';
+          }, 2000);
+        }
+      }, 50);
     }
 
     /* =====================================================================
