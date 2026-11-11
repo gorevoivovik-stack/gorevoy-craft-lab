@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gorevoy-craft-lab-v6';
+const CACHE_NAME = 'gorevoy-craft-lab-v7';
 const ASSETS = [
   './',
   './index.html',
