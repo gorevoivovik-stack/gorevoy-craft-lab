@@ -248,6 +248,125 @@
       color: #fca868;
     }
 
+    /* Стили сворачиваемых калькуляторов (Аккордеон) */
+    .calc-nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding-bottom: 4px;
+    }
+    .calc-nav-chips {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 14px;
+      -webkit-overflow-scrolling: touch;
+      width: 100%;
+    }
+    .calc-nav-chip {
+      background: #1c1815;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      font-size: 12.5px;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+      flex-shrink: 0;
+      touch-action: manipulation;
+    }
+    .calc-nav-chip:hover, .calc-nav-chip.active {
+      background: #2e2119;
+      color: #fca868;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .calc-accordion {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .calc-accordion.open {
+      border-color: #d97736;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+    .calc-acc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 13px 16px;
+      cursor: pointer;
+      user-select: none;
+      background: #1b1714;
+      gap: 10px;
+      transition: background 0.15s;
+    }
+    .calc-acc-header:hover {
+      background: #231e1a;
+    }
+    .calc-accordion.open .calc-acc-header {
+      background: #241c16;
+      border-bottom: 1px solid var(--border);
+    }
+    .calc-acc-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      flex: 1;
+      min-width: 0;
+    }
+    .calc-acc-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      line-height: 1.3;
+    }
+    .calc-acc-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+    .calc-acc-arrow {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #25201b;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--accent);
+      font-size: 12px;
+      transition: transform 0.25s ease, background 0.2s, color 0.2s;
+      flex-shrink: 0;
+    }
+    .calc-accordion.open .calc-acc-arrow {
+      transform: rotate(180deg);
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .calc-acc-body {
+      display: none;
+      padding: 16px;
+    }
+    .calc-accordion.open .calc-acc-body {
+      display: block;
+    }
+
     .recipe-item {
       border: 1px solid var(--border);
       background: #191715;
@@ -697,6 +816,18 @@
       .heads-big {
         font-size: 21px;
       }
+      .calc-acc-header {
+        padding: 12px 10px;
+      }
+      .calc-acc-title {
+        font-size: 14px;
+      }
+      .calc-acc-subtitle {
+        font-size: 11.5px;
+      }
+      .calc-acc-body {
+        padding: 12px 10px;
+      }
 
       .botanical-item {
         padding: 9px 10px;
@@ -821,285 +952,366 @@
   <!-- ВКЛАДКА 2: КАЛЬКУЛЯТОРЫ -->
   <section id="tab-calcs" style="display: none;">
     
-    <!-- Главный калькулятор 2-й перегонки -->
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
-        <h3 style="margin:0;">🔥 Калькулятор 2-й перегонки: разбавление сырца (до 25–28°) и расчет голов</h3>
-        <span class="tag" style="background:#38271e; color:#f0a36b;">Главный расчет</span>
+    <!-- Панель управления калькуляторами -->
+    <div class="calc-nav-bar">
+      <div>
+        <h2 style="margin:0; font-size:20px; color:var(--text);">🧮 Лабораторные калькуляторы</h2>
+        <p style="margin:3px 0 0; color:var(--text-muted); font-size:13px;">1 калькулятор = 1 конкретное действие винокура. Нажмите на заголовок, чтобы развернуть или свернуть расчет.</p>
       </div>
-      <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">
-        Рассчитывает объем воды для разбавления спирта-сырца перед заливкой в куб, точный объем голов для покапельного отбора и прогноз питьевого тела.
-      </p>
-
-      <!-- Переключатель режима -->
-      <div style="display:flex; gap:16px; margin-bottom:16px; background:#161412; padding:10px 14px; border-radius:6px; border:1px solid var(--border); flex-wrap:wrap;">
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
-          <input type="radio" name="calc-mode" value="dilute" checked onchange="toggleCalcMode('dilute')" style="width:auto; cursor:pointer;">
-          <span>💧 Разбавляю сырец водой перед перегонкой (расчет воды + голов)</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
-          <input type="radio" name="calc-mode" value="ready" onchange="toggleCalcMode('ready')" style="width:auto; cursor:pointer;">
-          <span>✅ Сырец уже разбавлен в кубе до 25–28° (только расчет голов)</span>
-        </label>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-secondary btn-sm" onclick="expandAllCalcs(true)">Развернуть все</button>
+        <button class="btn btn-secondary btn-sm" onclick="expandAllCalcs(false)">Свернуть все</button>
       </div>
+    </div>
 
-      <!-- Режим 1: Неразбавленный сырец -->
-      <div id="row-undiluted">
+    <!-- Быстрые кнопки выбора калькулятора -->
+    <div class="calc-nav-chips">
+      <button class="calc-nav-chip active" id="pill-calc-raw" onclick="openOnlyCalcAccordion('acc-calc-raw')">💧 1. Сырец в куб</button>
+      <button class="calc-nav-chip" id="pill-calc-heads" onclick="openOnlyCalcAccordion('acc-calc-heads')">🎯 2. Головы и тело</button>
+      <button class="calc-nav-chip" id="pill-calc-dilution" onclick="openOnlyCalcAccordion('acc-calc-dilution')">🍸 3. Доводка до 40–45°</button>
+      <button class="calc-nav-chip" id="pill-calc-gin" onclick="openOnlyCalcAccordion('acc-calc-gin')">🌲 4. Джин (Gin Lab)</button>
+      <button class="calc-nav-chip" id="pill-calc-converter" onclick="openOnlyCalcAccordion('acc-calc-converter')">⚖️ 5. Вес ↔ Литры</button>
+    </div>
+
+    <!-- КАЛЬКУЛЯТОР 1: РАЗБАВЛЕНИЕ СЫРЦА ВОДОЙ ДЛЯ КУБА -->
+    <div class="calc-accordion open" id="acc-calc-raw">
+      <div class="calc-acc-header" onclick="toggleCalcAccordion('acc-calc-raw')">
+        <div class="calc-acc-title-group">
+          <div class="calc-acc-title">
+            <span>💧 1. Разбавление сырца водой перед кубом</span>
+            <span class="tag" style="background:#202e38; color:#7ec4f5;">Вода в куб</span>
+          </div>
+          <div class="calc-acc-subtitle">Сколько воды долить в спирт-сырец для безопасной перегонки (до 25–28°)</div>
+        </div>
+        <span class="calc-acc-arrow">▼</span>
+      </div>
+      <div class="calc-acc-body">
+        <p style="color:var(--text-muted); font-size:13px; margin-top:0; margin-bottom:14px;">
+          Спирт-сырец крепостью выше 30% пожароопасен при нагреве и ухудшает разделение фракций. Перед заливкой в куб его обязательно разбавляют чистой водой до <b>25–28%</b>.
+        </p>
+
         <div class="calc-row">
           <div>
             <label>Объем полученного сырца (л):</label>
-            <input type="number" id="calc-v1" value="6" step="0.1" oninput="runSecondDistillCalc()">
+            <input type="number" id="calc-raw-vol" value="6" step="0.5" min="0.5" oninput="runRawDilutionCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setRawVol(4)">4 л</span>
+              <span class="calc-chip active" id="chip-raw-v-6" onclick="setRawVol(6)">6 л</span>
+              <span class="calc-chip" onclick="setRawVol(8)">8 л</span>
+              <span class="calc-chip" onclick="setRawVol(10)">10 л</span>
+              <span class="calc-chip" onclick="setRawVol(12)">12 л</span>
+              <span class="calc-chip" onclick="setRawVol(15)">15 л</span>
+            </div>
           </div>
           <div>
-            <label>Крепость сырца (%):</label>
-            <input type="number" id="calc-s1" value="35" step="0.5" oninput="runSecondDistillCalc()">
+            <label>Крепость сырца (% об.):</label>
+            <input type="number" id="calc-raw-abv" value="35" step="0.5" min="5" max="85" oninput="runRawDilutionCalc()">
             <div class="calc-chips">
-              <span class="calc-chip" onclick="setRawStr(28)">28%</span>
-              <span class="calc-chip" onclick="setRawStr(30)">30%</span>
-              <span class="calc-chip active" id="chip-raw-35" onclick="setRawStr(35)">35%</span>
-              <span class="calc-chip" onclick="setRawStr(40)">40%</span>
+              <span class="calc-chip" onclick="setRawAbv(28)">28%</span>
+              <span class="calc-chip" onclick="setRawAbv(30)">30%</span>
+              <span class="calc-chip active" id="chip-raw-a-35" onclick="setRawAbv(35)">35%</span>
+              <span class="calc-chip" onclick="setRawAbv(40)">40%</span>
+              <span class="calc-chip" onclick="setRawAbv(45)">45%</span>
             </div>
           </div>
         </div>
 
-        <div class="calc-row" style="margin-top:8px;">
+        <div class="calc-row" style="margin-top:10px;">
           <div>
-            <label>Желаемая крепость в кубе (%):</label>
-            <input type="number" id="calc-target-pot" value="25" step="0.5" oninput="runSecondDistillCalc()">
+            <label>Желаемая крепость в кубе (% об.):</label>
+            <input type="number" id="calc-raw-target" value="25" step="0.5" min="15" max="40" oninput="runRawDilutionCalc()">
             <div class="calc-chips">
-              <span class="calc-chip active" id="chip-pot-25" onclick="setPotTarget(25)">25% (рекомендуется)</span>
-              <span class="calc-chip" id="chip-pot-28" onclick="setPotTarget(28)">28%</span>
-              <span class="calc-chip" id="chip-pot-20" onclick="setPotTarget(20)">20%</span>
-            </div>
-          </div>
-          <div>
-            <label>Тип напитка (быстрый выбор % голов):</label>
-            <div class="calc-chips" style="margin-top:4px;">
-              <span class="calc-chip active" id="chip-grain" onclick="setHeadsPct(6, 'grain')">🌾 Зерно / Виски (6%)</span>
-              <span class="calc-chip" id="chip-fruit" onclick="setHeadsPct(6, 'fruit')">🍇 Фрукты (6%)</span>
-              <span class="calc-chip" id="chip-sugar" onclick="setHeadsPct(9, 'sugar')">🍬 Сахар (9%)</span>
+              <span class="calc-chip active" id="chip-raw-t-25" onclick="setRawTarget(25)">25% (рекомендуется)</span>
+              <span class="calc-chip" id="chip-raw-t-28" onclick="setRawTarget(28)">28%</span>
+              <span class="calc-chip" id="chip-raw-t-20" onclick="setRawTarget(20)">20%</span>
             </div>
           </div>
         </div>
+
+        <!-- Результат 1 -->
+        <div id="res-raw-dilution" class="calc-result" style="display:block; margin-top:14px;"></div>
       </div>
+    </div>
 
-      <!-- Режим 2: Уже разбавленный сырец -->
-      <div id="row-ready" style="display:none;">
+    <!-- КАЛЬКУЛЯТОР 2: ОТБОР ГОЛОВ И ВЫХОД ТЕЛА -->
+    <div class="calc-accordion" id="acc-calc-heads">
+      <div class="calc-acc-header" onclick="toggleCalcAccordion('acc-calc-heads')">
+        <div class="calc-acc-title-group">
+          <div class="calc-acc-title">
+            <span>🎯 2. Расчет голов и фракций (2-я дробная перегонка)</span>
+            <span class="tag" style="background:#38271e; color:#f0a36b;">Головы и Тело</span>
+          </div>
+          <div class="calc-acc-subtitle">Расчет объема покапельного отбора голов и прогноз чистого питьевого дистиллята</div>
+        </div>
+        <span class="calc-acc-arrow">▼</span>
+      </div>
+      <div class="calc-acc-body">
+        <p style="color:var(--text-muted); font-size:13px; margin-top:0; margin-bottom:14px;">
+          В кубе уже залита спиртовая смесь. Укажите фактический объем и крепость в кубе — калькулятор рассчитает точный отбор голов (в миллилитрах и граммах на весах) и прогноз выхода тела.
+        </p>
+
         <div class="calc-row">
           <div>
             <label>Общий объем залитого в куб (л):</label>
-            <input type="number" id="calc-v-ready" value="8.4" step="0.1" oninput="runSecondDistillCalc()">
+            <input type="number" id="calc-pot-vol" value="8.4" step="0.5" min="1" max="100" oninput="runHeadsPotCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setPotVol(5)">5 л</span>
+              <span class="calc-chip active" id="chip-pot-v-84" onclick="setPotVol(8.4)">8.4 л</span>
+              <span class="calc-chip" onclick="setPotVol(10.5)">10.5 л</span>
+              <span class="calc-chip" onclick="setPotVol(15)">15 л</span>
+              <span class="calc-chip" onclick="setPotVol(20)">20 л</span>
+              <span class="calc-chip" onclick="setPotVol(24)">24 л (макс)</span>
+            </div>
           </div>
           <div>
-            <label>Крепость залитого сырца в кубе (%):</label>
-            <input type="number" id="calc-s-ready" value="25" step="0.5" oninput="runSecondDistillCalc()">
+            <label>Крепость жидкости в кубе (% об.):</label>
+            <input type="number" id="calc-pot-abv" value="25" step="0.5" min="10" max="60" oninput="runHeadsPotCalc()">
             <div class="calc-chips">
-              <span class="calc-chip" onclick="setReadyStr(25)">25%</span>
-              <span class="calc-chip" onclick="setReadyStr(28)">28%</span>
+              <span class="calc-chip" onclick="setPotAbv(20)">20%</span>
+              <span class="calc-chip active" id="chip-pot-a-25" onclick="setPotAbv(25)">25%</span>
+              <span class="calc-chip" onclick="setPotAbv(28)">28%</span>
+              <span class="calc-chip" onclick="setPotAbv(30)">30%</span>
+              <span class="calc-chip" onclick="setPotAbv(35)">35%</span>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Настройки отбора -->
-      <div class="calc-row" style="margin-top:10px;">
-        <div>
-          <label>Процент голов (% от абсолютного спирта):</label>
-          <input type="number" id="calc-heads-val" value="6" step="0.5" oninput="runSecondDistillCalc()">
+        <div class="calc-row" style="margin-top:10px;">
+          <div>
+            <label>Тип сырья (норма отбора голов):</label>
+            <div class="calc-chips" style="margin-top:4px;">
+              <span class="calc-chip active" id="chip-heads-grain" onclick="setHeadsPctVal(6, 'grain')">🌾 Зерно / Виски (6%)</span>
+              <span class="calc-chip" id="chip-heads-fruit" onclick="setHeadsPctVal(6, 'fruit')">🍇 Фрукты (6%)</span>
+              <span class="calc-chip" id="chip-heads-sugar" onclick="setHeadsPctVal(9, 'sugar')">🍬 Сахар (9%)</span>
+            </div>
+            <div style="margin-top:6px; display:flex; align-items:center; gap:8px;">
+              <span style="font-size:12px; color:var(--text-muted);">Ручной ввод %:</span>
+              <input type="number" id="calc-pot-heads-pct" value="6" step="0.5" min="2" max="20" style="width:70px; padding:4px 8px;" oninput="runHeadsPotCalc()">
+              <span style="font-size:12px; color:var(--text-muted);">% от АС</span>
+            </div>
+          </div>
+          <div>
+            <label>Ожидаемая крепость тела в струе (% об.):</label>
+            <input type="number" id="calc-pot-body-abv" value="82" step="1" min="50" max="96" oninput="runHeadsPotCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setBodyAbv(78)">78%</span>
+              <span class="calc-chip active" id="chip-body-82" onclick="setBodyAbv(82)">82%</span>
+              <span class="calc-chip" onclick="setBodyAbv(85)">85%</span>
+              <span class="calc-chip" onclick="setBodyAbv(90)">90%</span>
+            </div>
+          </div>
         </div>
-        <div>
-          <label>Ожидаемая крепость тела в струе (%):</label>
-          <input type="number" id="calc-body-str" value="82" step="1" oninput="runSecondDistillCalc()">
-        </div>
+
+        <!-- Результат 2 -->
+        <div id="res-heads-pot" class="calc-result" style="display:block; margin-top:14px;"></div>
       </div>
-
-      <button class="btn" style="margin-top:10px;" onclick="runSecondDistillCalc()">Рассчитать вторую перегонку</button>
-
-      <!-- Блок результатов -->
-      <div id="res-second-distill" class="calc-result" style="display: block; margin-top:14px;"></div>
     </div>
 
-    <!-- Калькулятор 2: Финальное разведение дистиллята водой -->
-    <div class="card">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <h3 style="margin:0;">💧 2. Разбавление готового дистиллята водой (до 40–45%)</h3>
-        <span class="tag" style="background:#1f3323; color:#72d192;">Учет плотности и сжатия смеси</span>
+    <!-- КАЛЬКУЛЯТОР 3: РАЗБАВЛЕНИЕ ГОТОВОГО ДИСТИЛЛЯТА -->
+    <div class="calc-accordion" id="acc-calc-dilution">
+      <div class="calc-acc-header" onclick="toggleCalcAccordion('acc-calc-dilution')">
+        <div class="calc-acc-title-group">
+          <div class="calc-acc-title">
+            <span>🍸 3. Разбавление дистиллята водой (до 40–45°)</span>
+            <span class="tag" style="background:#1f3323; color:#72d192;">Питьевая сортировка</span>
+          </div>
+          <div class="calc-acc-subtitle">Доведение крепкого дистиллята до питьевой крепости с учетом сжатия смеси (контракции)</div>
+        </div>
+        <span class="calc-acc-arrow">▼</span>
       </div>
-      <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
-        Используется после дробной перегонки для доведения «тела» до питьевой крепости. Разведение по весу на кухонных весах — самый точный способ: не требует мерной мензурки и автоматически учитывает плотность спирта и физическую контракцию (сжатие объемов).
-      </p>
+      <div class="calc-acc-body">
+        <p style="color:var(--text-muted); font-size:13px; margin-top:0; margin-bottom:14px;">
+          Расчет объема чистой мягкой воды для разведения крепкого «тела» (70–90%) до питьевой крепости 40–45%. Разведение по весу на кухонных весах не требует мензурки и автоматически учитывает плотность и физическое сжатие спирта с водой.
+        </p>
 
-      <!-- Переключатель режима: по весу или по объему -->
-      <div style="display:flex; gap:16px; margin-bottom:16px; background:#161412; padding:10px 14px; border-radius:6px; border:1px solid var(--border); flex-wrap:wrap;">
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
-          <input type="radio" name="dil-mode" value="weight" checked onchange="toggleDilutionMode('weight')" style="width:auto; cursor:pointer;">
-          <span>⚖️ <b>По весу на весах (в граммах)</b> — без мерной посуды</span>
-        </label>
-        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
-          <input type="radio" name="dil-mode" value="volume" onchange="toggleDilutionMode('volume')" style="width:auto; cursor:pointer;">
-          <span>🧪 <b>По объему (в литрах)</b> — замер мерным цилиндром</span>
-        </label>
+        <!-- Переключатель режима: по весу или по объему -->
+        <div style="display:flex; gap:16px; margin-bottom:14px; background:#161412; padding:10px 14px; border-radius:6px; border:1px solid var(--border); flex-wrap:wrap;">
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
+            <input type="radio" name="dil-mode" value="weight" checked onchange="toggleDilutionMode('weight')" style="width:auto; cursor:pointer;">
+            <span>⚖️ <b>По весу на весах (в граммах)</b> — самый точный способ</span>
+          </label>
+          <label style="display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--text); margin:0; font-size:14px;">
+            <input type="radio" name="dil-mode" value="volume" onchange="toggleDilutionMode('volume')" style="width:auto; cursor:pointer;">
+            <span>🧪 <b>По объему (в литрах)</b> — замер мерным цилиндром</span>
+          </label>
+        </div>
+
+        <!-- Режим ВЕСА (по умолчанию) -->
+        <div id="row-dil-weight">
+          <div class="calc-row">
+            <div>
+              <label>Чистый вес дистиллята на весах (г):</label>
+              <input type="number" id="calc-dil-w" value="1360" step="10" oninput="runDilutionCalc()">
+              <span style="font-size:11px; color:var(--text-muted);">Без учета тары (вес банки сброшен кнопкой ТАРА на 0)</span>
+            </div>
+            <div>
+              <label>Текущая крепость дистиллята (% об.):</label>
+              <input type="number" id="calc-dil-s1" value="82" step="0.5" oninput="onDilS1Input()">
+              <div class="calc-chips">
+                <span class="calc-chip" onclick="setDilStr1(70)">70%</span>
+                <span class="calc-chip active" id="chip-dil-s1-82" onclick="setDilStr1(82)">82%</span>
+                <span class="calc-chip" onclick="setDilStr1(85)">85%</span>
+                <span class="calc-chip" onclick="setDilStr1(92)">92%</span>
+                <span class="calc-chip" onclick="setDilStr1(96)">96%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Режим ОБЪЕМА -->
+        <div id="row-dil-volume" style="display:none;">
+          <div class="calc-row">
+            <div>
+              <label>Объем дистиллята (л):</label>
+              <input type="number" id="calc-dil-v" value="1.6" step="0.1" oninput="runDilutionCalc()">
+              <span style="font-size:11px; color:var(--text-muted);">По шкале на мерной посуде или банке</span>
+            </div>
+            <div>
+              <label>Текущая крепость дистиллята (% об.):</label>
+              <input type="number" id="calc-dil-s1-v" value="82" step="0.5" oninput="onDilS1VolInput()">
+              <div class="calc-chips">
+                <span class="calc-chip" onclick="setDilStr1(70)">70%</span>
+                <span class="calc-chip" onclick="setDilStr1(82)">82%</span>
+                <span class="calc-chip" onclick="setDilStr1(85)">85%</span>
+                <span class="calc-chip" onclick="setDilStr1(92)">92%</span>
+                <span class="calc-chip" onclick="setDilStr1(96)">96%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Желаемая питьевая крепость -->
+        <div class="calc-row" style="margin-top:10px;">
+          <div>
+            <label>Желаемая питьевая крепость (% об.):</label>
+            <input type="number" id="calc-dil-s2" value="43" step="0.5" oninput="runDilutionCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip" id="chip-drink-40" onclick="setDrinkTarget(40)">40% (Водка / Настойка)</span>
+              <span class="calc-chip active" id="chip-drink-43" onclick="setDrinkTarget(43)">43% (Виски / Бренди / Ром)</span>
+              <span class="calc-chip" id="chip-drink-45" onclick="setDrinkTarget(45)">45% (Джин)</span>
+              <span class="calc-chip" id="chip-drink-47" onclick="setDrinkTarget(47)">47% (London Dry)</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn" style="margin-top:12px;" onclick="runDilutionCalc()">Рассчитать воду и веса</button>
+
+        <!-- Блок результатов разбавления -->
+        <div id="res-dilution" class="calc-result" style="display:block; margin-top:14px;"></div>
       </div>
+    </div>
 
-      <!-- Режим ВЕСА (по умолчанию) -->
-      <div id="row-dil-weight">
+    <!-- КАЛЬКУЛЯТОР 4: БОТАНИКА ДЛЯ ДЖИНА (GIN LAB) -->
+    <div class="calc-accordion" id="acc-calc-gin">
+      <div class="calc-acc-header" onclick="toggleCalcAccordion('acc-calc-gin')">
+        <div class="calc-acc-title-group">
+          <div class="calc-acc-title">
+            <span>🌲 4. Калькулятор крафтового джина (Gin Lab)</span>
+            <span class="tag" style="background:#38271e; color:#f0a36b;">Навеска ботаники</span>
+          </div>
+          <div class="calc-acc-subtitle">Расчет навески ягод и пряностей под любой объем куба с распределением по зонам</div>
+        </div>
+        <span class="calc-acc-arrow">▼</span>
+      </div>
+      <div class="calc-acc-body">
+        <p style="color:var(--text-muted); font-size:13px; margin-top:0; margin-bottom:14px;">
+          Укажите любой объем и крепость основы в кубе. Калькулятор пересчитает навеску каждого ингредиента в граммах для кухонных весов, распределит травы по зонам (в куб / в царгу) и рассчитает отбор голов и мягкую воду.
+        </p>
+
+        <!-- Ввод параметров основы -->
         <div class="calc-row">
           <div>
-            <label>Чистый вес дистиллята на весах (г):</label>
-            <input type="number" id="calc-dil-w" value="1360" step="10" oninput="runDilutionCalc()">
-            <span style="font-size:11px; color:var(--text-muted);">Без учета веса банки (тара сброшена на 0)</span>
+            <label>Объем спиртовой основы в кубе (л):</label>
+            <input type="number" id="gin-calc-vol" value="10.5" step="0.5" min="1" max="100" oninput="runGinBotanicalsCalc()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setGinVol(5)">5 л</span>
+              <span class="calc-chip" onclick="setGinVol(8)">8 л</span>
+              <span class="calc-chip active" id="chip-gin-vol-105" onclick="setGinVol(10.5)">10.5 л (Стиллмен Х)</span>
+              <span class="calc-chip" onclick="setGinVol(15)">15 л</span>
+              <span class="calc-chip" onclick="setGinVol(20)">20 л</span>
+              <span class="calc-chip" onclick="setGinVol(25)">25 л</span>
+            </div>
           </div>
           <div>
-            <label>Текущая крепость дистиллята (% об.):</label>
-            <input type="number" id="calc-dil-s1" value="82" step="0.5" oninput="onDilS1Input()">
+            <label>Крепость основы в кубе (% об.):</label>
+            <input type="number" id="gin-calc-abv" value="25" step="0.5" min="10" max="60" oninput="runGinBotanicalsCalc()">
             <div class="calc-chips">
-              <span class="calc-chip" onclick="setDilStr1(70)">70%</span>
-              <span class="calc-chip active" id="chip-dil-s1-82" onclick="setDilStr1(82)">82%</span>
-              <span class="calc-chip" onclick="setDilStr1(85)">85%</span>
-              <span class="calc-chip" onclick="setDilStr1(92)">92%</span>
-              <span class="calc-chip" onclick="setDilStr1(96)">96%</span>
+              <span class="calc-chip" onclick="setGinAbv(20)">20%</span>
+              <span class="calc-chip active" id="chip-gin-abv-25" onclick="setGinAbv(25)">25% (рекомендуется)</span>
+              <span class="calc-chip" onclick="setGinAbv(28)">28%</span>
+              <span class="calc-chip" onclick="setGinAbv(30)">30%</span>
+              <span class="calc-chip" onclick="setGinAbv(35)">35%</span>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Режим ОБЪЕМА -->
-      <div id="row-dil-volume" style="display:none;">
+        <!-- Выбор стиля джина -->
+        <div style="margin-top:14px; margin-bottom:14px; background:#1b1714; padding:12px 14px; border-radius:6px; border:1px solid var(--border);">
+          <label style="font-weight:700; color:#f0a36b; margin-bottom:6px; display:block;">Стиль / вкусовой профиль джина:</label>
+          <div class="calc-chips">
+            <span class="calc-chip active" id="chip-style-london" onclick="setGinStyle('london')">🌲 Классический London Dry (хвоя + цитрус)</span>
+            <span class="calc-chip" id="chip-style-citrus" onclick="setGinStyle('citrus')">🍊 Цитрусовый Fresh (удвоенный апельсин/лайм)</span>
+            <span class="calc-chip" id="chip-style-spicy" onclick="setGinStyle('spicy')">🌶️ Пряный / Восточный (кардамон, корица, бадьян)</span>
+            <span class="calc-chip" id="chip-style-herbal" onclick="setGinStyle('herbal')">🌿 Мягкий травяной (розмарин, лаванда)</span>
+          </div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">
+            💡 <i>Любой ингредиент ниже можно отключить галочкой — калькулятор пересчитает навеску под ваши предпочтения.</i>
+          </div>
+        </div>
+
+        <!-- Список ботаники с чекбоксами -->
+        <div id="gin-botanicals-list"></div>
+
+        <!-- Итоги и технологический регламент -->
+        <div id="res-gin-calc" class="calc-result" style="display:block; margin-top:16px;"></div>
+      </div>
+    </div>
+
+    <!-- КАЛЬКУЛЯТОР 5: КОНВЕРТЕР ВЕС <-> ОБЪЕМ -->
+    <div class="calc-accordion" id="acc-calc-converter">
+      <div class="calc-acc-header" onclick="toggleCalcAccordion('acc-calc-converter')">
+        <div class="calc-acc-title-group">
+          <div class="calc-acc-title">
+            <span>⚖️ 5. Экспресс-конвертер: Вес на весах ↔ Объем дистиллята</span>
+            <span class="tag" style="background:#26231c; color:#f0a36b;">ГОСТ 3639-79</span>
+          </div>
+          <div class="calc-acc-subtitle">Точный перевод граммов с кухонных весов в литры (без мерной колбы)</div>
+        </div>
+        <span class="calc-acc-arrow">▼</span>
+      </div>
+      <div class="calc-acc-body">
+        <p style="color:var(--text-muted); font-size:13px; margin-top:0; margin-bottom:12px;">
+          Спирт заметно легче воды! 1 литр чистого спирта 96.6% весит <b>794 г</b>, а 1 литр дистиллята 82% — <b>851 г</b>. Если нет мерного цилиндра, просто взвесьте банку на кухонных весах и укажите крепость.
+        </p>
+
         <div class="calc-row">
           <div>
-            <label>Объем дистиллята (л):</label>
-            <input type="number" id="calc-dil-v" value="1.6" step="0.1" oninput="runDilutionCalc()">
-            <span style="font-size:11px; color:var(--text-muted);">По шкале на мерной посуде или банке</span>
+            <label>Что переводим:</label>
+            <select id="conv-dir" onchange="runConverterCalc()" style="width:100%; padding:8px; background:#1b1917; border:1px solid var(--border); color:var(--text); border-radius:4px;">
+              <option value="w2v">⚖️ Из Веса на весах (г) → в Объем (л / мл)</option>
+              <option value="v2w">🧪 Из Объема (л) → в Вес на весах (г)</option>
+            </select>
           </div>
           <div>
-            <label>Текущая крепость дистиллята (% об.):</label>
-            <input type="number" id="calc-dil-s1-v" value="82" step="0.5" oninput="onDilS1VolInput()">
+            <label id="lbl-conv-val">Вес жидкости на весах (г):</label>
+            <input type="number" id="conv-val" value="1000" step="50" oninput="runConverterCalc()">
+          </div>
+          <div>
+            <label>Крепость жидкости (% об.):</label>
+            <input type="number" id="conv-abv" value="82" step="0.5" oninput="runConverterCalc()">
             <div class="calc-chips">
-              <span class="calc-chip" onclick="setDilStr1(70)">70%</span>
-              <span class="calc-chip" onclick="setDilStr1(82)">82%</span>
-              <span class="calc-chip" onclick="setDilStr1(85)">85%</span>
-              <span class="calc-chip" onclick="setDilStr1(92)">92%</span>
-              <span class="calc-chip" onclick="setDilStr1(96)">96%</span>
+              <span class="calc-chip" onclick="setConvAbv(25)">25% (сырец)</span>
+              <span class="calc-chip" onclick="setConvAbv(40)">40% (водка)</span>
+              <span class="calc-chip" onclick="setConvAbv(43)">43% (виски)</span>
+              <span class="calc-chip active" id="chip-conv-82" onclick="setConvAbv(82)">82% (тело)</span>
+              <span class="calc-chip" onclick="setConvAbv(90)">90% (головы)</span>
+              <span class="calc-chip" onclick="setConvAbv(96.6)">96.6% (спирт)</span>
             </div>
           </div>
         </div>
+
+        <div id="res-converter" class="calc-result" style="display:block; margin-top:12px;"></div>
       </div>
-
-      <!-- Желаемая питьевая крепость -->
-      <div class="calc-row" style="margin-top:10px;">
-        <div>
-          <label>Желаемая питьевая крепость (% об.):</label>
-          <input type="number" id="calc-dil-s2" value="43" step="0.5" oninput="runDilutionCalc()">
-          <div class="calc-chips">
-            <span class="calc-chip" id="chip-drink-40" onclick="setDrinkTarget(40)">40% (Водка / Настойка)</span>
-            <span class="calc-chip active" id="chip-drink-43" onclick="setDrinkTarget(43)">43% (Виски / Бренди / Ром)</span>
-            <span class="calc-chip" id="chip-drink-45" onclick="setDrinkTarget(45)">45% (Джин)</span>
-            <span class="calc-chip" id="chip-drink-47" onclick="setDrinkTarget(47)">47% (London Dry)</span>
-          </div>
-        </div>
-      </div>
-
-      <button class="btn" style="margin-top:10px;" onclick="runDilutionCalc()">Рассчитать воду и веса</button>
-
-      <!-- Блок результатов разбавления -->
-      <div id="res-dilution" class="calc-result" style="display: block; margin-top:14px;"></div>
-    </div>
-
-    <!-- Калькулятор 3: Экспресс-конвертер Вес <-> Объем -->
-    <div class="card" style="margin-top:16px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <h3 style="margin:0;">⚖️ 3. Экспресс-конвертер: перевод Веса в Объем (без мерной тары)</h3>
-        <span class="tag" style="background:#26231c; color:#f0a36b;">Таблица ГОСТ 3639-79</span>
-      </div>
-      <p style="color:var(--text-muted); font-size:13px; margin-bottom:12px;">
-        Спирт заметно легче воды! 1 литр чистого спирта 96.6% весит всего <b>794 г</b>, а 1 литр дистиллята 82% — <b>851 г</b>. Если нет мерного цилиндра, просто взвесьте жидкость на кухонных весах и укажите крепость.
-      </p>
-
-      <div class="calc-row">
-        <div>
-          <label>Что переводим:</label>
-          <select id="conv-dir" onchange="runConverterCalc()" style="width:100%; padding:8px; background:#1b1917; border:1px solid var(--border); color:var(--text); border-radius:4px;">
-            <option value="w2v">⚖️ Из Веса на весах (г) → в Объем (л / мл)</option>
-            <option value="v2w">🧪 Из Объема (л) → в Вес на весах (г)</option>
-          </select>
-        </div>
-        <div>
-          <label id="lbl-conv-val">Вес жидкости на весах (г):</label>
-          <input type="number" id="conv-val" value="1000" step="50" oninput="runConverterCalc()">
-        </div>
-        <div>
-          <label>Крепость жидкости (% об.):</label>
-          <input type="number" id="conv-abv" value="82" step="0.5" oninput="runConverterCalc()">
-          <div class="calc-chips">
-            <span class="calc-chip" onclick="setConvAbv(25)">25% (сырец)</span>
-            <span class="calc-chip" onclick="setConvAbv(40)">40% (водка)</span>
-            <span class="calc-chip" onclick="setConvAbv(43)">43% (виски)</span>
-            <span class="calc-chip active" id="chip-conv-82" onclick="setConvAbv(82)">82% (тело)</span>
-            <span class="calc-chip" onclick="setConvAbv(90)">90% (головы)</span>
-            <span class="calc-chip" onclick="setConvAbv(96.6)">96.6% (спирт)</span>
-          </div>
-        </div>
-      </div>
-
-      <div id="res-converter" class="calc-result" style="display: block; margin-top:12px;"></div>
-    </div>
-
-    <!-- Калькулятор 4: Ботаника для крафтового джина -->
-    <div class="card" id="card-gin-calc" style="margin-top:20px; border-color:#d97736;">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <h3 style="margin:0;">🍸 4. Калькулятор крафтового джина: расчет ботаники под любой объем</h3>
-        <span class="tag" style="background:#38271e; color:#f0a36b;">Stillman X & Любой аппарат</span>
-      </div>
-      <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">
-        Укажите любой объем и крепость спиртовой основы, заливаемой в куб. Калькулятор автоматически рассчитает точную навеску каждого ингредиента в граммах для ваших кухонных весов, распределит травы по зонам загрузки (куб / царга) и покажет отбор голов, выход готового джина и объем воды для разведения.
-      </p>
-
-      <!-- Ввод параметров основы -->
-      <div class="calc-row">
-        <div>
-          <label>Объем спиртовой основы в кубе (л):</label>
-          <input type="number" id="gin-calc-vol" value="10.5" step="0.5" min="1" max="100" oninput="runGinBotanicalsCalc()">
-          <div class="calc-chips">
-            <span class="calc-chip" onclick="setGinVol(5)">5 л</span>
-            <span class="calc-chip" onclick="setGinVol(8)">8 л</span>
-            <span class="calc-chip active" id="chip-gin-vol-105" onclick="setGinVol(10.5)">10.5 л (Стиллмен Х)</span>
-            <span class="calc-chip" onclick="setGinVol(15)">15 л</span>
-            <span class="calc-chip" onclick="setGinVol(20)">20 л</span>
-            <span class="calc-chip" onclick="setGinVol(25)">25 л</span>
-          </div>
-        </div>
-        <div>
-          <label>Крепость основы в кубе (% об.):</label>
-          <input type="number" id="gin-calc-abv" value="25" step="0.5" min="10" max="60" oninput="runGinBotanicalsCalc()">
-          <div class="calc-chips">
-            <span class="calc-chip" onclick="setGinAbv(20)">20%</span>
-            <span class="calc-chip active" id="chip-gin-abv-25" onclick="setGinAbv(25)">25% (рекомендуется)</span>
-            <span class="calc-chip" onclick="setGinAbv(28)">28%</span>
-            <span class="calc-chip" onclick="setGinAbv(30)">30%</span>
-            <span class="calc-chip" onclick="setGinAbv(35)">35%</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Выбор стиля джина -->
-      <div style="margin-top:14px; margin-bottom:14px; background:#1b1714; padding:12px 14px; border-radius:6px; border:1px solid var(--border);">
-        <label style="font-weight:700; color:#f0a36b; margin-bottom:6px; display:block;">Стиль / вкусовой профиль джина:</label>
-        <div class="calc-chips">
-          <span class="calc-chip active" id="chip-style-london" onclick="setGinStyle('london')">🌲 Классический London Dry (хвоя + цитрус)</span>
-          <span class="calc-chip" id="chip-style-citrus" onclick="setGinStyle('citrus')">🍊 Цитрусовый Fresh (удвоенный апельсин/лайм)</span>
-          <span class="calc-chip" id="chip-style-spicy" onclick="setGinStyle('spicy')">🌶️ Пряный / Восточный (кардамон, корица, бадьян)</span>
-          <span class="calc-chip" id="chip-style-herbal" onclick="setGinStyle('herbal')">🌿 Мягкий травяной (розмарин, лаванда)</span>
-        </div>
-        <div style="font-size:12px; color:var(--text-muted); margin-top:8px;">
-          💡 <i>Каждый ингредиент ниже можно включить или выключить галочкой — рецепт мгновенно пересчитается под ваши предпочтения!</i>
-        </div>
-      </div>
-
-      <!-- Список ботаники с чекбоксами -->
-      <div id="gin-botanicals-list"></div>
-
-      <!-- Итоги и технологический регламент -->
-      <div id="res-gin-calc" class="calc-result" style="display:block; margin-top:16px;"></div>
     </div>
   </section>
 
@@ -1963,7 +2175,8 @@
     function renderAll() {
       renderRecipes();
       renderTech();
-      if (typeof runSecondDistillCalc === 'function') runSecondDistillCalc();
+      if (typeof runRawDilutionCalc === 'function') runRawDilutionCalc();
+      if (typeof runHeadsPotCalc === 'function') runHeadsPotCalc();
       if (typeof runDilutionCalc === 'function') runDilutionCalc();
       if (typeof runConverterCalc === 'function') runConverterCalc();
       if (typeof initGinCalculator === 'function') initGinCalculator();
@@ -2075,43 +2288,144 @@
     }
 
     /* =====================================================================
-       6. КАЛЬКУЛЯТОРЫ
+       6. КАЛЬКУЛЯТОРЫ (СВОРАЧИВАЕМЫЙ АККОРДЕОН И ФУНКЦИИ РАСЧЕТОВ)
        ===================================================================== */
-    function toggleCalcMode(mode) {
-      if (mode === 'dilute') {
-        document.getElementById('row-undiluted').style.display = 'block';
-        document.getElementById('row-ready').style.display = 'none';
-      } else {
-        document.getElementById('row-undiluted').style.display = 'none';
-        document.getElementById('row-ready').style.display = 'block';
+    function toggleCalcAccordion(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.toggle('open');
+      updateCalcNavPills();
+    }
+
+    function openOnlyCalcAccordion(id) {
+      const allIds = ['acc-calc-raw', 'acc-calc-heads', 'acc-calc-dilution', 'acc-calc-gin', 'acc-calc-converter'];
+      allIds.forEach(otherId => {
+        const el = document.getElementById(otherId);
+        if (el) {
+          if (otherId === id) el.classList.add('open');
+          else el.classList.remove('open');
+        }
+      });
+      updateCalcNavPills();
+      const target = document.getElementById(id);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function expandAllCalcs(open) {
+      const allIds = ['acc-calc-raw', 'acc-calc-heads', 'acc-calc-dilution', 'acc-calc-gin', 'acc-calc-converter'];
+      allIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          if (open) el.classList.add('open');
+          else el.classList.remove('open');
+        }
+      });
+      updateCalcNavPills();
+    }
+
+    function updateCalcNavPills() {
+      const map = {
+        'acc-calc-raw': 'pill-calc-raw',
+        'acc-calc-heads': 'pill-calc-heads',
+        'acc-calc-dilution': 'pill-calc-dilution',
+        'acc-calc-gin': 'pill-calc-gin',
+        'acc-calc-converter': 'pill-calc-converter'
+      };
+      for (const [accId, pillId] of Object.entries(map)) {
+        const acc = document.getElementById(accId);
+        const pill = document.getElementById(pillId);
+        if (acc && pill) {
+          if (acc.classList.contains('open')) pill.classList.add('active');
+          else pill.classList.remove('active');
+        }
       }
-      runSecondDistillCalc();
     }
 
-    function setRawStr(val) {
-      document.getElementById('calc-s1').value = val;
-      runSecondDistillCalc();
+    // --- Калькулятор 1: Разбавление сырца водой ---
+    function setRawVol(val) {
+      const el = document.getElementById('calc-raw-vol');
+      if (el) el.value = val;
+      document.querySelectorAll('#acc-calc-raw .calc-chips .calc-chip').forEach(c => {
+        if (c.innerText.trim() === val + ' л') c.classList.add('active');
+        else if (c.innerText.includes('л')) c.classList.remove('active');
+      });
+      runRawDilutionCalc();
     }
 
-    function setPotTarget(val) {
-      document.getElementById('calc-target-pot').value = val;
-      document.querySelectorAll('#chip-pot-25, #chip-pot-28, #chip-pot-20').forEach(c => c.classList.remove('active'));
-      const activeChip = document.getElementById('chip-pot-' + val);
-      if (activeChip) activeChip.classList.add('active');
-      runSecondDistillCalc();
+    function setRawAbv(val) {
+      const el = document.getElementById('calc-raw-abv');
+      if (el) el.value = val;
+      document.querySelectorAll('#acc-calc-raw .calc-chips .calc-chip').forEach(c => {
+        if (c.innerText.trim() === val + '%') c.classList.add('active');
+        else if (c.innerText.endsWith('%') && !c.id.includes('chip-raw-t-')) c.classList.remove('active');
+      });
+      runRawDilutionCalc();
     }
 
-    function setReadyStr(val) {
-      document.getElementById('calc-s-ready').value = val;
-      runSecondDistillCalc();
+    function setRawTarget(val) {
+      const el = document.getElementById('calc-raw-target');
+      if (el) el.value = val;
+      ['chip-raw-t-25', 'chip-raw-t-28', 'chip-raw-t-20'].forEach(id => {
+        const c = document.getElementById(id);
+        if (c) c.classList.remove('active');
+      });
+      const act = document.getElementById('chip-raw-t-' + val);
+      if (act) act.classList.add('active');
+      runRawDilutionCalc();
     }
 
-    function setHeadsPct(val, type) {
-      document.getElementById('calc-heads-val').value = val;
-      document.querySelectorAll('#chip-grain, #chip-fruit, #chip-sugar').forEach(c => c.classList.remove('active'));
-      const chip = document.getElementById('chip-' + type);
-      if (chip) chip.classList.add('active');
-      runSecondDistillCalc();
+    function transferRawToPotCalc(potVol, potAbv) {
+      const elV = document.getElementById('calc-pot-vol');
+      const elA = document.getElementById('calc-pot-abv');
+      if (elV) elV.value = potVol.toFixed(1);
+      if (elA) elA.value = potAbv;
+      openOnlyCalcAccordion('acc-calc-heads');
+      runHeadsPotCalc();
+    }
+
+    // --- Калькулятор 2: Отбор голов и тела ---
+    function setPotVol(val) {
+      const el = document.getElementById('calc-pot-vol');
+      if (el) el.value = val;
+      document.querySelectorAll('#acc-calc-heads .calc-chips .calc-chip').forEach(c => {
+        if (c.innerText.trim() === val + ' л' || c.innerText.startsWith(val + ' л')) c.classList.add('active');
+        else if (c.innerText.includes('л')) c.classList.remove('active');
+      });
+      runHeadsPotCalc();
+    }
+
+    function setPotAbv(val) {
+      const el = document.getElementById('calc-pot-abv');
+      if (el) el.value = val;
+      document.querySelectorAll('#acc-calc-heads .calc-chips .calc-chip').forEach(c => {
+        if (c.innerText.trim() === val + '%') c.classList.add('active');
+        else if (c.innerText.endsWith('%') && !c.id.includes('chip-heads-') && !c.id.includes('chip-body-')) c.classList.remove('active');
+      });
+      runHeadsPotCalc();
+    }
+
+    function setHeadsPctVal(pct, type) {
+      const el = document.getElementById('calc-pot-heads-pct');
+      if (el) el.value = pct;
+      ['chip-heads-grain', 'chip-heads-fruit', 'chip-heads-sugar'].forEach(id => {
+        const c = document.getElementById(id);
+        if (c) c.classList.remove('active');
+      });
+      const act = document.getElementById('chip-heads-' + type);
+      if (act) act.classList.add('active');
+      runHeadsPotCalc();
+    }
+
+    function setBodyAbv(val) {
+      const el = document.getElementById('calc-pot-body-abv');
+      if (el) el.value = val;
+      ['chip-body-78', 'chip-body-82', 'chip-body-85', 'chip-body-90'].forEach(id => {
+        const c = document.getElementById(id);
+        if (c) c.classList.remove('active');
+      });
+      const act = document.getElementById('chip-body-' + val);
+      if (act) act.classList.add('active');
+      runHeadsPotCalc();
     }
 
     /* =====================================================================
@@ -2214,83 +2528,99 @@
       runDilutionCalc();
     }
 
-    function runSecondDistillCalc() {
-      const mode = document.querySelector('input[name="calc-mode"]:checked')?.value || 'dilute';
-      let v = 0;
-      let s = 0;
-      let waterToAdd = 0;
-      let targetPotStr = 25;
-      let totalPotVol = 0;
+    function runRawDilutionCalc() {
+      const v = parseFloat(document.getElementById('calc-raw-vol')?.value) || 0;
+      const s = parseFloat(document.getElementById('calc-raw-abv')?.value) || 0;
+      const targetStr = parseFloat(document.getElementById('calc-raw-target')?.value) || 25;
+      const box = document.getElementById('res-raw-dilution');
+      if (!box) return;
 
-      if (mode === 'dilute') {
-        v = parseFloat(document.getElementById('calc-v1').value) || 0;
-        s = parseFloat(document.getElementById('calc-s1').value) || 0;
-        targetPotStr = parseFloat(document.getElementById('calc-target-pot').value) || 25;
+      if (v <= 0 || s <= 0 || targetStr <= 0) {
+        box.innerHTML = '<span style="color:var(--text-muted);">Введите объем и крепость спирта-сырца.</span>';
+        return;
+      }
 
-        if (targetPotStr >= s || targetPotStr <= 0 || v <= 0) {
-          waterToAdd = 0;
-          totalPotVol = v;
-        } else {
-          waterToAdd = ((s / targetPotStr) - 1) * v;
-          totalPotVol = v + waterToAdd;
-        }
-      } else {
-        totalPotVol = parseFloat(document.getElementById('calc-v-ready').value) || 0;
-        targetPotStr = parseFloat(document.getElementById('calc-s-ready').value) || 25;
-        v = totalPotVol;
-        s = targetPotStr;
-        waterToAdd = 0;
+      if (targetStr >= s) {
+        box.innerHTML = `
+          <div style="background:#221d19; padding:12px; border-radius:6px; border-left:3px solid #f0a36b;">
+            ⚠️ Крепость сырца (<b>${s}%</b>) уже меньше или равна целевой (<b>${targetStr}%</b>). Воду добавлять не нужно!
+          </div>
+        `;
+        return;
+      }
+
+      const waterToAdd = ((s / targetStr) - 1) * v;
+      const totalPotVol = v + waterToAdd;
+      const totalAc = (v * s) / 100;
+
+      let warning = '';
+      if (totalPotVol > 24) {
+        warning = `
+          <div style="margin-top:10px; background:#2c1b18; border:1px solid #d9534f; color:#ff9f9f; padding:8px 12px; border-radius:6px; font-size:12.5px;">
+            ⚠️ <b>Внимание:</b> итоговый объем <b>${totalPotVol.toFixed(1)} л</b> превышает 75% объема 30-литрового куба (макс. заливка 22.5–24 л). Рекомендуется перегонять в 2 захода!
+          </div>
+        `;
+      }
+
+      box.innerHTML = `
+        <div style="background:#1d261e; padding:14px; border-radius:6px; border-left:4px solid #72d192; margin-bottom:10px;">
+          <div style="font-size:13px; color:#a2e6b7; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">
+            💧 Объем чистой воды для заливки в куб:
+          </div>
+          <div style="font-size:26px; font-weight:800; color:#72d192; margin:4px 0;">
+            ${waterToAdd.toFixed(2)} л <span style="font-size:16px; font-weight:400; color:var(--text);">(${Math.round(waterToAdd * 1000)} мл)</span>
+          </div>
+          <div style="font-size:13.5px; color:var(--text); line-height:1.4;">
+            • Итоговый объем в кубе: <b>${totalPotVol.toFixed(2)} л</b> крепостью <b>${targetStr}%</b><br>
+            • Содержание абсолютного спирта: <b>${totalAc.toFixed(2)} л АС</b>
+          </div>
+        </div>
+        ${warning}
+        <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+          <button type="button" class="btn btn-secondary btn-sm" onclick="transferRawToPotCalc(${totalPotVol}, ${targetStr})" style="font-size:13px; padding:8px 14px;">
+            ➡️ Перенести в Калькулятор голов (2-й перегон)
+          </button>
+        </div>
+      `;
+    }
+
+    function runHeadsPotCalc() {
+      const v = parseFloat(document.getElementById('calc-pot-vol')?.value) || 0;
+      const s = parseFloat(document.getElementById('calc-pot-abv')?.value) || 0;
+      const headsPct = parseFloat(document.getElementById('calc-pot-heads-pct')?.value) || 6;
+      const bodyTargetStr = parseFloat(document.getElementById('calc-pot-body-abv')?.value) || 82;
+      const box = document.getElementById('res-heads-pot');
+      if (!box) return;
+
+      if (v <= 0 || s <= 0) {
+        box.innerHTML = '<span style="color:var(--text-muted);">Введите объем и крепость спиртовой смеси в кубе.</span>';
+        return;
       }
 
       const ac = (v * s) / 100;
-      const headsPct = parseFloat(document.getElementById('calc-heads-val').value) || 6;
-      const bodyTargetStr = parseFloat(document.getElementById('calc-body-str').value) || 82;
-
       // Головы по чистому спирту (АС)
       const headsAcMl = Math.round(ac * (headsPct / 100) * 1000);
-      // Головы в мерную мензурку (при отборе струей ~90% спиртуозности)
+      // Головы в мензурку (~90%)
       const headsCylinderMl = Math.round(headsAcMl / 0.90);
       const headsDensity = getAlcoholDensity(90);
       const headsGrams = Math.round(headsCylinderMl * headsDensity);
 
-      // Прогноз выхода питьевого тела (~70% от АС)
+      // Прогноз питьевого тела (~70% от АС)
       const bodyAc = ac * 0.70;
       const bodyL = (bodyAc / (bodyTargetStr / 100)).toFixed(2);
       const bodyDensity = getAlcoholDensity(bodyTargetStr);
       const bodyGrams = Math.round(parseFloat(bodyL) * 1000 * bodyDensity);
       const finishedDrinkL = (bodyAc / 0.43).toFixed(2);
 
-      const box = document.getElementById('res-second-distill');
-      if (!box) return;
-      box.style.display = 'block';
-
-      let dilutionHtml = '';
-      if (mode === 'dilute') {
-        dilutionHtml = `
-          <div style="background:#221d19; padding:12px 14px; border-radius:6px; margin-bottom:12px; border-left:3px solid #72d192;">
-            <b style="color:#72d192;">💧 1. Подготовка куба (разведение сырца до ${targetPotStr}%):</b><br>
-            • Долить чистой воды в куб: <strong style="color:#72d192; font-size:17px;">${waterToAdd.toFixed(2)} л</strong> (${Math.round(waterToAdd * 1000)} мл)<br>
-            • Общий объем заправки куба: <b>~${totalPotVol.toFixed(2)} л</b> (крепостью <b>${targetPotStr}%</b>)
-          </div>
-        `;
-      } else {
-        dilutionHtml = `
-          <div style="background:#221d19; padding:12px 14px; border-radius:6px; margin-bottom:12px; border-left:3px solid #72d192;">
-            <b>Объем заправки куба:</b> ${totalPotVol.toFixed(2)} л (крепостью <b>${targetPotStr}%</b>)
-          </div>
-        `;
-      }
-
       box.innerHTML = `
-        ${dilutionHtml}
-        <div style="margin-bottom:8px; font-size:14px;">
-          • Абсолютный спирт (АС) в кубе: <b>${ac.toFixed(2)} л</b>
+        <div style="margin-bottom:10px; font-size:14px; color:var(--text);">
+          • Абсолютный спирт (АС) в кубе: <b>${ac.toFixed(2)} л</b> (при объеме <b>${v.toFixed(1)} л</b> и крепости <b>${s}%</b>)
         </div>
 
         <div class="heads-highlight">
           <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
             <div>
-              <span style="color:#f0a36b; font-weight:700; font-size:15px;">🚨 2. СКОЛЬКО СНЯТЬ ГОЛОВ (${headsPct}% от АС):</span>
+              <span style="color:#f0a36b; font-weight:700; font-size:15px;">🚨 СКОЛЬКО СНЯТЬ ГОЛОВ (${headsPct}% от АС):</span>
               <div class="heads-big">${headsCylinderMl} мл <span style="font-size:16px; font-weight:400; color:var(--text);">(или <b>~${headsGrams} г</b> на весах)</span></div>
             </div>
             <div style="text-align:right; font-size:13px; color:var(--text-muted);">
@@ -2299,16 +2629,17 @@
             </div>
           </div>
           <div style="margin-top:10px; font-size:13px; color:var(--text); border-top:1px dashed var(--border); padding-top:8px; line-height:1.5;">
-            ⏱️ <b>Скорость отбора:</b> строго покапельно, <b>1–2 капли в секунду</b>.<br>
-            ⚖️ <b>Если нет мензурки:</b> поставьте баночку на кухонные весы, нажмите «Тара» (0 г) и отберите покапельно ровно <b>${headsGrams} г</b> голов!<br>
-            👃 <b>Ориентир окончания:</b> разотрите каплю на ладонях — как только исчезнет едкий запах ацетона/растворителя и пойдет приятный аромат сырья, переставляйте емкость под тело!
+            ⏱️ <b>Скорость отбора:</b> строго покапельно, <b>1–2 капли в секунду</b> (около 150–200 мл в час).<br>
+            ⚖️ <b>Замер на весах:</b> поставьте баночку на кухонные весы, сбросьте тару в 0 и отберите ровно <b>${headsGrams} г</b>.<br>
+            👃 <b>Окончание отбора:</b> разотрите каплю на ладонях — резкий ацетон должен уйти.
           </div>
         </div>
 
-        <div style="margin-top:12px; font-size:14px; background:#1b1816; padding:10px 14px; border-radius:6px; border:1px solid var(--border);">
-          <b style="color:#f0a36b;">🍶 3. Прогноз выхода питьевого «сердца»:</b><br>
+        <div style="margin-top:12px; font-size:14px; background:#1b1816; padding:12px 14px; border-radius:6px; border:1px solid var(--border); line-height:1.5;">
+          <b style="color:#72d192;">🍶 Прогноз питьевого тела («сердца»):</b><br>
           • Выход дистиллята крепостью ${bodyTargetStr}%: <b>~${bodyL} л</b> (или <b>~${bodyGrams} г</b> на весах)<br>
-          • После разведения готового напитка водой до 43%: <b>~${finishedDrinkL} л</b> (или ~${Math.round(finishedDrinkL * 2)} бутылок по 0.5 л)
+          • После разбавления водой до 43%: <b>~${finishedDrinkL} л</b> (около ${Math.round(finishedDrinkL * 2)} бутылок по 0.5 л)<br>
+          • <b>Завершение отбора тела:</b> при температуре 92–93 °C в кубе (или при падении спиртуозности в струе ниже 55–60%).
         </div>
       `;
     }
@@ -2703,7 +3034,7 @@
 
     function setGinStyle(style) {
       currentGinStyle = style;
-      document.querySelectorAll('#card-gin-calc .calc-chips .calc-chip').forEach(c => {
+      document.querySelectorAll('#acc-calc-gin .calc-chips .calc-chip').forEach(c => {
         if (c.id === 'chip-style-' + style) c.classList.add('active');
         else if (c.id && c.id.startsWith('chip-style-')) c.classList.remove('active');
       });
@@ -2942,17 +3273,12 @@
       const tabCalcsBtn = document.querySelectorAll('.tab-btn')[1];
       if (tabCalcsBtn) switchTab('calcs', tabCalcsBtn);
       setTimeout(() => {
-        const card = document.getElementById('card-gin-calc');
+        openOnlyCalcAccordion('acc-calc-gin');
+        const card = document.getElementById('acc-calc-gin');
         if (card) {
           card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          card.style.borderColor = '#fca868';
-          card.style.boxShadow = '0 0 15px rgba(217, 119, 54, 0.4)';
-          setTimeout(() => {
-            card.style.borderColor = '#d97736';
-            card.style.boxShadow = 'none';
-          }, 2000);
         }
-      }, 50);
+      }, 100);
     }
 
     /* =====================================================================
