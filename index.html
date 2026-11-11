@@ -357,40 +357,6 @@
     }
     .close-btn:hover { color: #fff; }
 
-    .editor-toolbar {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-      background: #141312;
-      padding: 6px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-    }
-    .editor-toolbar button {
-      background: #26211c;
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      cursor: pointer;
-      touch-action: manipulation;
-    }
-    .editor-toolbar button:hover {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
-    .badge-user {
-      background: #392b47;
-      color: #c99ff5;
-      font-size: 11px;
-      padding: 2px 6px;
-      border-radius: 3px;
-    }
-
     /* Стили для калькулятора ботаники джина */
     .botanical-item {
       display: flex;
@@ -604,28 +570,16 @@
         padding: 0 4px;
       }
       .top-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
+        display: flex;
+        justify-content: center;
         width: 100%;
         margin-top: 10px;
       }
       #btn-install-app {
-        grid-column: 1 / -1;
         justify-content: center;
-        padding: 10px 12px;
+        padding: 10px 14px;
         font-size: 13.5px;
         width: 100%;
-      }
-      .top-actions .btn {
-        justify-content: center;
-        padding: 8px 4px;
-        font-size: 11.5px;
-        width: 100%;
-        min-height: 38px;
-        text-align: center;
-        white-space: normal;
-        line-height: 1.2;
       }
 
       .tabs {
@@ -673,38 +627,44 @@
         margin-bottom: 10px;
       }
       .recipe-header {
-        flex-direction: column;
-        align-items: stretch;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
         gap: 8px;
       }
       .recipe-title-group {
         font-size: 14px;
         line-height: 1.35;
+        flex: 1;
+        min-width: 0;
       }
       .recipe-title-group strong {
         font-size: 15px;
       }
       .recipe-header-actions {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr auto;
-        gap: 5px;
-        width: 100%;
-        padding-top: 8px;
-        border-top: 1px dashed var(--border);
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        width: auto;
+        padding-top: 0;
+        border-top: none;
+        flex-shrink: 0;
       }
       .recipe-header-actions.tech-actions {
-        grid-template-columns: 1fr auto;
+        display: flex;
+        width: auto;
       }
       .recipe-header-actions .btn {
         justify-content: center;
-        padding: 7px 2px;
+        padding: 6px 10px;
         font-size: 12px;
-        width: 100%;
-        min-height: 34px;
+        width: auto;
+        min-height: 32px;
         white-space: nowrap;
       }
       .recipe-arrow {
-        padding: 7px 10px;
+        padding: 6px 8px;
         background: #25201b;
         border: 1px solid var(--border);
         border-radius: 4px;
@@ -785,14 +745,6 @@
         justify-content: center;
         padding: 10px;
       }
-      .editor-toolbar {
-        gap: 4px;
-        padding: 4px;
-      }
-      .editor-toolbar button {
-        padding: 6px 8px;
-        font-size: 11.5px;
-      }
     }
 
     /* Стили для печати на термопринтере 60х40 */
@@ -842,11 +794,6 @@
     <p class="subtitle">Технологические карты, калькуляторы и термоэтикетки • Владимир Горевой</p>
     <div class="top-actions">
       <button class="btn btn-sm" id="btn-install-app" onclick="triggerInstallApp()" style="background:#2a231d; color:#fca868; border:1px solid #d97736; font-weight:600;">📲 Установить на телефон</button>
-      <button class="btn btn-secondary btn-sm" onclick="exportDataHtml()" title="Скачать готовый HTML файл со всеми вашими изменениями">📥 Скачать обновленный HTML</button>
-      <button class="btn btn-secondary btn-sm" onclick="exportDataJson()" title="Сохранить резервную копию рецептов в JSON">💾 Экспорт JSON</button>
-      <button class="btn btn-secondary btn-sm" onclick="triggerJsonImport()" title="Загрузить рецепты из JSON">📂 Импорт JSON</button>
-      <button class="btn btn-secondary btn-sm" onclick="resetToDefaults()" title="Восстановить заводские рецепты">🔄 Сброс</button>
-      <input type="file" id="json-file-input" accept=".json" style="display:none;" onchange="importDataJson(event)">
     </div>
   </header>
 
@@ -855,7 +802,6 @@
     <button class="tab-btn" onclick="switchTab('calcs', this)">🧮 Калькуляторы</button>
     <button class="tab-btn" onclick="switchTab('labels', this)">🏷️ Этикетки 60×40</button>
     <button class="tab-btn" onclick="switchTab('tech', this)">⚙️ Технические моменты (<span id="count-tech">0</span>)</button>
-    <button class="tab-btn" onclick="openNewRecipeModal()">➕ Добавить свой</button>
   </nav>
 
   <!-- ВКЛАДКА 1: РЕЦЕПТЫ -->
@@ -1301,9 +1247,8 @@
     <div class="card">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
         <h2 style="margin:0;">⚙️ Справочник винокура: Технические регламенты</h2>
-        <button class="btn btn-sm" onclick="openNewTechModal()">➕ Добавить регламент</button>
       </div>
-      <p style="color: var(--text-muted); margin-bottom: 16px;">Важные технологические процессы, влияющие на качество, чистоту и органолептику напитков. Каждый регламент можно отредактировать под свой аппарат.</p>
+      <p style="color: var(--text-muted); margin-bottom: 16px;">Важные технологические процессы, влияющие на качество, чистоту и органолептику напитков.</p>
 
       <div id="tech-container"></div>
     </div>
@@ -1321,48 +1266,6 @@
       </div>
       <div class="modal-footer">
         <button class="btn" onclick="closeInstallModal()">Понятно</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- МОДАЛЬНОЕ ОКНО РЕДАКТИРОВАНИЯ РЕЦЕПТА / СТАТЬИ -->
-  <div class="modal-overlay" id="edit-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modal-title" style="margin: 0;">Редактировать запись</h3>
-        <button class="close-btn" onclick="closeModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="edit-item-id">
-        <input type="hidden" id="edit-item-type"> <!-- 'recipe' | 'tech' -->
-        
-        <div style="margin-bottom: 12px;">
-          <label>Название:</label>
-          <input type="text" id="edit-item-title" placeholder="Например: Яблочный кальвадос">
-        </div>
-        <div style="margin-bottom: 12px;">
-          <label>Категория / Сырье:</label>
-          <input type="text" id="edit-item-cat" placeholder="Например: Яблоки, Зерно, Дистилляция">
-        </div>
-
-        <div style="margin-bottom: 6px;">
-          <label>Содержимое и этапы (поддерживается HTML-разметка):</label>
-        </div>
-        
-        <!-- Панель быстрых тегов -->
-        <div class="editor-toolbar">
-          <button type="button" onclick="insertTag('<h4>', '</h4>')">Заголовок этапа</button>
-          <button type="button" onclick="insertTag('<b>', '</b>')">Жирный</button>
-          <button type="button" onclick="insertList()">Список пунктов</button>
-          <button type="button" onclick="insertNoteBox()">Блок-памятка 💡</button>
-          <button type="button" onclick="insertTag('<p>', '</p>')">Параграф</button>
-        </div>
-
-        <textarea id="edit-item-content" rows="14" placeholder="Опишите рецепт, пропорции, перегон и доводку..."></textarea>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
-        <button class="btn" onclick="saveItemFromModal()">💾 Сохранить изменения</button>
       </div>
     </div>
   </div>
@@ -2044,69 +1947,14 @@
     ];
 
     /* =====================================================================
-       2. УПРАВЛЕНИЕ ХРАНИЛИЩЕМ (LocalStorage)
+       2. ДАННЫЕ РЕЦЕПТОВ И РЕГЛАМЕНТОВ
        ===================================================================== */
-    const STORAGE_KEY_RECIPES = 'mv_recipes_v2';
-    const STORAGE_KEY_TECH = 'mv_tech_v2';
-
     function getRecipes() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY_RECIPES);
-        if (!raw) {
-          saveRecipes(DEFAULT_RECIPES);
-          return DEFAULT_RECIPES;
-        }
-        let list = JSON.parse(raw);
-        let updated = false;
-        DEFAULT_RECIPES.forEach(defRec => {
-          const existing = list.find(r => r.id === defRec.id);
-          if (!existing) {
-            list.push(defRec);
-            updated = true;
-          } else if (defRec.id === 'gin-core' && (!existing.content.includes('openGinCalcFromRecipe') || !existing.content.includes('Экспресс-метод «London Dry»') || existing.content.includes('на 3 л готовой сортировки'))) {
-            existing.content = defRec.content;
-            updated = true;
-          }
-        });
-        if (updated) saveRecipes(list);
-        return list;
-      } catch (e) {
-        return DEFAULT_RECIPES;
-      }
-    }
-
-    function saveRecipes(list) {
-      localStorage.setItem(STORAGE_KEY_RECIPES, JSON.stringify(list));
+      return DEFAULT_RECIPES;
     }
 
     function getTech() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY_TECH);
-        if (!raw) {
-          saveTech(DEFAULT_TECH);
-          return DEFAULT_TECH;
-        }
-        let list = JSON.parse(raw);
-        let updated = false;
-        DEFAULT_TECH.forEach(defTech => {
-          const existing = list.find(t => t.id === defTech.id);
-          if (!existing) {
-            list.push(defTech);
-            updated = true;
-          } else if (defTech.id === 'tech-gin-secrets' && !existing.content.includes('экспресс-метод')) {
-            existing.content = defTech.content;
-            updated = true;
-          }
-        });
-        if (updated) saveTech(list);
-        return list;
-      } catch (e) {
-        return DEFAULT_TECH;
-      }
-    }
-
-    function saveTech(list) {
-      localStorage.setItem(STORAGE_KEY_TECH, JSON.stringify(list));
+      return DEFAULT_TECH;
     }
 
     /* =====================================================================
@@ -2155,8 +2003,6 @@
             </div>
             <div class="recipe-header-actions" onclick="event.stopPropagation()">
               <button class="btn btn-secondary btn-sm" onclick="openLabelForRecipe('${item.id}')" title="Создать термоэтикетку 60х40">🏷️ Этикетка</button>
-              <button class="btn btn-secondary btn-sm" onclick="openEditModal('recipe', '${item.id}')" title="Редактировать">✏️ Изменить</button>
-              <button class="btn btn-secondary btn-sm" onclick="duplicateRecipe('${item.id}')" title="Создать копию">📋 Копия</button>
               <span class="recipe-arrow" onclick="toggleDetails('body-${item.id}')">▼</span>
             </div>
           </div>
@@ -2186,7 +2032,6 @@
               <strong>${escapeHtml(item.title)}</strong>
             </div>
             <div class="recipe-header-actions tech-actions" onclick="event.stopPropagation()">
-              <button class="btn btn-secondary btn-sm" onclick="openEditModal('tech', '${item.id}')" title="Редактировать">✏️ Изменить</button>
               <span class="recipe-arrow" onclick="toggleDetails('body-${item.id}')">▼</span>
             </div>
           </div>
@@ -2216,181 +2061,7 @@
     }
 
     /* =====================================================================
-       4. МОДАЛЬНОЕ ОКНО И РЕДАКТИРОВАНИЕ
-       ===================================================================== */
-    function openEditModal(type, id) {
-      const list = type === 'recipe' ? getRecipes() : getTech();
-      const item = list.find(x => x.id === id);
-      if (!item) return;
-
-      document.getElementById('modal-title').innerText = type === 'recipe' ? 'Редактировать рецепт' : 'Редактировать регламент';
-      document.getElementById('edit-item-type').value = type;
-      document.getElementById('edit-item-id').value = item.id;
-      document.getElementById('edit-item-title').value = item.title || '';
-      document.getElementById('edit-item-cat').value = item.category || '';
-      document.getElementById('edit-item-content').value = item.content || '';
-
-      document.getElementById('edit-modal').classList.add('active');
-    }
-
-    function openNewRecipeModal() {
-      document.getElementById('modal-title').innerText = 'Создать новый рецепт';
-      document.getElementById('edit-item-type').value = 'recipe';
-      document.getElementById('edit-item-id').value = 'rec_' + Date.now();
-      document.getElementById('edit-item-title').value = '';
-      document.getElementById('edit-item-cat').value = 'Свой рецепт';
-      document.getElementById('edit-item-content').value = `<h4>1. Сырье и пропорции</h4>
-<ul>
-  <li><b>Основа:</b> </li>
-  <li><b>Вода:</b> </li>
-  <li><b>Дрожжи:</b> </li>
-</ul>
-
-<h4>2. Брожение</h4>
-<ul>
-  <li>Температура: </li>
-  <li>Срок: </li>
-</ul>
-
-<h4>3. Перегонка</h4>
-<ul>
-  <li>Первый перегон: </li>
-  <li>Второй дробный перегон: </li>
-</ul>`;
-
-      document.getElementById('edit-modal').classList.add('active');
-    }
-
-    function openNewTechModal() {
-      document.getElementById('modal-title').innerText = 'Новый технический регламент';
-      document.getElementById('edit-item-type').value = 'tech';
-      document.getElementById('edit-item-id').value = 'tech_' + Date.now();
-      document.getElementById('edit-item-title').value = '';
-      document.getElementById('edit-item-cat').value = 'Регламент';
-      document.getElementById('edit-item-content').value = `<p><b>Суть процесса:</b> </p>
-<h4>Пошаговые правила:</h4>
-<ul>
-  <li><b>Шаг 1:</b> </li>
-  <li><b>Шаг 2:</b> </li>
-</ul>`;
-
-      document.getElementById('edit-modal').classList.add('active');
-    }
-
-    function closeModal() {
-      document.getElementById('edit-modal').classList.remove('active');
-    }
-
-    function saveItemFromModal() {
-      const type = document.getElementById('edit-item-type').value;
-      const id = document.getElementById('edit-item-id').value;
-      const title = document.getElementById('edit-item-title').value.trim();
-      const cat = document.getElementById('edit-item-cat').value.trim() || 'Разное';
-      const content = document.getElementById('edit-item-content').value.trim();
-
-      if (!title) {
-        alert('Пожалуйста, укажите название!');
-        return;
-      }
-
-      if (type === 'recipe') {
-        let list = getRecipes();
-        const existingIdx = list.findIndex(x => x.id === id);
-        const obj = { id, title, category: cat, content };
-        if (existingIdx >= 0) {
-          list[existingIdx] = obj;
-        } else {
-          list.unshift(obj);
-          switchTab('recipes', document.querySelectorAll('.tab-btn')[0]);
-        }
-        saveRecipes(list);
-        renderRecipes(document.getElementById('recipe-search').value);
-      } else {
-        let list = getTech();
-        const existingIdx = list.findIndex(x => x.id === id);
-        const obj = { id, title, category: cat, content };
-        if (existingIdx >= 0) {
-          list[existingIdx] = obj;
-        } else {
-          list.unshift(obj);
-          switchTab('tech', document.querySelectorAll('.tab-btn')[3]);
-        }
-        saveTech(list);
-        renderTech();
-      }
-
-      closeModal();
-    }
-
-    function duplicateRecipe(id) {
-      let list = getRecipes();
-      const orig = list.find(x => x.id === id);
-      if (!orig) return;
-
-      const copy = {
-        id: 'rec_' + Date.now(),
-        title: orig.title + ' (Копия)',
-        category: orig.category,
-        content: orig.content
-      };
-      list.unshift(copy);
-      saveRecipes(list);
-      renderRecipes(document.getElementById('recipe-search').value);
-      toggleDetails('body-' + copy.id);
-    }
-
-    function deleteItem(type, id) {
-      if (!confirm('Вы уверены, что хотите удалить эту запись?')) return;
-      if (type === 'recipe') {
-        let list = getRecipes().filter(x => x.id !== id);
-        saveRecipes(list);
-        renderRecipes(document.getElementById('recipe-search').value);
-      } else {
-        let list = getTech().filter(x => x.id !== id);
-        saveTech(list);
-        renderTech();
-      }
-    }
-
-    /* Вспомогательные функции вставки в редакторе */
-    function insertTag(openTag, closeTag) {
-      const ta = document.getElementById('edit-item-content');
-      const start = ta.selectionStart;
-      const end = ta.selectionEnd;
-      const sel = ta.value.substring(start, end);
-      const rep = openTag + sel + closeTag;
-      ta.value = ta.value.substring(0, start) + rep + ta.value.substring(end);
-      ta.focus();
-      ta.setSelectionRange(start + openTag.length, start + openTag.length + sel.length);
-    }
-
-    function insertList() {
-      const ta = document.getElementById('edit-item-content');
-      const snippet = "<ul>\n  <li><b>Пункт 1:</b> Описание</li>\n  <li><b>Пункт 2:</b> Описание</li>\n</ul>\n";
-      insertAtCursor(ta, snippet);
-    }
-
-    function insertNoteBox() {
-      const ta = document.getElementById('edit-item-content');
-      const snippet = `<div class="note-box">\n  <b>Важное примечание:</b>\n  <p style="margin-top:4px;">Текст примечания...</p>\n</div>\n`;
-      insertAtCursor(ta, snippet);
-    }
-
-    function insertAtCursor(myField, myValue) {
-      if (myField.selectionStart || myField.selectionStart === 0) {
-        var startPos = myField.selectionStart;
-        var endPos = myField.selectionEnd;
-        myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
-        myField.focus();
-        myField.selectionStart = startPos + myValue.length;
-        myField.selectionEnd = startPos + myValue.length;
-      } else {
-        myField.value += myValue;
-      }
-    }
-
-    /* =====================================================================
-       5. ВКЛАДКИ
+       4. ВКЛАДКИ
        ===================================================================== */
     function switchTab(name, btn) {
       document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
@@ -3535,91 +3206,6 @@
       }).catch(() => {
         alert(txt);
       });
-    }
-
-    /* =====================================================================
-       7. ИМПОРТ / ЭКСПОРТ / СБРОС И СОХРАНЕНИЕ HTML
-       ===================================================================== */
-    function exportDataJson() {
-      const data = {
-        recipes: getRecipes(),
-        tech: getTech(),
-        exportDate: new Date().toISOString()
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      downloadBlob(blob, 'gorevoy_craft_lab_backup_' + formatDate() + '.json');
-    }
-
-    function triggerJsonImport() {
-      document.getElementById('json-file-input').click();
-    }
-
-    function importDataJson(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        try {
-          const parsed = JSON.parse(evt.target.result);
-          if (parsed.recipes && Array.isArray(parsed.recipes)) {
-            saveRecipes(parsed.recipes);
-          }
-          if (parsed.tech && Array.isArray(parsed.tech)) {
-            saveTech(parsed.tech);
-          }
-          renderAll();
-          alert('Данные успешно импортированы!');
-        } catch (err) {
-          alert('Ошибка при чтении JSON файла: ' + err.message);
-        }
-        e.target.value = '';
-      };
-      reader.readAsText(file);
-    }
-
-    function resetToDefaults() {
-      if (!confirm('Вы действительно хотите сбросить все рецепты и регламенты к начальным заводским? Все внесенные изменения будут заменены.')) return;
-      saveRecipes(DEFAULT_RECIPES);
-      saveTech(DEFAULT_TECH);
-      renderAll();
-      alert('База восстановлена к исходному состоянию!');
-    }
-
-    // Экспорт полного автономного HTML-файла с текущими изменениями
-    function exportDataHtml() {
-      const currentRecipes = getRecipes();
-      const currentTech = getTech();
-
-      let html = document.documentElement.outerHTML;
-
-      // Заменяем DEFAULT_RECIPES и DEFAULT_TECH в исходном коде скачиваемого файла на текущие
-      const recipesJson = JSON.stringify(currentRecipes, null, 2);
-      const techJson = JSON.stringify(currentTech, null, 2);
-
-      html = html.replace(/const DEFAULT_RECIPES = \[[\s\S]*?\];\n\n    const DEFAULT_TECH/m, 
-        'const DEFAULT_RECIPES = ' + recipesJson + ';\n\n    const DEFAULT_TECH');
-      html = html.replace(/const DEFAULT_TECH = \[[\s\S]*?\];\n\n    \/\* =/m, 
-        'const DEFAULT_TECH = ' + techJson + ';\n\n    /* =');
-
-      const fullHtml = '<!DOCTYPE html>\n' + html;
-      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
-      downloadBlob(blob, 'gorevoy-craft-lab.html');
-    }
-
-    function downloadBlob(blob, filename) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-
-    function formatDate() {
-      const d = new Date();
-      return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
     }
 
     function escapeHtml(str) {
