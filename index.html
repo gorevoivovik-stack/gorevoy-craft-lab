@@ -549,8 +549,8 @@
       background: #ffffff;
       color: #000000;
       box-sizing: border-box;
-      padding: 1.2mm 1.5mm;
-      border-radius: 2mm;
+      padding: 0.8mm 1mm;
+      border-radius: 1.5mm;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
       box-shadow: 0 6px 20px rgba(0,0,0,0.6);
       position: relative;
@@ -562,140 +562,147 @@
     }
     .label-border {
       border: 1.2px solid #000;
-      border-radius: 1.5mm;
-      padding: 1mm 1.5mm;
+      border-radius: 1.2mm;
+      padding: 0.8mm 1mm;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       box-sizing: border-box;
+      overflow: hidden;
     }
     .lbl-head-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 0.8px solid #000;
-      padding-bottom: 0.6mm;
+      padding-bottom: 0.3mm;
       line-height: 1;
     }
     .lbl-brand {
-      font-size: 6.8pt;
+      font-size: 6.5pt;
       font-weight: 800;
-      letter-spacing: 0.4px;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
     }
     .lbl-abv-vol {
-      font-size: 7.2pt;
+      font-size: 7pt;
       font-weight: 800;
     }
     .lbl-title {
-      font-size: 10.5pt;
+      font-size: 8.8pt;
       font-weight: 900;
-      line-height: 1.1;
+      line-height: 1.05;
       text-align: center;
-      margin: 0.6mm 0;
+      margin: 0.2mm 0;
       text-transform: uppercase;
       word-break: break-word;
     }
     .lbl-wood-row {
-      font-size: 6.8pt;
+      font-size: 6.3pt;
       background: #000;
       color: #fff;
-      padding: 0.4mm 1mm;
-      border-radius: 0.6mm;
+      padding: 0.3mm 0.8mm;
+      border-radius: 0.5mm;
       text-align: center;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      line-height: 1.2;
+      line-height: 1.15;
     }
     .lbl-badge-row {
-      font-size: 6.8pt;
+      font-size: 6.3pt;
       background: #000;
       color: #fff;
-      padding: 0.4mm 1mm;
-      border-radius: 0.6mm;
+      padding: 0.3mm 0.8mm;
+      border-radius: 0.5mm;
       text-align: center;
       font-weight: 800;
-      letter-spacing: 0.3px;
-      line-height: 1.2;
+      letter-spacing: 0.2px;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .lbl-glass-info {
       border: 0.8px solid #000;
-      border-radius: 0.8mm;
-      padding: 0.7mm 1.2mm;
-      font-size: 6.2pt;
-      line-height: 1.2;
+      border-radius: 0.6mm;
+      padding: 0.4mm 0.8mm;
+      font-size: 5.8pt;
+      line-height: 1.15;
       background: #fafafa;
       box-sizing: border-box;
-      margin: 0.4mm 0;
+      margin: 0.2mm 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .lbl-uncork-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 6.2pt;
+      font-size: 5.9pt;
       font-weight: 700;
-      padding-top: 0.5mm;
+      padding-top: 0.3mm;
       border-top: 0.6px dashed #777;
       line-height: 1.1;
-      margin-top: 0.3mm;
+      margin-top: 0.2mm;
     }
     .lbl-dates-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1mm;
-      font-size: 6.8pt;
-      line-height: 1.2;
-      margin: 0.6mm 0;
+      font-size: 6.4pt;
+      line-height: 1.15;
+      margin: 0.2mm 0;
       background: #f4f4f4;
-      padding: 0.8mm 1mm;
-      border-radius: 0.8mm;
-      border: 0.5px solid #ccc;
+      padding: 0.5mm 0.8mm;
+      border-radius: 0.6mm;
+      border: 0.5px solid #bbb;
     }
     .lbl-dates-grid strong {
-      font-size: 7.2pt;
+      font-size: 6.8pt;
       color: #000;
     }
     .lbl-aeration-row {
       border-top: 0.8px dashed #000;
-      padding-top: 0.5mm;
-      font-size: 6.2pt;
+      padding-top: 0.4mm;
+      font-size: 5.8pt;
       line-height: 1.1;
     }
     .lbl-aeration-boxes {
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-start;
-      gap: 0.6mm 2mm;
-      margin-top: 0.5mm;
-      font-size: 6.2pt;
+      gap: 0.5mm 1.5mm;
+      margin-top: 0.4mm;
+      font-size: 5.8pt;
       font-weight: 700;
     }
     .lbl-box-item {
       display: inline-flex;
       align-items: center;
-      gap: 0.6mm;
+      gap: 0.5mm;
       white-space: nowrap;
     }
     .lbl-sq {
       display: inline-block;
-      width: 2.2mm;
-      height: 2.2mm;
+      width: 1.9mm;
+      height: 1.9mm;
       border: 0.8px solid #000;
       border-radius: 0.3mm;
       background: #ffffff;
       flex-shrink: 0;
     }
     .lbl-note-foot {
-      font-size: 5.6pt;
+      font-size: 5.5pt;
       text-align: center;
       color: #333;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-top: 0.3mm;
+      margin-top: 0.2mm;
     }
 
     /* =====================================================================
@@ -937,7 +944,7 @@
         width: 60mm !important;
         height: 40mm !important;
         margin: 0 !important;
-        padding: 1.2mm 1.5mm !important;
+        padding: 0.8mm 1mm !important;
         box-sizing: border-box !important;
         background: #ffffff !important;
         color: #000000 !important;
@@ -1510,8 +1517,8 @@
             <!-- ВАРИАНТ 1 (НА ДУБЕ): Древесина / Дуб -->
             <div class="lbl-wood-row" id="lbl-disp-wood">Дуб: Кавказский, ср. обжиг (15 г)</div>
 
-            <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Плашка без дуба -->
-            <div class="lbl-badge-row" id="lbl-disp-badge" style="display:none;">🌿 ЧИСТОЕ СТЕКЛО • БЕЗ ДУБА</div>
+            <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Плашка без дуба и срок отдыха -->
+            <div class="lbl-badge-row" id="lbl-disp-badge" style="display:none;">🌿 ЧИСТОЕ СТЕКЛО • БЕЗ ДУБА • ОТДЫХ 14 ДН.</div>
 
             <!-- Даты: Поставил/Розлив и Снять/Готов -->
             <div class="lbl-dates-grid">
@@ -1530,23 +1537,17 @@
               </div>
             </div>
 
-            <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Инфо-блок рецепта и отдыха -->
+            <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Инфо-блок рецепта и ботаники -->
             <div class="lbl-glass-info" id="lbl-disp-glass-wrap" style="display:none;">
-              <div style="font-weight:700; margin-bottom:0.4mm; display:flex; justify-content:space-between;">
-                <span>🌿 Рецепт и ботаника:</span>
-                <span id="lbl-disp-glass-rest-days">отдых 14 дн.</span>
-              </div>
-              <div id="lbl-disp-glass-details" style="font-size:6pt; color:#222; word-break:break-word; max-height:10mm; overflow:hidden;">
-                Ботаника Stillman X • Декстроза 1.8 г/л
-              </div>
+              <span style="font-weight:700;">📝 </span><span id="lbl-disp-glass-details">Ботаника Stillman X • Декстроза 1.8 г/л</span>
             </div>
 
             <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Поле даты откупоривания банки -->
             <div class="lbl-uncork-row" id="lbl-disp-uncork-wrap" style="display:none;">
-              <span style="display:inline-flex; align-items:center; gap:1mm;">
+              <span style="display:inline-flex; align-items:center; gap:0.8mm;">
                 <span class="lbl-sq"></span> <span>Откупорена: ____ . ____ . 202___ г.</span>
               </span>
-              <span>Оценка: ★ ★ ★ ★ ★</span>
+              <span>★ ★ ★ ★ ★</span>
             </div>
 
             <!-- Подвал / Заметка (для дуба) -->
@@ -3556,15 +3557,26 @@
       const dispUncorkWrap = document.getElementById('lbl-disp-uncork-wrap');
       const dispNote = document.getElementById('lbl-disp-note');
 
-      if (dispTitle) dispTitle.innerText = title.toUpperCase();
+      if (dispTitle) {
+        dispTitle.innerText = title.toUpperCase();
+        if (title.length > 25) {
+          dispTitle.style.fontSize = '7.5pt';
+        } else if (title.length > 18) {
+          dispTitle.style.fontSize = '8.2pt';
+        } else {
+          dispTitle.style.fontSize = '8.8pt';
+        }
+      }
       if (dispAbvVol) dispAbvVol.innerText = str + '% об. • ' + vol;
 
       if (currentLabelMode === 'glass') {
         // РЕЖИМ БЕЗ ДУБА / В СТЕКЛЕ (Джин, водка, настойка)
         if (dispWood) dispWood.style.display = 'none';
+        const glassDurSel = document.getElementById('lbl-glass-duration-sel')?.value;
+        const restText = glassDurSel === 'custom' ? 'ОТДЫХ В СТЕКЛЕ' : `ОТДЫХ ${glassDurSel} ДН.`;
         if (dispBadge) {
           dispBadge.style.display = 'block';
-          dispBadge.innerText = '🌿 ЧИСТОЕ СТЕКЛО • БЕЗ ДУБА';
+          dispBadge.innerText = `🌿 ЧИСТОЕ СТЕКЛО • БЕЗ ДУБА • ${restText}`;
         }
         if (dispAerationWrap) dispAerationWrap.style.display = 'none';
         if (dispGlassWrap) dispGlassWrap.style.display = 'block';
@@ -3577,7 +3589,6 @@
         const startVal = document.getElementById('lbl-glass-start-in')?.value;
         const endVal = document.getElementById('lbl-glass-end-in')?.value;
         const glassNote = document.getElementById('lbl-glass-note-in')?.value.trim() || 'Отдых в стекле';
-        const glassDurSel = document.getElementById('lbl-glass-duration-sel')?.value;
 
         if (startVal && dispStart) {
           const p1 = startVal.split('-');
@@ -3588,10 +3599,6 @@
           dispEnd.innerText = p2[2] + '.' + p2[1] + '.' + p2[0];
         }
 
-        const restDaysEl = document.getElementById('lbl-disp-glass-rest-days');
-        if (restDaysEl) {
-          restDaysEl.innerText = glassDurSel === 'custom' ? 'гармонизация' : `отдых ${glassDurSel} дн.`;
-        }
         const detailsEl = document.getElementById('lbl-disp-glass-details');
         if (detailsEl) {
           detailsEl.innerText = glassNote;
