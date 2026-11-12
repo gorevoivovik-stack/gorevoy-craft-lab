@@ -610,6 +610,38 @@
       text-overflow: ellipsis;
       line-height: 1.2;
     }
+    .lbl-badge-row {
+      font-size: 6.8pt;
+      background: #000;
+      color: #fff;
+      padding: 0.4mm 1mm;
+      border-radius: 0.6mm;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+    .lbl-glass-info {
+      border: 0.8px solid #000;
+      border-radius: 0.8mm;
+      padding: 0.7mm 1.2mm;
+      font-size: 6.2pt;
+      line-height: 1.2;
+      background: #fafafa;
+      box-sizing: border-box;
+      margin: 0.4mm 0;
+    }
+    .lbl-uncork-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 6.2pt;
+      font-weight: 700;
+      padding-top: 0.5mm;
+      border-top: 0.6px dashed #777;
+      line-height: 1.1;
+      margin-top: 0.3mm;
+    }
     .lbl-dates-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1323,23 +1355,38 @@
         <span class="tag" style="background:#233827; color:#72d192;">Печать 60×40</span>
       </div>
       <p style="color:var(--text-muted); font-size:13px; margin-bottom:16px;">
-        Специальный монохромный шаблон для термопринтеров (Xprinter, Niimbot, TSC, HPRT и др.) на наклейки <b>60×40 мм</b> (или 58×40 мм). Фиксирует дату заливки, дату готовности (снятия с дуба) и удобный чек-лист для отметок аэрации прямо на банке.
+        Специальный монохромный шаблон для термопринтеров (Xprinter, Niimbot, TSC, HPRT и др.) на наклейки <b>60×40 мм</b> (или 58×40 мм). Поддерживает 2 режима: <b>без дуба</b> (джин, водка, настойка — без аэрации, только отдых в стекле и дата розлива) и <b>выдержка на дубе</b> (виски, бурбон, коньяк — древесина, даты снятия и чек-лист аэрации).
       </p>
+
+      <!-- ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА -->
+      <div style="margin-bottom:14px; background:var(--bg); padding:10px 12px; border-radius:8px; border:1px solid var(--border);">
+        <label style="font-weight:600; margin-bottom:8px; display:block; color:var(--accent);">🎯 Тип созревания напитка:</label>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+          <button type="button" id="btn-lbl-mode-glass" class="btn btn-secondary" onclick="setLabelMode('glass')" style="padding:10px 8px; text-align:center; font-size:13px; font-weight:700; line-height:1.35; border: 2px solid transparent;">
+            🍸 Без дуба / Отдых в стекле<br><span style="font-size:11px; font-weight:normal; opacity:0.85;">Джин, водка, настойка (без дуба и аэрации)</span>
+          </button>
+          <button type="button" id="btn-lbl-mode-oak" class="btn" onclick="setLabelMode('oak')" style="padding:10px 8px; text-align:center; font-size:13px; font-weight:700; line-height:1.35; border: 2px solid var(--accent);">
+            🥃 Выдержка на дубе<br><span style="font-size:11px; font-weight:normal; opacity:0.85;">Виски, бурбон, ром (дуб, снятие, аэрация)</span>
+          </button>
+        </div>
+      </div>
 
       <!-- Быстрые шаблоны напитков -->
       <div style="margin-bottom:14px;">
-        <label>Быстрый выбор напитка под выдержку:</label>
+        <label>Быстрый выбор напитка:</label>
         <div class="calc-chips">
+          <span class="calc-chip" id="chip-lbl-gin" onclick="loadLabelPreset('gin')">🍸 Джин сухой (14 дн)</span>
+          <span class="calc-chip" id="chip-lbl-vodka" onclick="loadLabelPreset('vodka')">🧊 Водка / Сортировка (7 дн)</span>
+          <span class="calc-chip" id="chip-lbl-becher" onclick="loadLabelPreset('becher')">🌿 Бехеровка (10 дн)</span>
           <span class="calc-chip active" id="chip-lbl-whisky" onclick="loadLabelPreset('whisky')">🌾 Виски (2 мес)</span>
           <span class="calc-chip" id="chip-lbl-bourbon" onclick="loadLabelPreset('bourbon')">🌽 Бурбон (1.5 мес)</span>
           <span class="calc-chip" id="chip-lbl-grape" onclick="loadLabelPreset('grape')">🍇 Коньяк (1.5 мес)</span>
           <span class="calc-chip" id="chip-lbl-rum" onclick="loadLabelPreset('rum')">🏴‍☠️ Ром (2 мес)</span>
-          <span class="calc-chip" id="chip-lbl-gin" onclick="loadLabelPreset('gin')">🍸 Джин сухой (2 нед)</span>
           <span class="calc-chip" id="chip-lbl-gin_aged" onclick="loadLabelPreset('gin_aged')">🍸 Бочковой джин (21 дн)</span>
-          <span class="calc-chip" id="chip-lbl-becher" onclick="loadLabelPreset('becher')">🌿 Бехеровка (10 дн)</span>
         </div>
       </div>
 
+      <!-- Общие поля: Название, Крепость, Тара -->
       <div class="calc-row">
         <div>
           <label>Название напитка:</label>
@@ -1354,53 +1401,94 @@
         </div>
       </div>
 
-      <div class="calc-row" style="margin-top:8px;">
-        <div>
-          <label>Древесина / дуб / добавка:</label>
-          <input type="text" id="lbl-wood-in" value="Кавказский дуб, ср. обжиг (15 г)" oninput="updateLabelSticker()">
-          <div class="calc-chips">
-            <span class="calc-chip" onclick="setLabelWood('Кавказский дуб, ср. обжиг (15 г)')">Ср. обжиг 15г</span>
-            <span class="calc-chip" onclick="setLabelWood('Хересные кубики дуба (15 г)')">Хересные кубики</span>
-            <span class="calc-chip" onclick="setLabelWood('Сильный обжиг (15 г) + колер')">Сильный обжиг</span>
-            <span class="calc-chip" onclick="setLabelWood('Мелкая щепа (8 г)')">Щепа 8г</span>
+      <!-- БЛОК 1: НАСТРОЙКИ ВЫДЕРЖКИ НА ДУБЕ (только для Oak Mode) -->
+      <div id="row-label-oak-settings">
+        <div class="calc-row" style="margin-top:8px;">
+          <div>
+            <label>Древесина / дуб / навеска:</label>
+            <input type="text" id="lbl-wood-in" value="Кавказский дуб, ср. обжиг (15 г)" oninput="updateLabelSticker()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setLabelWood('Кавказский дуб, ср. обжиг (15 г)')">Ср. обжиг 15г</span>
+              <span class="calc-chip" onclick="setLabelWood('Хересные кубики дуба (15 г)')">Хересные кубики</span>
+              <span class="calc-chip" onclick="setLabelWood('Сильный обжиг (15 г) + колер')">Сильный обжиг</span>
+              <span class="calc-chip" onclick="setLabelWood('Мелкая щепа (8 г)')">Щепа 8г</span>
+            </div>
+          </div>
+          <div>
+            <label>Дата заливки (поставил на дуб):</label>
+            <input type="date" id="lbl-start-in" onchange="onStartDateChange()">
           </div>
         </div>
-        <div>
-          <label>Дата заливки (поставил на дуб):</label>
-          <input type="date" id="lbl-start-in" onchange="onStartDateChange()">
+
+        <div class="calc-row" style="margin-top:8px;">
+          <div>
+            <label>Срок выдержки на дубе:</label>
+            <select id="lbl-duration-sel" onchange="onDurationChange()">
+              <option value="21">3 недели (для мелкой щепы)</option>
+              <option value="30">1 месяц</option>
+              <option value="45">1.5 месяца</option>
+              <option value="60" selected>2 месяца (золотой стандарт кубиков)</option>
+              <option value="90">3 месяца (глубокая выдержка)</option>
+              <option value="custom">Указать дату вручную</option>
+            </select>
+          </div>
+          <div>
+            <label>Дата снятия с дуба (расчетная):</label>
+            <input type="date" id="lbl-end-in" onchange="updateLabelSticker()">
+          </div>
+        </div>
+
+        <div class="calc-row" style="margin-top:8px; margin-bottom:12px;">
+          <div>
+            <label>Интервал аэрации (перелива):</label>
+            <select id="lbl-interval-sel" onchange="updateLabelSticker()">
+              <option value="7" selected>Каждые 7 дней (раз в неделю)</option>
+              <option value="10">Каждые 10 дней</option>
+              <option value="14">Каждые 14 дней (раз в 2 недели)</option>
+            </select>
+          </div>
+          <div>
+            <label>Заметка винокура по выдержке:</label>
+            <input type="text" id="lbl-note-in" value="Перелив струей 1 мин • После: колер + отдых" oninput="updateLabelSticker()">
+          </div>
         </div>
       </div>
 
-      <div class="calc-row" style="margin-top:8px;">
-        <div>
-          <label>Срок выдержки на дубе:</label>
-          <select id="lbl-duration-sel" onchange="onDurationChange()">
-            <option value="21">3 недели (для мелкой щепы)</option>
-            <option value="30">1 месяц</option>
-            <option value="45">1.5 месяца</option>
-            <option value="60" selected>2 месяца (золотой стандарт кубиков)</option>
-            <option value="90">3 месяца (глубокая выдержка)</option>
-            <option value="custom">Указать дату вручную</option>
-          </select>
+      <!-- БЛОК 2: НАСТРОЙКИ БЕЗ ДУБА / ОТДЫХ В СТЕКЛЕ (только для Glass Mode) -->
+      <div id="row-label-glass-settings" style="display:none;">
+        <div class="calc-row" style="margin-top:8px;">
+          <div>
+            <label>Дата розлива / приготовления:</label>
+            <input type="date" id="lbl-glass-start-in" onchange="onGlassStartDateChange()">
+          </div>
+          <div>
+            <label>Срок отдыха в стекле (до дегустации):</label>
+            <select id="lbl-glass-duration-sel" onchange="onGlassDurationChange()">
+              <option value="7">7 дней (экспресс-стабилизация)</option>
+              <option value="10">10 дней (настойки и мацераты)</option>
+              <option value="14" selected>14 дней (золотой стандарт джина)</option>
+              <option value="21">21 день (глубокая гармонизация)</option>
+              <option value="30">30 дней (1 месяц)</option>
+              <option value="custom">Указать дату вручную</option>
+            </select>
+          </div>
         </div>
-        <div>
-          <label>Дата снятия с дуба (расчетная):</label>
-          <input type="date" id="lbl-end-in" onchange="updateLabelSticker()">
-        </div>
-      </div>
 
-      <div class="calc-row" style="margin-top:8px; margin-bottom:12px;">
-        <div>
-          <label>Интервал аэрации (перелива):</label>
-          <select id="lbl-interval-sel" onchange="updateLabelSticker()">
-            <option value="7" selected>Каждые 7 дней (раз в неделю)</option>
-            <option value="10">Каждые 10 дней</option>
-            <option value="14">Каждые 14 дней (раз в 2 недели)</option>
-          </select>
-        </div>
-        <div>
-          <label>Дополнительная заметка винокура:</label>
-          <input type="text" id="lbl-note-in" value="Перелив струей 1 мин • После: колер + отдых" oninput="updateLabelSticker()">
+        <div class="calc-row" style="margin-top:8px; margin-bottom:12px;">
+          <div>
+            <label>Дата готовности к дегустации (расчетная):</label>
+            <input type="date" id="lbl-glass-end-in" onchange="updateLabelSticker()">
+          </div>
+          <div>
+            <label>Рецепт, ботаника, навеска сахара / декстрозы:</label>
+            <input type="text" id="lbl-glass-note-in" value="Ботаника Stillman X • Отдых 14 дн • Декстроза 1.8 г/л" oninput="updateLabelSticker()">
+            <div class="calc-chips">
+              <span class="calc-chip" onclick="setLabelGlassNote('Паровая корзина Stillman X • Декстроза 1.8 г/л')">Stillman X + декстроза</span>
+              <span class="calc-chip" onclick="setLabelGlassNote('Мацерация в кубе 24ч • Двойная сгонка')">Мацерация в кубе</span>
+              <span class="calc-chip" onclick="setLabelGlassNote('Классический London Dry Gin 45%')">London Dry 45%</span>
+              <span class="calc-chip" onclick="setLabelGlassNote('Зерновая сортировка Люкс • Отдых')">Сортировка Люкс</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1419,17 +1507,20 @@
             <!-- Название напитка -->
             <div class="lbl-title" id="lbl-disp-title">ОДНОСОЛОДОВЫЙ ВИСКИ</div>
 
-            <!-- Древесина / Дуб -->
+            <!-- ВАРИАНТ 1 (НА ДУБЕ): Древесина / Дуб -->
             <div class="lbl-wood-row" id="lbl-disp-wood">Дуб: Кавказский, ср. обжиг (15 г)</div>
 
-            <!-- Даты: Заливка и Снятие -->
+            <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Плашка без дуба -->
+            <div class="lbl-badge-row" id="lbl-disp-badge" style="display:none;">🌿 ЧИСТОЕ СТЕКЛО • БЕЗ ДУБА</div>
+
+            <!-- Даты: Поставил/Розлив и Снять/Готов -->
             <div class="lbl-dates-grid">
-              <div>📅 Поставил: <strong id="lbl-disp-start">08.11.2026</strong></div>
-              <div>⏳ Снять: <strong id="lbl-disp-end">08.01.2027</strong></div>
+              <div><span id="lbl-disp-start-prefix">📅 Поставил:</span> <strong id="lbl-disp-start">08.11.2026</strong></div>
+              <div><span id="lbl-disp-end-prefix">⏳ Снять:</span> <strong id="lbl-disp-end">08.01.2027</strong></div>
             </div>
 
-            <!-- Чек-лист аэрации с датами и галочками -->
-            <div class="lbl-aeration-row">
+            <!-- ВАРИАНТ 1 (НА ДУБЕ): Чек-лист аэрации с датами и галочками -->
+            <div class="lbl-aeration-row" id="lbl-disp-aeration-wrap">
               <div style="display:flex; justify-content:space-between; font-weight:700;">
                 <span>💨 Аэрация (перелив):</span>
                 <span id="lbl-disp-weeks-info">раз в неделю</span>
@@ -1439,7 +1530,26 @@
               </div>
             </div>
 
-            <!-- Подвал / Заметка -->
+            <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Инфо-блок рецепта и отдыха -->
+            <div class="lbl-glass-info" id="lbl-disp-glass-wrap" style="display:none;">
+              <div style="font-weight:700; margin-bottom:0.4mm; display:flex; justify-content:space-between;">
+                <span>🌿 Рецепт и ботаника:</span>
+                <span id="lbl-disp-glass-rest-days">отдых 14 дн.</span>
+              </div>
+              <div id="lbl-disp-glass-details" style="font-size:6pt; color:#222; word-break:break-word; max-height:10mm; overflow:hidden;">
+                Ботаника Stillman X • Декстроза 1.8 г/л
+              </div>
+            </div>
+
+            <!-- ВАРИАНТ 2 (В СТЕКЛЕ): Поле даты откупоривания банки -->
+            <div class="lbl-uncork-row" id="lbl-disp-uncork-wrap" style="display:none;">
+              <span style="display:inline-flex; align-items:center; gap:1mm;">
+                <span class="lbl-sq"></span> <span>Откупорена: ____ . ____ . 202___ г.</span>
+              </span>
+              <span>Оценка: ★ ★ ★ ★ ★</span>
+            </div>
+
+            <!-- Подвал / Заметка (для дуба) -->
             <div class="lbl-note-foot" id="lbl-disp-note">Перелив струей 1 мин • После: колер + отдых</div>
           </div>
         </div>
@@ -3252,21 +3362,75 @@
       });
     }
 
+    let currentLabelMode = 'oak'; // 'oak' or 'glass'
+
+    function setLabelMode(mode) {
+      currentLabelMode = mode;
+      const btnOak = document.getElementById('btn-lbl-mode-oak');
+      const btnGlass = document.getElementById('btn-lbl-mode-glass');
+      const rowOak = document.getElementById('row-label-oak-settings');
+      const rowGlass = document.getElementById('row-label-glass-settings');
+
+      if (mode === 'glass') {
+        if (btnGlass) {
+          btnGlass.className = 'btn';
+          btnGlass.style.border = '2px solid var(--accent)';
+        }
+        if (btnOak) {
+          btnOak.className = 'btn btn-secondary';
+          btnOak.style.border = '2px solid transparent';
+        }
+        if (rowOak) rowOak.style.display = 'none';
+        if (rowGlass) rowGlass.style.display = 'block';
+
+        const startIn = document.getElementById('lbl-start-in');
+        const glassStartIn = document.getElementById('lbl-glass-start-in');
+        if (glassStartIn && startIn && (!glassStartIn.value || glassStartIn.value === '')) {
+          glassStartIn.value = startIn.value;
+        }
+        onGlassDurationChange();
+      } else {
+        if (btnOak) {
+          btnOak.className = 'btn';
+          btnOak.style.border = '2px solid var(--accent)';
+        }
+        if (btnGlass) {
+          btnGlass.className = 'btn btn-secondary';
+          btnGlass.style.border = '2px solid transparent';
+        }
+        if (rowOak) rowOak.style.display = 'block';
+        if (rowGlass) rowGlass.style.display = 'none';
+
+        const startIn = document.getElementById('lbl-start-in');
+        const glassStartIn = document.getElementById('lbl-glass-start-in');
+        if (startIn && glassStartIn && (!startIn.value || startIn.value === '')) {
+          startIn.value = glassStartIn.value;
+        }
+        onDurationChange();
+      }
+
+      updateLabelSticker();
+    }
+
     function openLabelForGinCalc(styleTitle, volL) {
       const tabLabelsBtn = document.querySelectorAll('.tab-btn')[2];
       if (tabLabelsBtn) switchTab('labels', tabLabelsBtn);
 
+      setLabelMode('glass');
+
       const titleIn = document.getElementById('lbl-title-in');
       const strIn = document.getElementById('lbl-str-in');
       const volIn = document.getElementById('lbl-vol-in');
-      const noteIn = document.getElementById('lbl-note-in');
+      const noteIn = document.getElementById('lbl-glass-note-in');
 
       if (titleIn) titleIn.value = 'Джин «' + styleTitle + '»';
       if (strIn) strIn.value = '45';
       if (volIn) volIn.value = (volL || 5.0) + ' л';
-      if (noteIn) noteIn.value = 'Ботаника Stillman X • Отдых 14 дн • Декстроза 1.8г/л';
+      if (noteIn) noteIn.value = 'Ботаника Stillman X • Отдых 14 дн • Декстроза 1.8 г/л';
 
-      if (typeof updateLabelSticker === 'function') updateLabelSticker();
+      const durSel = document.getElementById('lbl-glass-duration-sel');
+      if (durSel) durSel.value = '14';
+      calcGlassEndDate(14);
     }
 
     function openGinCalcFromRecipe() {
@@ -3282,7 +3446,7 @@
     }
 
     /* =====================================================================
-       6.1. ТЕРМОЭТИКЕТКИ 60х40
+       6.1. ТЕРМОЭТИКЕТКИ 60х40 (РЕЖИМЫ: НА ДУБЕ / БЕЗ ДУБА В СТЕКЛЕ)
        ===================================================================== */
     function initLabelDates() {
       const today = new Date();
@@ -3290,10 +3454,17 @@
       const mm = String(today.getMonth() + 1).padStart(2, '0');
       const dd = String(today.getDate()).padStart(2, '0');
       const startStr = yyyy + '-' + mm + '-' + dd;
+
       const startInput = document.getElementById('lbl-start-in');
       if (startInput && !startInput.value) {
         startInput.value = startStr;
         calcEndDate(60);
+      }
+
+      const glassStartInput = document.getElementById('lbl-glass-start-in');
+      if (glassStartInput && !glassStartInput.value) {
+        glassStartInput.value = startStr;
+        calcGlassEndDate(14);
       }
     }
 
@@ -3326,38 +3497,140 @@
       updateLabelSticker();
     }
 
+    function onGlassStartDateChange() {
+      const dur = document.getElementById('lbl-glass-duration-sel').value;
+      if (dur !== 'custom') {
+        calcGlassEndDate(parseInt(dur, 10));
+      } else {
+        updateLabelSticker();
+      }
+    }
+
+    function onGlassDurationChange() {
+      const dur = document.getElementById('lbl-glass-duration-sel').value;
+      if (dur !== 'custom') {
+        calcGlassEndDate(parseInt(dur, 10));
+      }
+    }
+
+    function calcGlassEndDate(days) {
+      const startVal = document.getElementById('lbl-glass-start-in')?.value;
+      if (!startVal) return;
+      const parts = startVal.split('-');
+      const d = new Date(parts[0], parts[1] - 1, parts[2]);
+      d.setDate(d.getDate() + days);
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const endEl = document.getElementById('lbl-glass-end-in');
+      if (endEl) endEl.value = yyyy + '-' + mm + '-' + dd;
+      updateLabelSticker();
+    }
+
     function setLabelWood(val) {
       document.getElementById('lbl-wood-in').value = val;
       updateLabelSticker();
     }
 
+    function setLabelGlassNote(val) {
+      const el = document.getElementById('lbl-glass-note-in');
+      if (el) el.value = val;
+      updateLabelSticker();
+    }
+
     function updateLabelSticker() {
-      const title = document.getElementById('lbl-title-in').value.trim() || 'ДИСТИЛЛЯТ';
-      const str = document.getElementById('lbl-str-in').value.trim() || '43';
-      const vol = document.getElementById('lbl-vol-in').value.trim() || '3.0 л';
-      const wood = document.getElementById('lbl-wood-in').value.trim() || 'Без дуба';
-      const startVal = document.getElementById('lbl-start-in').value;
-      const endVal = document.getElementById('lbl-end-in').value;
-      const note = document.getElementById('lbl-note-in').value.trim();
-      const intervalDays = parseInt(document.getElementById('lbl-interval-sel')?.value, 10) || 7;
+      const title = document.getElementById('lbl-title-in')?.value.trim() || 'ДИСТИЛЛЯТ';
+      const str = document.getElementById('lbl-str-in')?.value.trim() || '43';
+      const vol = document.getElementById('lbl-vol-in')?.value.trim() || '3.0 л';
 
-      document.getElementById('lbl-disp-title').innerText = title.toUpperCase();
-      document.getElementById('lbl-disp-abv-vol').innerText = str + '% об. • ' + vol;
-      document.getElementById('lbl-disp-wood').innerText = 'Дуб: ' + wood;
+      const dispTitle = document.getElementById('lbl-disp-title');
+      const dispAbvVol = document.getElementById('lbl-disp-abv-vol');
+      const dispWood = document.getElementById('lbl-disp-wood');
+      const dispBadge = document.getElementById('lbl-disp-badge');
+      const dispStartPrefix = document.getElementById('lbl-disp-start-prefix');
+      const dispEndPrefix = document.getElementById('lbl-disp-end-prefix');
+      const dispStart = document.getElementById('lbl-disp-start');
+      const dispEnd = document.getElementById('lbl-disp-end');
+      const dispAerationWrap = document.getElementById('lbl-disp-aeration-wrap');
+      const dispGlassWrap = document.getElementById('lbl-disp-glass-wrap');
+      const dispUncorkWrap = document.getElementById('lbl-disp-uncork-wrap');
+      const dispNote = document.getElementById('lbl-disp-note');
 
-      if (startVal) {
-        const p1 = startVal.split('-');
-        document.getElementById('lbl-disp-start').innerText = p1[2] + '.' + p1[1] + '.' + p1[0];
-      }
-      if (endVal) {
-        const p2 = endVal.split('-');
-        document.getElementById('lbl-disp-end').innerText = p2[2] + '.' + p2[1] + '.' + p2[0];
-      }
+      if (dispTitle) dispTitle.innerText = title.toUpperCase();
+      if (dispAbvVol) dispAbvVol.innerText = str + '% об. • ' + vol;
 
-      document.getElementById('lbl-disp-note').innerText = note;
+      if (currentLabelMode === 'glass') {
+        // РЕЖИМ БЕЗ ДУБА / В СТЕКЛЕ (Джин, водка, настойка)
+        if (dispWood) dispWood.style.display = 'none';
+        if (dispBadge) {
+          dispBadge.style.display = 'block';
+          dispBadge.innerText = '🌿 ЧИСТОЕ СТЕКЛО • БЕЗ ДУБА';
+        }
+        if (dispAerationWrap) dispAerationWrap.style.display = 'none';
+        if (dispGlassWrap) dispGlassWrap.style.display = 'block';
+        if (dispUncorkWrap) dispUncorkWrap.style.display = 'flex';
+        if (dispNote) dispNote.style.display = 'none';
 
-      if (startVal && endVal) {
-        renderAerationCheckboxes(startVal, endVal, intervalDays);
+        if (dispStartPrefix) dispStartPrefix.innerText = '📅 Розлив:';
+        if (dispEndPrefix) dispEndPrefix.innerText = '⏳ Готов:';
+
+        const startVal = document.getElementById('lbl-glass-start-in')?.value;
+        const endVal = document.getElementById('lbl-glass-end-in')?.value;
+        const glassNote = document.getElementById('lbl-glass-note-in')?.value.trim() || 'Отдых в стекле';
+        const glassDurSel = document.getElementById('lbl-glass-duration-sel')?.value;
+
+        if (startVal && dispStart) {
+          const p1 = startVal.split('-');
+          dispStart.innerText = p1[2] + '.' + p1[1] + '.' + p1[0];
+        }
+        if (endVal && dispEnd) {
+          const p2 = endVal.split('-');
+          dispEnd.innerText = p2[2] + '.' + p2[1] + '.' + p2[0];
+        }
+
+        const restDaysEl = document.getElementById('lbl-disp-glass-rest-days');
+        if (restDaysEl) {
+          restDaysEl.innerText = glassDurSel === 'custom' ? 'гармонизация' : `отдых ${glassDurSel} дн.`;
+        }
+        const detailsEl = document.getElementById('lbl-disp-glass-details');
+        if (detailsEl) {
+          detailsEl.innerText = glassNote;
+        }
+      } else {
+        // РЕЖИМ ВЫДЕРЖКИ НА ДУБЕ (Виски, бурбон, коньяк, ром)
+        if (dispWood) {
+          dispWood.style.display = 'block';
+          const wood = document.getElementById('lbl-wood-in')?.value.trim() || 'Дуб';
+          dispWood.innerText = 'Дуб: ' + wood;
+        }
+        if (dispBadge) dispBadge.style.display = 'none';
+        if (dispAerationWrap) dispAerationWrap.style.display = 'block';
+        if (dispGlassWrap) dispGlassWrap.style.display = 'none';
+        if (dispUncorkWrap) dispUncorkWrap.style.display = 'none';
+        if (dispNote) {
+          dispNote.style.display = 'block';
+          dispNote.innerText = document.getElementById('lbl-note-in')?.value.trim() || '';
+        }
+
+        if (dispStartPrefix) dispStartPrefix.innerText = '📅 Поставил:';
+        if (dispEndPrefix) dispEndPrefix.innerText = '⏳ Снять:';
+
+        const startVal = document.getElementById('lbl-start-in')?.value;
+        const endVal = document.getElementById('lbl-end-in')?.value;
+        const intervalDays = parseInt(document.getElementById('lbl-interval-sel')?.value, 10) || 7;
+
+        if (startVal && dispStart) {
+          const p1 = startVal.split('-');
+          dispStart.innerText = p1[2] + '.' + p1[1] + '.' + p1[0];
+        }
+        if (endVal && dispEnd) {
+          const p2 = endVal.split('-');
+          dispEnd.innerText = p2[2] + '.' + p2[1] + '.' + p2[0];
+        }
+
+        if (startVal && endVal) {
+          renderAerationCheckboxes(startVal, endVal, intervalDays);
+        }
       }
     }
 
@@ -3397,12 +3670,37 @@
     }
 
     function loadLabelPreset(type) {
-      document.querySelectorAll('#chip-lbl-whisky, #chip-lbl-bourbon, #chip-lbl-grape, #chip-lbl-rum, #chip-lbl-gin, #chip-lbl-becher').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('#chip-lbl-whisky, #chip-lbl-bourbon, #chip-lbl-grape, #chip-lbl-rum, #chip-lbl-gin, #chip-lbl-gin_aged, #chip-lbl-becher, #chip-lbl-vodka').forEach(c => c.classList.remove('active'));
       const activeChip = document.getElementById('chip-lbl-' + type);
       if (activeChip) activeChip.classList.add('active');
 
       const presets = {
+        gin: {
+          mode: 'glass',
+          title: 'Лондонский сухой джин',
+          str: 46,
+          vol: '1.0 л',
+          days: 14,
+          note: 'Паровая корзина Stillman X • Декстроза 1.8 г/л'
+        },
+        vodka: {
+          mode: 'glass',
+          title: 'Крафтовая хлебная водка',
+          str: 40,
+          vol: '1.0 л',
+          days: 7,
+          note: 'Зерновой спирт Люкс • Углевание • Отдых 7 дн'
+        },
+        becher: {
+          mode: 'glass',
+          title: 'Домашняя Бехеровка',
+          str: 38,
+          vol: '3.0 л',
+          days: 10,
+          note: 'Специи в фильтр-мешке • Карамельный сироп'
+        },
         whisky: {
+          mode: 'oak',
           title: 'Односолодовый виски',
           str: 43,
           vol: '3.0 л',
@@ -3412,6 +3710,7 @@
           note: 'Перелив раз в 7 дней • Хересный финиш'
         },
         bourbon: {
+          mode: 'oak',
           title: 'Теннесси виски / Бурбон',
           str: 43,
           vol: '3.0 л',
@@ -3421,6 +3720,7 @@
           note: 'Углевание пройдено • Декстроза + колер'
         },
         grape: {
+          mode: 'oak',
           title: 'Виноградный дистиллят',
           str: 43,
           vol: '3.0 л',
@@ -3430,6 +3730,7 @@
           note: 'Перелив струей 1 мин • Сахарный колер'
         },
         rum: {
+          mode: 'oak',
           title: 'Карибский темный ром',
           str: 42,
           vol: '3.0 л',
@@ -3438,49 +3739,40 @@
           interval: 7,
           note: 'Тростниковая меласса • Отдых в стекле'
         },
-        gin: {
-          title: 'Лондонский сухой джин',
-          str: 46,
-          vol: '1.0 л',
-          wood: 'Без дуба (чистое стекло)',
-          days: 14,
-          interval: 7,
-          note: 'Паровая инфузия • Отдых 2 недели'
-        },
         gin_aged: {
+          mode: 'oak',
           title: 'Бочковой джин (Yellow Gin)',
           str: 46,
           vol: '1.0 л',
-          wood: 'Дуб ср. обжиг (2-3г) / Вермут',
+          wood: 'Дуб ср. обжиг (3 г) / Вермут',
           days: 21,
           interval: 7,
-          note: 'Проба каждые 4 дня • Не передержать!'
-        },
-        becher: {
-          title: 'Домашняя Бехеровка',
-          str: 38,
-          vol: '3.0 л',
-          wood: 'Специи в фильтр-мешке',
-          days: 10,
-          interval: 5,
-          note: 'Карамельный сироп • Отдых в стекле'
+          note: 'Проба каждые 4 дня • Не передержать на дубе!'
         }
       };
 
       const p = presets[type];
       if (!p) return;
 
+      setLabelMode(p.mode);
+
       document.getElementById('lbl-title-in').value = p.title;
       document.getElementById('lbl-str-in').value = p.str;
       document.getElementById('lbl-vol-in').value = p.vol;
-      document.getElementById('lbl-wood-in').value = p.wood;
-      document.getElementById('lbl-note-in').value = p.note;
-      document.getElementById('lbl-duration-sel').value = p.days;
-      if (document.getElementById('lbl-interval-sel')) {
-        document.getElementById('lbl-interval-sel').value = p.interval || 7;
-      }
 
-      calcEndDate(p.days);
+      if (p.mode === 'glass') {
+        document.getElementById('lbl-glass-duration-sel').value = p.days;
+        document.getElementById('lbl-glass-note-in').value = p.note;
+        calcGlassEndDate(p.days);
+      } else {
+        document.getElementById('lbl-wood-in').value = p.wood || 'Дуб';
+        document.getElementById('lbl-note-in').value = p.note;
+        document.getElementById('lbl-duration-sel').value = p.days;
+        if (document.getElementById('lbl-interval-sel')) {
+          document.getElementById('lbl-interval-sel').value = p.interval || 7;
+        }
+        calcEndDate(p.days);
+      }
     }
 
     function openLabelForRecipe(recipeId) {
@@ -3493,6 +3785,8 @@
         loadLabelPreset('grape');
       } else if (recipeId.includes('rum')) {
         loadLabelPreset('rum');
+      } else if (recipeId.includes('gin_aged') || recipeId.includes('barrel_gin')) {
+        loadLabelPreset('gin_aged');
       } else if (recipeId.includes('gin')) {
         loadLabelPreset('gin');
       } else if (recipeId.includes('becher')) {
@@ -3500,12 +3794,24 @@
       } else {
         const rec = getRecipes().find(r => r.id === recipeId);
         if (rec) {
-          document.getElementById('lbl-title-in').value = rec.title;
-          document.getElementById('lbl-str-in').value = '43';
-          document.getElementById('lbl-vol-in').value = '3.0 л';
-          document.getElementById('lbl-wood-in').value = 'Дубовые кубики (15 г)';
-          document.getElementById('lbl-note-in').value = 'Выдержка в стекле';
-          calcEndDate(60);
+          const isOak = (rec.tags && rec.tags.some(t => t.toLowerCase().includes('дуб') || t.toLowerCase().includes('бочк'))) ||
+                        (rec.title && (rec.title.toLowerCase().includes('виски') || rec.title.toLowerCase().includes('бурбон') || rec.title.toLowerCase().includes('коньяк') || rec.title.toLowerCase().includes('ром')));
+          if (isOak) {
+            setLabelMode('oak');
+            document.getElementById('lbl-title-in').value = rec.title;
+            document.getElementById('lbl-str-in').value = '43';
+            document.getElementById('lbl-vol-in').value = '3.0 л';
+            document.getElementById('lbl-wood-in').value = 'Дубовые кубики (15 г)';
+            document.getElementById('lbl-note-in').value = 'Выдержка на дубе';
+            calcEndDate(60);
+          } else {
+            setLabelMode('glass');
+            document.getElementById('lbl-title-in').value = rec.title;
+            document.getElementById('lbl-str-in').value = '40';
+            document.getElementById('lbl-vol-in').value = '1.0 л';
+            document.getElementById('lbl-glass-note-in').value = 'Отдых в стекле';
+            calcGlassEndDate(14);
+          }
         }
       }
     }
@@ -3515,18 +3821,24 @@
     }
 
     function copyLabelText() {
-      const t = document.getElementById('lbl-disp-title').innerText;
-      const av = document.getElementById('lbl-disp-abv-vol').innerText;
-      const w = document.getElementById('lbl-disp-wood').innerText;
-      const s = document.getElementById('lbl-disp-start').innerText;
-      const e = document.getElementById('lbl-disp-end').innerText;
-      const n = document.getElementById('lbl-disp-note').innerText;
+      const t = document.getElementById('lbl-disp-title')?.innerText || '';
+      const av = document.getElementById('lbl-disp-abv-vol')?.innerText || '';
+      const s = document.getElementById('lbl-disp-start')?.innerText || '';
+      const e = document.getElementById('lbl-disp-end')?.innerText || '';
 
-      const dateItems = Array.from(document.querySelectorAll('#lbl-disp-aeration-boxes .lbl-box-item'))
-        .map(el => '[ ] ' + el.innerText.trim())
-        .join('  ');
+      let txt = '';
+      if (currentLabelMode === 'glass') {
+        const gn = document.getElementById('lbl-glass-note-in')?.value.trim() || '';
+        txt = `${t}\n${av}\n🌿 Чистое стекло • Без выдержки на дубе\nРозлив: ${s} | Готов к дегустации: ${e}\nРецепт / заметка: ${gn}`;
+      } else {
+        const w = document.getElementById('lbl-disp-wood')?.innerText || '';
+        const n = document.getElementById('lbl-note-in')?.value.trim() || '';
+        const dateItems = Array.from(document.querySelectorAll('#lbl-disp-aeration-boxes .lbl-box-item'))
+          .map(el => '[ ] ' + el.innerText.trim())
+          .join('  ');
+        txt = `${t}\n${av}\n${w}\nПоставил на дуб: ${s} | Снять с дуба: ${e}\nАэрация (даты): ${dateItems}\nЗаметка винокура: ${n}`;
+      }
 
-      const txt = `${t}\n${av}\n${w}\nПоставил: ${s} | Снять: ${e}\nАэрация (даты): ${dateItems}\n${n}`;
       navigator.clipboard.writeText(txt).then(() => {
         alert('Данные этикетки скопированы в буфер обмена!');
       }).catch(() => {
